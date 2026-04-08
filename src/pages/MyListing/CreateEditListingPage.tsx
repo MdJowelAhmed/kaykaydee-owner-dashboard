@@ -211,7 +211,7 @@ export default function CreateEditListingPage() {
   }
 
   return (
-    <div className="mx-auto  space-y-8">
+    <div className="mx-auto  space-y-8 bg-white p-8 rounded-2xl">
       <div>
         <h1 className="text-2xl font-bold text-[#2d2d2d] md:text-3xl">
           {isEdit ? 'Edit Listing' : 'Create New Listing'}
@@ -226,7 +226,7 @@ export default function CreateEditListingPage() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         <div>
           <Label className="text-base font-medium">Property Photos</Label>
-          <div className="mt-2">
+          <div className="mt-2 w-80">
             <ImageUploader
               value={imageFile ?? existing?.imageUrl ?? null}
               onChange={setImageFile}
