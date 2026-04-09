@@ -255,7 +255,7 @@ export default function Login() {
                 <strong>Email:</strong> {acc.email}
               </p>
               <p>
-                <strong>Password:</strong> {acc.password}
+                <strong>Pass:</strong> {acc.password}
               </p>
             </div>
             {index < demoAccounts.length - 1 && <Separator className="my-3" />}
