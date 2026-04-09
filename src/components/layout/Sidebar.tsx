@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
@@ -32,6 +32,7 @@ import { Button } from '../ui/button'
 import { logout } from '@/redux/slices/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 interface NavItem {
   title: string
   href: string
@@ -158,6 +159,8 @@ export function Sidebar() {
   const { user } = useAppSelector((state) => state.auth)
   const location = useLocation()
   const navigate = useNavigate()
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const isSettingsActive = location.pathname.startsWith('/settings')
 
   // 🔍 Console log for debugging
@@ -181,10 +184,15 @@ export function Sidebar() {
     return item.allowedRoles.includes(user.role as UserRole)
   })
 
-  const handleLogout = () => {
-    dispatch(logout())
-    toast.success('User logged out successfully')
-    navigate('/auth/login')
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      dispatch(logout())
+      toast.success('User logged out successfully')
+      navigate('/auth/login')
+    } finally {
+      setIsLoggingOut(false)
+    }
   }
 
   return (
@@ -310,9 +318,27 @@ export function Sidebar() {
           )} */}
 
           {/* <Button variant="outline" className="w-full" onClick={handleLogout}> <LogOut className="h-4 w-4 mr-2" /> Logout</Button> */}
-          <Button variant="outline" className="w-full" onClick={handleLogout}> <LogOut className="h-4 w-4 mr-2" /> Logout</Button>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={() => setLogoutDialogOpen(true)}
+          >
+            <LogOut className="h-4 w-4 mr-2" /> Logout
+          </Button>
         </div>
       </aside>
+      <ConfirmDialog
+        open={logoutDialogOpen}
+        onClose={() => setLogoutDialogOpen(false)}
+        onConfirm={handleLogout}
+        onSuccess={() => setLogoutDialogOpen(false)}
+        title="Confirm logout"
+        description="Are you sure you want to log out?"
+        confirmText="Yes, Logout"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isLoggingOut}
+      />
     </>
   )
 }

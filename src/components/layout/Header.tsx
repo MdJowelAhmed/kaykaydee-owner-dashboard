@@ -15,6 +15,8 @@ import { toggleSidebar } from '@/redux/slices/uiSlice'
 import { logout } from '@/redux/slices/authSlice'
 import { getInitials } from '@/utils/formatters'
 import { NotificationPreviewDialog } from '@/components/layout/NotificationPreviewDialog'
+import { useState } from 'react'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 
 const routeTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -45,12 +47,19 @@ export function Header() {
   // const { theme } = useAppSelector((state) => state.ui)
   const { user } = useAppSelector((state) => state.auth)
   const location = useLocation()
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const pageTitle = routeTitles[location.pathname] || 'Dashboard'
 
-  const handleLogout = () => {
-    dispatch(logout())
-    navigate('/auth/login')
+  const handleLogout = async () => {
+    setIsLoggingOut(true)
+    try {
+      dispatch(logout())
+      navigate('/auth/login')
+    } finally {
+      setIsLoggingOut(false)
+    }
   }
 
   return (
@@ -137,7 +146,10 @@ export function Header() {
                 Settings
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+              <DropdownMenuItem
+                onClick={() => setLogoutDialogOpen(true)}
+                className="text-destructive focus:text-destructive"
+              >
                 <LogOut className="h-4 w-4 mr-2" />
                 Log out
               </DropdownMenuItem>
@@ -145,6 +157,18 @@ export function Header() {
           </DropdownMenu>
         </div>
       </div>
+      <ConfirmDialog
+        open={logoutDialogOpen}
+        onClose={() => setLogoutDialogOpen(false)}
+        onConfirm={handleLogout}
+        onSuccess={() => setLogoutDialogOpen(false)}
+        title="Confirm logout"
+        description="Are you sure you want to log out?"
+        confirmText="Logout"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isLoggingOut}
+      />
     </header>
   )
 }
