@@ -9,6 +9,10 @@ interface DataTableProps<T> {
   sortConfig?: SortConfig | null
   onSort?: (key: string) => void
   actions?: (row: T) => React.ReactNode
+  /** Overrides default header row (background + text color). */
+  headerRowClassName?: string
+  /** Column title for the actions column. */
+  actionsColumnTitle?: string
   emptyMessage?: string
   isLoading?: boolean
   className?: string
@@ -21,6 +25,8 @@ export function DataTable<T>({
   data,
   onSort,
   actions,
+  headerRowClassName,
+  actionsColumnTitle = 'Actions',
   emptyMessage = 'No data found',
   isLoading = false,
   className,
@@ -42,12 +48,17 @@ export function DataTable<T>({
       <div className="overflow-x-auto scrollbar-thin">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="border-b bg-[#CCF3F5] text-accent">
+            <tr
+              className={cn(
+                'border-b',
+                headerRowClassName ?? 'bg-[#CCF3F5] text-accent'
+              )}
+            >
               {columns.map((column) => (
                 <th
                   key={String(column.key)}
                   className={cn(
-                    'px-4 py-4 text-left text-sm font-semibold text-accent',
+                    'px-4 py-4 text-left text-sm font-semibold text-inherit',
                     column.sortable && 'cursor-pointer select-none  transition-colors',
                     column.width && `w-[${column.width}]`
                   )}
@@ -60,8 +71,8 @@ export function DataTable<T>({
                 </th>
               ))}
               {actions && (
-                <th className="px-4 py-3 text-right text-sm font-semibold text-accent w-[100px]">
-                  Actions
+                <th className="px-4 py-3 text-right text-sm font-semibold text-inherit w-[100px]">
+                  {actionsColumnTitle}
                 </th>
               )}
             </tr>

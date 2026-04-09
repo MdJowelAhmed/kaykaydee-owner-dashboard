@@ -15,6 +15,7 @@ import {
   LayoutGrid,
   Star,
   LifeBuoy,
+  ImageIcon,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -69,6 +70,12 @@ const navItems: NavItem[] = [
     title: 'Reviews & Ratings',
     href: '/reviews-ratings',
     icon: Star,
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+  },
+  {
+    title: 'App Slider',
+    href: '/app-slider',
+    icon: ImageIcon,
     allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
   },
   {

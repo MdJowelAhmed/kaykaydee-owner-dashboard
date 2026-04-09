@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useDropzone, type FileRejection } from 'react-dropzone'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,10 @@ interface ImageUploaderProps {
   maxSize?: number
   acceptedTypes?: string[]
   error?: string
+  /** When set, replaces the default “Drag & drop…” title in the empty state. */
+  emptyTitle?: string
+  /** Extra line under the title (e.g. “Click here” link styling). */
+  emptyDescription?: React.ReactNode
 }
 
 export function ImageUploader({
@@ -22,10 +26,21 @@ export function ImageUploader({
   maxSize = MAX_IMAGE_SIZE,
   acceptedTypes = ACCEPTED_IMAGE_TYPES,
   error,
+  emptyTitle,
+  emptyDescription,
 }: ImageUploaderProps) {
   const [preview, setPreview] = useState<string | null>(
     typeof value === 'string' ? value : null
   )
+
+  useEffect(() => {
+    if (typeof value === 'string' && value) {
+      setPreview(value)
+    }
+    if (value === null || value === undefined) {
+      setPreview(null)
+    }
+  }, [value])
   const [uploadError, setUploadError] = useState<string | null>(null)
 
   const onDrop = useCallback(
@@ -114,12 +129,18 @@ export function ImageUploader({
               )}
             </div>
             <div>
-              <p className="text-sm font-medium">
-                {isDragActive ? 'Drop your image here' : 'Drag & drop or click to upload'}
+              <p className="text-sm font-medium text-muted-foreground">
+                {isDragActive
+                  ? 'Drop your image here'
+                  : emptyTitle ?? 'Drag & drop or click to upload'}
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Supported: JPG, PNG, WebP (max {formatFileSize(maxSize)})
-              </p>
+              {emptyDescription ? (
+                <div className="text-sm mt-1">{emptyDescription}</div>
+              ) : (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Supported: JPG, PNG, WebP (max {formatFileSize(maxSize)})
+                </p>
+              )}
             </div>
           </div>
         )}

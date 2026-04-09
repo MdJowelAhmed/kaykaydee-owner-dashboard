@@ -27,6 +27,7 @@ import BookingManagement from './pages/Booking/BookingManagement'
 import Calender from './pages/calender/Calender'
 import TransactionsHistory from './pages/transictions-history/TransactionsHistory'
 import ReviewsRatings from './pages/ReviewsRatings/ReviewsRatings'
+import AppSlider from './pages/AppSlider/AppSlider'
 import Support from './pages/Support/Support'
 import FAQ from './pages/FAQ/FAQ'
 import NotFound from './pages/NotFound/NotFound'
@@ -143,6 +144,15 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
                 <ReviewsRatings />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="app-slider"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+                <AppSlider />
               </RoleBasedRoute>
             }
           />
