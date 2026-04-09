@@ -1,22 +1,26 @@
 import { Edit, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { AppSliderItem } from '../sliderData'
+import type { SubscriptionRow } from '../subscriptionData'
 
-interface SliderRowActionMenuProps {
-  slider: AppSliderItem
-  onEdit: (slider: AppSliderItem) => void
-  onDelete: (slider: AppSliderItem) => void
+interface SubscriptionRowActionsProps {
+  row: SubscriptionRow
+  onEdit: (row: SubscriptionRow) => void
+  onDelete: (row: SubscriptionRow) => void
 }
 
-export function SliderRowActionMenu({ slider, onEdit, onDelete }: SliderRowActionMenuProps) {
+export function SubscriptionRowActions({
+  row,
+  onEdit,
+  onDelete,
+}: SubscriptionRowActionsProps) {
   return (
     <div className="flex items-center justify-end gap-2">
       <Button
         type="button"
         variant="outline"
         size="sm"
-        className=" text-[#0C5822] border-none"
-        onClick={() => onEdit(slider)}
+        className="text-[#0C5822] border-none"
+        onClick={() => onEdit(row)}
       >
         <Edit className="h-4 w-4 mr-1.5" />
         Edit
@@ -26,7 +30,7 @@ export function SliderRowActionMenu({ slider, onEdit, onDelete }: SliderRowActio
         variant="outline"
         size="sm"
         className="border-none text-destructive hover:bg-destructive/10"
-        onClick={() => onDelete(slider)}
+        onClick={() => onDelete(row)}
       >
         <Trash2 className="h-4 w-4 mr-1.5" />
         Delete
