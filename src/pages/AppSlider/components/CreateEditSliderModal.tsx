@@ -110,6 +110,7 @@ export function CreateEditSliderModal({
       onClose={onClose}
       title={mode === 'create' ? 'Create Slider' : 'Edit Slider'}
       size="md"
+      className="max-w-2xl bg-white"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 pt-2">
         <div>
@@ -150,9 +151,7 @@ export function CreateEditSliderModal({
         />
 
         <div className="flex justify-end gap-3 pt-2">
-          <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
-            Cancel
-          </Button>
+         
           <Button
             type="submit"
             disabled={isSubmitting}
