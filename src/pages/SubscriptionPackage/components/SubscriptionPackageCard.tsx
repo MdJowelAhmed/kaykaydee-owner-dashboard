@@ -54,11 +54,11 @@ export function SubscriptionPackageCard({
         })}
       </ul>
 
-      <div className="mt-8 flex gap-2">
+      <div className="mt-8 flex gap-2 mt-10 justify-end">
         <Button
           type="button"
           variant="outline"
-          className="flex-1 rounded-xl border-[#6BBF2D] text-[#0C5822] hover:bg-[#CEF8DA]"
+          className=" rounded-xl border-[#6BBF2D] text-[#0C5822] hover:bg-[#CEF8DA] bg-primary text-white"
           onClick={() => onEdit(pkg)}
         >
           <Pencil className="h-4 w-4 mr-2" />
@@ -67,10 +67,11 @@ export function SubscriptionPackageCard({
         <Button
           type="button"
           variant="outline"
-          className="rounded-xl text-destructive border-destructive/30 hover:bg-destructive/10"
+          className="rounded-xl text-white border-destructive/30 bg-destructive"
           onClick={() => onDelete(pkg)}
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-4 w-4 mr-2" />
+          Delete
         </Button>
       </div>
     </div>

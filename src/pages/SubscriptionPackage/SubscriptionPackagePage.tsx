@@ -82,7 +82,7 @@ export default function SubscriptionPackagePage() {
         <Button
           type="button"
           onClick={openCreate}
-          className="shrink-0 gap-2 rounded-full bg-[#6BBF2D] text-white hover:bg-[#5aad26]"
+          className="shrink-0 gap-2 rounded-md bg-primary text-white hover:bg-[#5aad26]"
         >
           <Plus className="h-5 w-5" />
           Add package

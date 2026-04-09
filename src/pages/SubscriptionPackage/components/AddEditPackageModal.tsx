@@ -121,6 +121,7 @@ export function AddEditPackageModal({
       onClose={onClose}
       title={mode === 'create' ? 'Create subscription package' : 'Edit subscription package'}
       size="lg"
+      className="bg-white rounded-2xl"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
