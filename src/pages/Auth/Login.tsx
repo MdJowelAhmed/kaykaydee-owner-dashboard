@@ -14,8 +14,10 @@ import {
   loginSuccess,
   loginFailure,
 } from "@/redux/slices/authSlice";
+import type { AuthUserRole } from "@/redux/slices/authSlice";
 import { cn } from "@/utils/cn";
 import { motion } from "framer-motion";
+import { getDefaultRouteForRole } from "@/types/roles";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -25,6 +27,45 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+type DemoAccount = {
+  id: string;
+  email: string;
+  password: string;
+  displayRole: string;
+  role: AuthUserRole;
+  firstName: string;
+  businessId?: string;
+  businessName?: string;
+};
+
+const demoAccounts: DemoAccount[] = [
+  {
+    id: "1",
+    email: "superadmin@example.com",
+    password: "password",
+    displayRole: "Super Admin",
+    role: "super-admin",
+    firstName: "Super Admin",
+  },
+  {
+    id: "2",
+    email: "host@example.com",
+    password: "password",
+    displayRole: "Host",
+    role: "host",
+    firstName: "Host",
+  },
+  {
+    id: "3",
+    email: "business@example.com",
+    password: "password",
+    displayRole: "Business",
+    role: "business",
+    firstName: "Business",
+    businessId: "business-demo-001",
+    businessName: "Demo Property Co.",
+  },
+];
 
 export default function Login() {
   const navigate = useNavigate();
@@ -44,32 +85,6 @@ export default function Login() {
       remember: false,
     },
   });
-  const user = [
-    {
-      id: "1",
-      email: "superadmin@example.com",
-      password: "password",
-      role: "Super Admin",
-    },
-    {
-      id: "2",
-      email: "employee1@example.com",
-      password: "password",
-      role: "Employee",
-    },
-    {
-      id: "3",
-      email: "employee2@example.com",
-      password: "password",
-      role: "Employee",
-    },
-    {
-      id: "4",
-      email: "admin@example.com",
-      password: "password",
-      role: "Admin",
-    }
-  ]
 
   const onSubmit = async (data: LoginFormData) => {
     dispatch(loginStart());
@@ -77,82 +92,38 @@ export default function Login() {
     try {
       await new Promise((resolve) => setTimeout(resolve, 800));
 
-      const foundUser = user.find(
+      const found = demoAccounts.find(
         (u) => u.email === data.email && u.password === data.password
       );
 
-      if (!foundUser) {
+      if (!found) {
         dispatch(loginFailure("Invalid email or password"));
         return;
       }
 
-      // Role mapping to match UserRole enum:
-      // "Super Admin" -> 'super-admin' (can access /dashboard)
-      // "Admin" -> 'admin' (goes to /cars)
-      // "Employee" -> 'employee' (goes to /cars)
-      let role: 'super-admin' | 'admin' | 'employee' = 'employee';
-      let firstName = "User";
-      
-      if (foundUser.role === "Super Admin") {
-        role = 'super-admin';
-        firstName = "Super Admin";
-      } else if (foundUser.role === "Admin") {
-        role = 'admin';
-        firstName = "Admin";
-      } else {
-        role = 'employee';
-        firstName = "Employee";
-      }
-
-      // 🔍 Console log for debugging
-      console.log('🔐 Login Debug Info:');
-      console.log('Found User Role:', foundUser.role);
-      console.log('Mapped Role:', role);
-      console.log('User Email:', foundUser.email);
-
       dispatch(
         loginSuccess({
           user: {
-            id: foundUser.id,
-            email: foundUser.email,
-            firstName: firstName,
+            id: found.id,
+            email: found.email,
+            firstName: found.firstName,
             lastName: "User",
-            role: role,
+            role: found.role,
+            businessId: found.businessId,
+            businessName: found.businessName,
           },
           token: "mock-jwt-token-" + Date.now(),
         })
       );
 
-      // 🔍 Console log after dispatch
-      console.log('✅ User dispatched with role:', role);
-      console.log('📍 Redirecting to:', role === 'super-admin' ? '/dashboard' : '/cars');
-
-      // Redirect logic:
-      // Super Admin -> /dashboard
-      // Admin and Employee -> /cars
-      console.log('🚀 About to navigate, role:', role)
-      
-      if (role === 'super-admin') {
-        console.log('📍 Navigating to /dashboard')
-        navigate("/dashboard", { replace: true });
-      } else if (role === 'admin') {
-        console.log('📍 Navigating to /cars')
-        navigate("/cars", { replace: true });
-      } else if (role === 'employee') {
-        console.log('📍 Navigating to /cars')
-        navigate("/cars", { replace: true });
-      }
-      
-      console.log('✅ Navigate called')
+      navigate(getDefaultRouteForRole(found.role), { replace: true });
     } catch {
       dispatch(loginFailure("An error occurred. Please try again."));
     }
   };
 
-
   return (
     <div className="space-y-6">
-      {/* Mobile Logo */}
       <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
         <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
           <span className="text-primary-foreground font-bold text-xl">D</span>
@@ -276,34 +247,21 @@ export default function Login() {
       </div>
 
       <div className="p-4 rounded-lg bg-muted/50 border text-sm space-y-3">
-        <div className="space-y-1">
-          <p className="font-semibold text-foreground">Super Admin Account:</p>
-          <p><strong>Email:</strong> superadmin@example.com</p>
-          <p><strong>Password:</strong> password</p>
-          {/* <p className="text-xs text-muted-foreground">→ Redirects to /dashboard</p> */}
-        </div>
-        {/* <Separator />
-        <div className="space-y-1">
-          <p className="font-semibold text-foreground">Admin Account:</p>
-          <p><strong>Email:</strong> admin@example.com</p>
-          <p><strong>Password:</strong> password</p>
-          <p className="text-xs text-muted-foreground">→ Redirects to /cars</p>
-        </div> */}
-        <Separator />
-        <div className="space-y-1">
-          <p className="font-semibold text-foreground">Employee Account 1:</p>
-          <p><strong>Email:</strong> employee1@example.com</p>
-          <p><strong>Password:</strong> password</p>
-          {/* <p className="text-xs text-muted-foreground">→ Redirects to /cars</p> */}
-        </div>
-        <Separator />
-        <div className="space-y-1">
-          <p className="font-semibold text-foreground">Employee Account 2:</p>
-          <p><strong>Email:</strong> employee2@example.com</p>
-          <p><strong>Password:</strong> password</p>
-          {/* <p className="text-xs text-muted-foreground">→ Redirects to /cars</p> */}
-        </div>
+        {demoAccounts.map((acc, index) => (
+          <div key={acc.id}>
+            <div className="space-y-1">
+              <p className="font-semibold text-foreground">{acc.displayRole}</p>
+              <p>
+                <strong>Email:</strong> {acc.email}
+              </p>
+              <p>
+                <strong>Password:</strong> {acc.password}
+              </p>
+            </div>
+            {index < demoAccounts.length - 1 && <Separator className="my-3" />}
+          </div>
+        ))}
       </div>
     </div>
-  );
+  )
 }

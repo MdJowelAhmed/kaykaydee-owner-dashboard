@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute'
-import { UserRole } from '@/types/roles'
+import { UserRole, getDefaultRouteForRole } from '@/types/roles'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { loadUserFromStorage } from '@/redux/slices/authSlice'
 
@@ -50,14 +50,9 @@ function RoleBasedRedirect() {
     return <Navigate to="/auth/login" replace />
   }
 
-  // Super Admin -> /dashboard, Admin/Employee -> /cars
-  if (user.role === 'super-admin') {
-    console.log('✅ Super Admin, redirecting to /dashboard')
-    return <Navigate to="/dashboard" replace />
-  } else {
-    console.log('✅ Admin/Employee, redirecting to /cars')
-    return <Navigate to="/cars" replace />
-  }
+  const home = getDefaultRouteForRole(user.role)
+  console.log('✅ Redirecting by role to:', home)
+  return <Navigate to={home} replace />
 }
 
 function App() {
@@ -135,7 +130,7 @@ function App() {
           <Route 
             path="booking-management" 
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <BookingManagement />
               </RoleBasedRoute>
             } 
@@ -144,7 +139,7 @@ function App() {
           <Route
             path="reviews-ratings"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <ReviewsRatings />
               </RoleBasedRoute>
             }
@@ -153,7 +148,7 @@ function App() {
           <Route
             path="app-slider"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <AppSlider />
               </RoleBasedRoute>
             }
@@ -162,7 +157,7 @@ function App() {
           <Route
             path="subscription"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <Subscription />
               </RoleBasedRoute>
             }
@@ -171,7 +166,7 @@ function App() {
           <Route
             path="notification"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <NotificationPage />
               </RoleBasedRoute>
             }
@@ -180,7 +175,7 @@ function App() {
           <Route
             path="support"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <Support />
               </RoleBasedRoute>
             }
@@ -189,7 +184,7 @@ function App() {
           <Route
             path="my-listing/new"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <CreateEditListingPage />
               </RoleBasedRoute>
             }
@@ -197,7 +192,7 @@ function App() {
           <Route
             path="my-listing/:id/edit"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <CreateEditListingPage />
               </RoleBasedRoute>
             }
@@ -205,7 +200,7 @@ function App() {
           <Route
             path="my-listing"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <MyListingPage />
               </RoleBasedRoute>
             }
@@ -216,7 +211,7 @@ function App() {
           <Route 
             path="calender" 
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
                 <Calender />
               </RoleBasedRoute>
             } 

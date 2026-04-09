@@ -22,7 +22,7 @@
 │                          App.tsx                                 │
 │  Routes: /auth/* | / (Protected) | * (404)                        │
 │  Layouts: AuthLayout | DashboardLayout (ProtectedRoute)           │
-│  Access model: super-admin, admin, marketing (ProtectedRoute)     │
+│  Access model: super-admin, host, business (ProtectedRoute)       │
 └─────────────────────────────────────────────────────────────────┘
                                     │
         ┌───────────────────────────┼───────────────────────────┐
@@ -40,7 +40,7 @@
 - **API:** RTK Query (`baseApi` + `injectEndpoints`) → auto caching, invalidation
 - **Local State:** Redux slices (createSlice) → `useAppDispatch`, `useAppSelector`
 - **Auth:** `authSlice` + localStorage (token, user) → `loadUserFromStorage` on mount
-- **Access model:** three roles (`super-admin`, `admin`, `marketing`) with `ProtectedRoute` + `RoleBasedRoute` per feature
+- **Access model:** three roles (`super-admin`, `host`, `business`) with `ProtectedRoute` + `RoleBasedRoute` per feature
 
 ## 2. Folder Structure
 
@@ -109,7 +109,7 @@ src/
 │   └── store.ts
 ├── types/
 │   ├── index.ts        # Domain types (User, Product, Car, etc.)
-│   └── roles.ts        # Legacy multi-role typing (avoid in new code)
+│   └── roles.ts        # Auth roles: `UserRole`, route permissions, default landing paths
 ├── utils/
 │   ├── constants.ts    # STATUS_COLORS, DEFAULT_PAGINATION, etc.
 │   ├── cn.ts           # clsx + tailwind-merge
@@ -130,14 +130,14 @@ src/
 
 - **Auth:** `/auth/login`, `/auth/forgot-password`, `/auth/verify-email`, `/auth/reset-password`
 - **Protected:** All routes under `/` require `ProtectedRoute`
-- **Access control:** `super-admin`, `admin`, `marketing` – see `src/types/roles.ts` for `FEATURE_ACCESS`
-- **Redirect:** Authenticated user → `/dashboard`
+- **Access control:** `super-admin`, `host`, `business` – see `src/types/roles.ts` (`UserRole`, `ROUTE_PERMISSIONS`, `getDefaultRouteForRole`)
+- **Redirect:** After login, `super-admin` → `/dashboard`, `host` → `/booking-management`, `business` → `/my-listing`
 
-### Role Rules (multi-role)
+### Role Rules (three roles)
 
-- **super-admin:** Full dashboard access
-- **admin:** Orders, Shop Management (Customise, Category, Products; NOT Shop), Subscribers, Revenue, Push Notification, Profile
-- **marketing:** Ad Management, Subscribers, Push Notification
+- **super-admin:** Dashboard, user management, transactions, legal/FAQ settings, full nav where allowed
+- **host:** Operational views (bookings, listings, calendar, reviews, app slider, subscription, notifications, support); sees all data in role-based helpers (with super-admin)
+- **business:** Same app areas as host; data scoped by `businessId` / `userId` in `useRoleBasedData` and related helpers
 
 ### Modal Rules
 
@@ -270,7 +270,7 @@ export function DataTable<T>({ columns, data, rowKeyExtractor }: DataTableProps<
 - **Follow existing naming exactly** – Match project conventions; don’t invent new patterns
 - **Prefer existing components before creating new ones** – Reuse `DataTable`, `ModalWrapper`, `FilterDropdown`, etc.
 - **Do not introduce new state libraries** – Use Redux Toolkit + RTK Query only
-- **Role-based access** – Use `FEATURE_ACCESS` in `src/types/roles.ts` and `RoleBasedRoute` for route-level guards; Sidebar filters nav items by role
+- **Role-based access** – Use `UserRole`, `ROUTE_PERMISSIONS`, and `getDefaultRouteForRole` in `src/types/roles.ts`; `RoleBasedRoute` for route guards; Sidebar filters nav by `allowedRoles`
 - **Flag architectural violations clearly** – If a change breaks conventions, call it out
 
 > Keeps AI output consistent and avoids random creativity.

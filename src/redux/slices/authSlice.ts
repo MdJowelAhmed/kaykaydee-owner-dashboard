@@ -1,14 +1,26 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+export type AuthUserRole = 'super-admin' | 'host' | 'business'
+
 interface User {
   id: string
   email: string
   firstName: string
   lastName: string
   avatar?: string
-  role: 'super-admin' | 'admin' | 'employee'  // 3 roles only
+  role: AuthUserRole
   businessId?: string
   businessName?: string
+}
+
+/** Maps legacy stored roles and API values to current AuthUserRole */
+export function normalizeAuthRole(role: string): AuthUserRole {
+  if (role === 'super-admin') return 'super-admin'
+  if (role === 'host') return 'host'
+  if (role === 'business') return 'business'
+  if (role === 'admin') return 'host'
+  if (role === 'employee') return 'business'
+  return 'business'
 }
 
 interface AuthState {
@@ -24,7 +36,8 @@ interface AuthState {
 function safeParseUser(userStr: string | null): User | null {
   if (!userStr) return null
   try {
-    return JSON.parse(userStr) as User
+    const raw = JSON.parse(userStr) as User
+    return { ...raw, role: normalizeAuthRole(raw.role) }
   } catch {
     return null
   }
@@ -51,11 +64,15 @@ const authSlice = createSlice({
     loginSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
       state.isLoading = false
       state.isAuthenticated = true
-      state.user = action.payload.user
+      const user = {
+        ...action.payload.user,
+        role: normalizeAuthRole(action.payload.user.role),
+      }
+      state.user = user
       state.token = action.payload.token
       state.error = null
       localStorage.setItem('token', action.payload.token)
-      localStorage.setItem('user', JSON.stringify(action.payload.user))
+      localStorage.setItem('user', JSON.stringify(user))
     },
     loginFailure: (state, action: PayloadAction<string>) => {
       state.isLoading = false

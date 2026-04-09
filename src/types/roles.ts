@@ -1,67 +1,69 @@
-// Role definitions - 3 roles only
+// Auth roles — exactly three
 export enum UserRole {
-  SUPER_ADMIN = 'super-admin',  // Can access /dashboard
-  ADMIN = 'admin',              // Goes to /cars
-  EMPLOYEE = 'employee',        // Goes to /cars
+  SUPER_ADMIN = 'super-admin',
+  HOST = 'host',
+  BUSINESS = 'business',
 }
 
-// Route permissions
+const ALL_APP_ROLES = [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]
+
 export interface RoutePermission {
-  path: string;
-  allowedRoles: UserRole[];
-  description?: string;
+  path: string
+  allowedRoles: UserRole[]
+  description?: string
 }
 
-// Define which routes each role can access
+/** Route → allowed roles (extend as you add routes) */
 export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
-  // Super Admin only routes
   '/dashboard': [UserRole.SUPER_ADMIN],
   '/users': [UserRole.SUPER_ADMIN],
   '/agency-management': [UserRole.SUPER_ADMIN],
-  '/settings/faq': [UserRole.SUPER_ADMIN],
   '/transactions-history': [UserRole.SUPER_ADMIN],
-  
-  // Shared routes (all can access)
-  '/cars': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  '/booking-management': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  '/my-listing': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  '/calender': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  '/clients': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  
-  // Settings - accessible to all
-  '/settings/profile': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-  '/settings/password': [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
-};
+  '/settings/faq': [UserRole.SUPER_ADMIN],
+  '/settings/terms': [UserRole.SUPER_ADMIN],
+  '/settings/privacy': [UserRole.SUPER_ADMIN],
+  '/cars': ALL_APP_ROLES,
+  '/booking-management': ALL_APP_ROLES,
+  '/my-listing': ALL_APP_ROLES,
+  '/calender': ALL_APP_ROLES,
+  '/clients': ALL_APP_ROLES,
+  '/reviews-ratings': ALL_APP_ROLES,
+  '/app-slider': ALL_APP_ROLES,
+  '/subscription': ALL_APP_ROLES,
+  '/notification': ALL_APP_ROLES,
+  '/support': ALL_APP_ROLES,
+  '/settings/profile': ALL_APP_ROLES,
+  '/settings/password': ALL_APP_ROLES,
+}
 
-// Helper function to check if user has access to a route
+export const getDefaultRouteForRole = (role: string): string => {
+  if (role === UserRole.SUPER_ADMIN) return '/dashboard'
+  if (role === UserRole.HOST) return '/booking-management'
+  if (role === UserRole.BUSINESS) return '/my-listing'
+  return '/booking-management'
+}
+
 export const hasRouteAccess = (userRole: string, routePath: string): boolean => {
-  // Check exact match first
   if (ROUTE_PERMISSIONS[routePath]) {
-    return ROUTE_PERMISSIONS[routePath].includes(userRole as UserRole);
+    return ROUTE_PERMISSIONS[routePath].includes(userRole as UserRole)
   }
-  
-  // Check for partial matches (e.g., /users/123 should match /users)
-  const matchingRoute = Object.keys(ROUTE_PERMISSIONS).find(route => 
-    routePath.startsWith(route)
-  );
-  
-  if (matchingRoute) {
-    return ROUTE_PERMISSIONS[matchingRoute].includes(userRole as UserRole);
-  }
-  
-  // Default: deny access if no permission defined
-  return false;
-};
 
-// Helper to check if route should show filtered data
+  const matchingRoute = Object.keys(ROUTE_PERMISSIONS).find((route) =>
+    routePath.startsWith(route)
+  )
+
+  if (matchingRoute) {
+    return ROUTE_PERMISSIONS[matchingRoute].includes(userRole as UserRole)
+  }
+
+  return false
+}
+
+/** Host + Business may see scoped data on these areas */
 export const shouldFilterData = (userRole: string, routePath: string): boolean => {
-  const sharedRoutes = [
-    '/cars',
-    '/booking-management',
-    '/calender',
-  ];
-  
-  // Admin and Employee see filtered data
-  return (userRole === UserRole.ADMIN || userRole === UserRole.EMPLOYEE) && 
-         sharedRoutes.some(route => routePath.startsWith(route));
-};
+  const sharedRoutes = ['/cars', '/booking-management', '/calender']
+  return (
+    userRole === UserRole.BUSINESS &&
+    sharedRoutes.some((route) => routePath.startsWith(route))
+  )
+}

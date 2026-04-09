@@ -1,80 +1,68 @@
-import { useMemo } from 'react';
-import { useAppSelector } from '@/redux/hooks';
-import { UserRole } from '@/types/roles';
+import { useMemo } from 'react'
+import { useAppSelector } from '@/redux/hooks'
+import { UserRole } from '@/types/roles'
 
 interface DataItem {
-  businessId?: string;
-  userId?: string;
-  [key: string]: string | number | undefined;
+  businessId?: string
+  userId?: string
+  [key: string]: string | number | undefined
 }
 
-/**
- * Hook to filter data based on user role
- * Admin sees all data, Business users see only their own data
- */
+/** Super Admin and Host see all rows; Business sees only its scope. */
 export const useRoleBasedData = <T extends DataItem>(data: T[]): T[] => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth)
 
   return useMemo(() => {
-    if (!user) return [];
+    if (!user) return []
 
-    // Admin sees everything
-    if (user.role === UserRole.ADMIN) {
-      return data;
+    if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.HOST) {
+      return data
     }
 
-    // Business users see only their data
-    if (user.role === UserRole.EMPLOYEE && user.businessId) {
+    if (user.role === UserRole.BUSINESS && user.businessId) {
       return data.filter(
-        (item) => 
-          item.businessId === user.businessId || 
-          item.userId === user.id
-      );
+        (item) =>
+          item.businessId === user.businessId || item.userId === user.id
+      )
     }
 
-    return [];
-  }, [data, user]);
-};
+    return []
+  }, [data, user])
+}
 
-/**
- * Hook to check if current user is admin
- */
+/** @deprecated Use useIsHost — kept for compatibility */
 export const useIsAdmin = (): boolean => {
-  const { user } = useAppSelector((state) => state.auth);
-  return user?.role === UserRole.ADMIN;
-};
+  const { user } = useAppSelector((state) => state.auth)
+  return user?.role === UserRole.HOST
+}
 
-/**
- * Hook to check if current user is business
- */
+export const useIsHost = (): boolean => {
+  const { user } = useAppSelector((state) => state.auth)
+  return user?.role === UserRole.HOST
+}
+
 export const useIsBusiness = (): boolean => {
-  const { user } = useAppSelector((state) => state.auth);
-  return user?.role === UserRole.EMPLOYEE;
-};
+  const { user } = useAppSelector((state) => state.auth)
+  return user?.role === UserRole.BUSINESS
+}
 
-/**
- * Hook to get current user's business ID
- */
 export const useBusinessId = (): string | undefined => {
-  const { user } = useAppSelector((state) => state.auth);
-  return user?.businessId;
-};
+  const { user } = useAppSelector((state) => state.auth)
+  return user?.businessId
+}
 
-/**
- * Hook to check if user can modify/delete an item
- */
 export const useCanModifyItem = (item: DataItem): boolean => {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth)
 
-  if (!user) return false;
+  if (!user) return false
 
-  // Admin can modify everything
-  if (user.role === UserRole.ADMIN) return true;
-
-  // Business users can only modify their own items
-  if (user.role === UserRole.EMPLOYEE) {
-    return item.businessId === user.businessId || item.userId === user.id;
+  if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.HOST) {
+    return true
   }
 
-  return false;
-};
+  if (user.role === UserRole.BUSINESS) {
+    return item.businessId === user.businessId || item.userId === user.id
+  }
+
+  return false
+}

@@ -24,6 +24,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toggleSidebar } from '@/redux/slices/uiSlice'
 import { cn } from '@/utils/cn'
 import { UserRole } from '@/types/roles'
+import { UserRoleIndicator } from '@/components/layout/UserRoleIndicator'
 
 interface NavItem {
   title: string
@@ -47,19 +48,19 @@ const navItems: NavItem[] = [
     title: 'Booking Management',
     href: '/booking-management',
     icon: ListOrdered,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE], // All can access
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'My Listing',
     href: '/my-listing',
     icon: LayoutGrid,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Calendar',
     href: '/calender',
     icon: Calendar,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE], // All can access
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Transactions History',
@@ -71,25 +72,25 @@ const navItems: NavItem[] = [
     title: 'Reviews & Ratings',
     href: '/reviews-ratings',
     icon: Star,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'App Slider',
     href: '/app-slider',
     icon: ImageIcon,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Subscription',
     href: '/subscription',
     icon: Crown,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Support',
     href: '/support',
     icon: LifeBuoy,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE],
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
 
 ]
@@ -99,13 +100,13 @@ const settingsItems: NavItem[] = [
     title: 'Profile',
     href: '/settings/profile',
     icon: User,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE], // All can access
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Password',
     href: '/settings/password',
     icon: Lock,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE], // All can access
+    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS],
   },
   {
     title: 'Terms',
@@ -123,7 +124,7 @@ const settingsItems: NavItem[] = [
     title: 'FAQ',
     href: '/settings/faq',
     icon: HelpCircle,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN], // Super Admin only
+    allowedRoles: [UserRole.SUPER_ADMIN],
   },
 ]
 
@@ -268,7 +269,10 @@ export function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t">
+        <div className="p-4 border-t space-y-3">
+          {!sidebarCollapsed && user && (
+            <UserRoleIndicator />
+          )}
           {!sidebarCollapsed && (
             <p className="text-xs text-muted-foreground text-center">
               © 2026 Motly v1.0
