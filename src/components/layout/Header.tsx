@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Menu, Bell, LogOut, User, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,6 +15,7 @@ import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toggleSidebar } from '@/redux/slices/uiSlice'
 import { logout } from '@/redux/slices/authSlice'
 import { getInitials } from '@/utils/formatters'
+import { NotificationPreviewDialog } from '@/components/layout/NotificationPreviewDialog'
 
 const routeTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -22,6 +24,7 @@ const routeTitles: Record<string, string> = {
   '/calender': 'Calendar',
   '/transactions-history': 'Transactions History',
   '/reviews-ratings': 'Reviews & Ratings',
+  '/notification': 'Notification',
   '/support': 'Support',
   '/client-management': 'Client Management',
   '/agency-management': 'Agency Management',
@@ -37,6 +40,7 @@ const routeTitles: Record<string, string> = {
 export function Header() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+  const [notificationOpen, setNotificationOpen] = useState(false)
   // const { theme } = useAppSelector((state) => state.ui)
   const { user } = useAppSelector((state) => state.auth)
   const location = useLocation()
@@ -97,22 +101,22 @@ export function Header() {
           </Button> */}
 
           {/* Notifications */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-8 w-8 text-accent" />
-                <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-80">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <div className="p-4 text-center text-sm text-muted-foreground">
-                <Bell className="h-10 w-10 mx-auto mb-2 opacity-50" />
-                <p>No new notifications</p>
-              </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative"
+              aria-label="Open notifications"
+              onClick={() => setNotificationOpen(true)}
+            >
+              <Bell className="h-8 w-8 text-accent" />
+              <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-destructive" />
+            </Button>
+            <NotificationPreviewDialog
+              open={notificationOpen}
+              onOpenChange={setNotificationOpen}
+            />
+          </>
 
           {/* User menu */}
           <DropdownMenu>

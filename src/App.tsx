@@ -29,6 +29,7 @@ import TransactionsHistory from './pages/transictions-history/TransactionsHistor
 import ReviewsRatings from './pages/ReviewsRatings/ReviewsRatings'
 import AppSlider from './pages/AppSlider/AppSlider'
 import Subscription from './pages/Subscription/Subscription'
+import NotificationPage from './pages/Notification/NotificationPage'
 import Support from './pages/Support/Support'
 import FAQ from './pages/FAQ/FAQ'
 import NotFound from './pages/NotFound/NotFound'
@@ -163,6 +164,15 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
                 <Subscription />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="notification"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.EMPLOYEE]}>
+                <NotificationPage />
               </RoleBasedRoute>
             }
           />
