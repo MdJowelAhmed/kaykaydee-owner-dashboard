@@ -33,6 +33,26 @@ export interface UserFilters {
   package: User['packagePlan'] | 'all'
 }
 
+// ==================== Clinic Types ====================
+export type ClinicStatus = 'active' | 'deactive'
+
+export interface Clinic {
+  id: string
+  name: string
+  contact: string
+  email: string
+  staff: number
+  patients: number
+  status: ClinicStatus
+  packagePlan: 'basic' | 'pro' | 'enterprise'
+}
+
+export interface ClinicFilters {
+  search: string
+  status: ClinicStatus | 'all'
+  package: Clinic['packagePlan'] | 'all'
+}
+
 // ==================== Product Types ====================
 export interface Product {
   id: string

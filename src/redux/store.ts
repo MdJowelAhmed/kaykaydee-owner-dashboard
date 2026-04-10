@@ -9,11 +9,13 @@ import calendarReducer from './slices/calendarSlice'
 import transactionReducer from './slices/transactionSlice'
 import faqReducer from './slices/faqSlice'
 import myListingReducer from './slices/myListingSlice'
+import clinicReducer from './slices/clinicSlice'
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     users: userReducer,
+    clinics: clinicReducer,
     products: productReducer,
     categories: categoryReducer,
     ui: uiReducer,

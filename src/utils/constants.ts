@@ -23,6 +23,12 @@ export const USER_PACKAGES: SelectOption[] = [
   { value: 'enterprise', label: 'Enterprise' },
 ]
 
+export const CLINIC_STATUSES: SelectOption[] = [
+  { value: 'all', label: 'All Status' },
+  { value: 'active', label: 'Active' },
+  { value: 'deactive', label: 'Deactive' },
+]
+
 export const PRODUCT_STATUSES: SelectOption[] = [
   { value: 'all', label: 'All Status' },
   { value: 'active', label: 'Active' },

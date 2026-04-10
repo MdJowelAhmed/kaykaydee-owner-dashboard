@@ -21,6 +21,7 @@ import {
   ListChecksIcon,
   LogOut,
   Users,
+  Building2,
 } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -53,6 +54,12 @@ const navItems: NavItem[] = [
     title: 'User Management',
     href: '/users',
     icon: Users,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Clinic Management',
+    href: '/clinic-management',
+    icon: Building2,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
 

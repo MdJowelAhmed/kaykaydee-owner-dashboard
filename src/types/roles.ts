@@ -17,6 +17,7 @@ export interface RoutePermission {
 export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   '/dashboard': ALL_APP_ROLES,
   '/users': [UserRole.SUPER_ADMIN],
+  '/clinic-management': [UserRole.SUPER_ADMIN],
   '/controller': [UserRole.SUPER_ADMIN],
   '/subscription-packages': [UserRole.SUPER_ADMIN],
   '/agency-management': [UserRole.SUPER_ADMIN],
