@@ -21,6 +21,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 const routeTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
   '/cars': 'Car List',
+  '/my-listing': 'My Listing',
   '/booking-management': 'Booking Management',
   '/calender': 'Calendar',
   '/transactions-history': 'Transactions History',
