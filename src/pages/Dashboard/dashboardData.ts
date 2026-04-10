@@ -8,6 +8,65 @@ export type ChartDataPoint = {
     orders: number
 }
 
+/** Dashboard overview: revenue trend + subscription volume per month */
+export type OverviewMonthRow = {
+    month: string
+    revenue: number
+    subscriptions: number
+}
+
+/** Horizontal “subscription plan” bars: label + scale end (5k–50k; bar runs from 50k at left to `endValue`). */
+export type PlanTierRow = {
+    label: string
+    endValue: number
+}
+
+/** Monthly revenue (USD) for line chart — values roughly 5k–50k band */
+export const overviewRevenueTrend2026: readonly number[] = [
+    8500, 14000, 11800, 22000, 19500, 26500, 31000, 28500, 36000, 41000, 38500, 44500,
+]
+
+export const overviewSubscriptionCounts2026: readonly number[] = [
+    95, 180, 220, 160, 280, 320, 240, 400, 360, 210, 190, 350,
+]
+
+/** Horizontal subscription chart — labels fixed above bars; lengths vs 50k–5k scale per design. */
+export const overviewSubscriptionPlans: PlanTierRow[] = [
+    { label: 'Basic ($4900/years)', endValue: 35000 },
+    { label: 'Standart ($6200/years)', endValue: 25000 },
+    { label: 'Standart ($5800/years)', endValue: 28000 },
+]
+
+const overviewRevenueTrendByYear: Record<string, readonly number[]> = {
+    '2026': overviewRevenueTrend2026,
+    '2025': [7200, 11000, 9800, 18500, 16800, 22000, 26500, 24000, 30500, 35000, 32000, 38000],
+    '2024': [6000, 9200, 8000, 15000, 14000, 19000, 22000, 20000, 26000, 29000, 27000, 32000],
+    '2023': [5000, 7800, 6500, 12000, 11500, 15500, 18000, 16500, 21000, 24000, 22000, 26000],
+}
+
+const overviewSubscriptionCountsByYear: Record<string, readonly number[]> = {
+    '2026': overviewSubscriptionCounts2026,
+    '2025': [85, 165, 200, 145, 250, 290, 220, 370, 330, 195, 175, 320],
+    '2024': [75, 150, 180, 130, 220, 260, 200, 340, 300, 180, 160, 290],
+    '2023': [65, 130, 155, 115, 190, 230, 175, 300, 270, 165, 145, 260],
+}
+
+function buildOverviewRows(year: string): OverviewMonthRow[] {
+    const rev = overviewRevenueTrendByYear[year] ?? overviewRevenueTrendByYear['2026']
+    const sub = overviewSubscriptionCountsByYear[year] ?? overviewSubscriptionCountsByYear['2026']
+    return MONTHS.map((month, i) => ({
+        month,
+        revenue: rev[i] ?? 0,
+        subscriptions: sub[i] ?? 0,
+    }))
+}
+
+export const overviewByYear: Record<string, OverviewMonthRow[]> = Object.fromEntries(
+    Object.keys(overviewRevenueTrendByYear).map((y) => [y, buildOverviewRows(y)])
+) as Record<string, OverviewMonthRow[]>
+
+export const overviewYears = Object.keys(overviewRevenueTrendByYear).sort((a, b) => Number(b) - Number(a))
+
 export const PRESENT_YEAR = String(new Date().getFullYear())
 
 export const salesRevenuePresentYear: readonly number[] = [
