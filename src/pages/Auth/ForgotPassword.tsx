@@ -57,11 +57,9 @@ export default function ForgotPassword() {
   return (
     <div className="space-y-6">
       {/* Mobile Logo */}
-      <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-        <div className="h-10 w-10 rounded-xl bg-primary flex items-center justify-center">
-          <span className="text-primary-foreground font-bold text-xl">D</span>
-        </div>
-        <span className="font-display font-bold text-2xl">Dashboard</span>
+      <div className=" flex flex-col items-center justify-center gap-3 mb-8">
+        <img src="/assets/logo.png" alt="logo" className="w-20 h-20" />
+        <img src="/assets/logo3.png" alt="logo" className="w-20 h-8" />
       </div>
 
       <AnimatePresence mode="wait">
