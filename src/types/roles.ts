@@ -20,6 +20,7 @@ export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   '/clinic-management': [UserRole.SUPER_ADMIN],
   '/controller': [UserRole.SUPER_ADMIN],
   '/subscription-packages': [UserRole.SUPER_ADMIN],
+  '/subscription-invoice': [UserRole.SUPER_ADMIN],
   '/agency-management': [UserRole.SUPER_ADMIN],
   '/transactions-history': [UserRole.SUPER_ADMIN],
   '/settings/faq': [UserRole.SUPER_ADMIN],

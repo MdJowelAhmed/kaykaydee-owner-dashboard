@@ -18,6 +18,7 @@ import {
   Crown,
   Gamepad2,
   Package,
+  Receipt,
   ListChecksIcon,
   LogOut,
   Users,
@@ -111,6 +112,12 @@ const navItems: NavItem[] = [
     title: 'Subscription Package',
     href: '/subscription-packages',
     icon: Package,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Subscription Invoice',
+    href: '/subscription-invoice',
+    icon: Receipt,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {

@@ -34,6 +34,7 @@ import Subscription from './pages/Subscription/Subscription'
 import NotificationPage from './pages/Notification/NotificationPage'
 import ControllerPage from './pages/Controller/ControllerPage'
 import SubscriptionPackagePage from './pages/SubscriptionPackage/SubscriptionPackagePage'
+import SubscriptionInvoicePage from './pages/SubscriptionInvoice/SubscriptionInvoicePage'
 import Support from './pages/Support/Support'
 import FAQ from './pages/FAQ/FAQ'
 import NotFound from './pages/NotFound/NotFound'
@@ -155,6 +156,15 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
                 <SubscriptionPackagePage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="subscription-invoice"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <SubscriptionInvoicePage />
               </RoleBasedRoute>
             }
           />
