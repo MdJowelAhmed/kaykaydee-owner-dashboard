@@ -21,6 +21,10 @@ export interface User {
   packagePlan?: 'basic' | 'pro' | 'enterprise'
   /** Tab: monthly subscribers vs clinic members. */
   membershipType?: 'subscription' | 'member'
+  /** ISO timestamp of last login (mock / API). */
+  lastLoginAt?: string
+  /** Human-readable access scopes for detail views. */
+  permissions?: string[]
 }
 
 export type UserRole = 'admin' | 'user' | 'moderator' | 'editor'

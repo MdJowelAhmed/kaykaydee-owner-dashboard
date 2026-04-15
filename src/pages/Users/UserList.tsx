@@ -1,5 +1,4 @@
-import { useMemo, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useMemo, useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -12,15 +11,14 @@ import {
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
 import { UserManagementTable } from './components/UserManagementTable'
+import { UserDetailsModal } from './components/UserDetailsModal'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setFilters, setPage, setLimit } from '@/redux/slices/userSlice'
 import { useUrlParams } from '@/hooks/useUrlState'
-import { USER_STATUSES, USER_PACKAGES } from '@/utils/constants'
+import { USER_STATUSES } from '@/utils/constants'
 import type { User } from '@/types'
-import { cn } from '@/utils/cn'
 
 export default function UserList() {
-  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { filteredList, pagination } = useAppSelector((state) => state.users)
 
@@ -28,10 +26,11 @@ export default function UserList() {
 
   const search = getParam('search', '')
   const status = getParam('status', 'all')
-  const packageFilter = getParam('package', 'all')
-  const tab = getParam('tab', 'subscription')
   const page = getNumberParam('page', 1)
-  const limit = getNumberParam('limit', 10)
+  const limit = getNumberParam('limit', 15)
+
+  const [detailsUser, setDetailsUser] = useState<User | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
   useEffect(() => {
     dispatch(
@@ -39,10 +38,10 @@ export default function UserList() {
         search,
         status: status as User['status'] | 'all',
         role: 'all',
-        package: (packageFilter === 'all' ? 'all' : packageFilter) as User['packagePlan'] | 'all',
+        package: 'all',
       })
     )
-  }, [search, status, packageFilter, dispatch])
+  }, [search, status, dispatch])
 
   useEffect(() => {
     dispatch(setPage(page))
@@ -52,19 +51,12 @@ export default function UserList() {
     dispatch(setLimit(limit))
   }, [limit, dispatch])
 
-  const listForTab = useMemo(() => {
-    if (tab === 'members') {
-      return filteredList.filter((u) => u.membershipType === 'member')
-    }
-    return filteredList.filter((u) => u.membershipType === 'subscription')
-  }, [filteredList, tab])
-
-  const totalPages = Math.max(1, Math.ceil(listForTab.length / pagination.limit))
+  const totalPages = Math.max(1, Math.ceil(filteredList.length / pagination.limit))
 
   const paginatedData = useMemo(() => {
     const startIndex = (pagination.page - 1) * pagination.limit
-    return listForTab.slice(startIndex, startIndex + pagination.limit)
-  }, [listForTab, pagination.page, pagination.limit])
+    return filteredList.slice(startIndex, startIndex + pagination.limit)
+  }, [filteredList, pagination.page, pagination.limit])
 
   const handleSearch = (value: string) => {
     setParams({ search: value, page: 1 })
@@ -72,14 +64,6 @@ export default function UserList() {
 
   const handleStatusFilter = (value: string) => {
     setParams({ status: value, page: 1 })
-  }
-
-  const handlePackageFilter = (value: string) => {
-    setParams({ package: value, page: 1 })
-  }
-
-  const handleTabChange = (next: 'subscription' | 'members') => {
-    setParams({ tab: next, page: 1 })
   }
 
   const handlePageChange = (newPage: number) => {
@@ -90,74 +74,34 @@ export default function UserList() {
     setParams({ limit: newLimit, page: 1 })
   }
 
-  const handleView = (user: User) => {
-    navigate(`/users/${user.id}`)
-  }
+  const handleOpenDetails = useCallback((user: User) => {
+    setDetailsUser(user)
+    setDetailsOpen(true)
+  }, [])
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col gap-8"
+      className="flex flex-col gap-6"
     >
-      {/* Toolbar: separate block above the table */}
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
         <CardContent className="p-5 sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <h1 className="text-xl font-bold text-slate-800 shrink-0">
-                User Management
-              </h1>
-              <div className="inline-flex items-center gap-1 rounded-md bg-slate-100 p-1 w-fit">
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('subscription')}
-                  className={cn(
-                    'rounded-sm px-3 py-1.5 text-sm font-medium transition-colors',
-                    tab === 'subscription'
-                      ? 'bg-white text-slate-800 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-800'
-                  )}
-                >
-                  Monthly Subscription
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('members')}
-                  className={cn(
-                    'rounded-sm px-3 py-1.5 text-sm font-medium transition-colors',
-                    tab === 'members'
-                      ? 'bg-white text-slate-800 shadow-sm'
-                      : 'text-slate-600 hover:text-slate-800'
-                  )}
-                >
-                  Clinic Members
-                </button>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            <h1 className="text-xl font-bold text-slate-800 shrink-0 lg:min-w-[200px]">
+              User Management
+            </h1>
+            <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
               <SearchInput
                 value={search}
                 onChange={handleSearch}
                 placeholder="Search here"
-                className="w-full sm:w-[280px]"
+                className="w-full min-w-0 flex-1"
+                inputClassName="h-11 rounded-xl border-slate-200 bg-white shadow-sm"
               />
-              <Select value={packageFilter} onValueChange={handlePackageFilter}>
-                <SelectTrigger className="w-full sm:w-48 bg-secondary hover:bg-secondary text-white border-secondary">
-                  <SelectValue placeholder="Package" />
-                </SelectTrigger>
-                <SelectContent>
-                  {USER_PACKAGES.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
               <Select value={status} onValueChange={handleStatusFilter}>
-                <SelectTrigger className="w-full sm:w-48 bg-secondary hover:bg-secondary text-white border-secondary">
+                <SelectTrigger className="h-11 w-full shrink-0 rounded-xl border-slate-200 bg-white shadow-sm sm:w-[160px]">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -173,23 +117,33 @@ export default function UserList() {
         </CardContent>
       </Card>
 
-      {/* Table + pagination */}
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
         <CardContent className="p-0">
-          <UserManagementTable users={paginatedData} onView={handleView} />
+          <UserManagementTable users={paginatedData} onOpenDetails={handleOpenDetails} />
 
-          <div className="px-6 py-4 border-t border-gray-100">
+          <div className="border-t border-slate-100 px-4 sm:px-6">
             <Pagination
+              variant="minimal"
               currentPage={Math.min(pagination.page, totalPages)}
               totalPages={totalPages}
-              totalItems={listForTab.length}
+              totalItems={filteredList.length}
               itemsPerPage={pagination.limit}
               onPageChange={handlePageChange}
               onItemsPerPageChange={handleItemsPerPageChange}
+              showItemsPerPage={false}
             />
           </div>
         </CardContent>
       </Card>
+
+      <UserDetailsModal
+        user={detailsUser}
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          setDetailsOpen(open)
+          if (!open) setDetailsUser(null)
+        }}
+      />
     </motion.div>
   )
 }

@@ -8,11 +8,19 @@ const FIRST = ['James', 'Sarah', 'Michael', 'Emma', 'David', 'Priya', 'James', '
 const LAST = ['Nguyen', 'Patel', 'Khan', 'Lee', 'Brown', 'Sharma', 'Wilson', 'Garcia', 'Miller', 'Chen']
 const ROLES: User['role'][] = ['admin', 'user', 'moderator', 'editor']
 const PACKAGES: NonNullable<User['packagePlan']>[] = ['basic', 'pro', 'enterprise']
+const PERMISSION_SETS = [
+  ['Patients: read/write', 'Appointments', 'Billing: view'],
+  ['Patients: read', 'Reports', 'Settings: limited'],
+  ['Full clinical records', 'Prescriptions', 'Staff management'],
+  ['Dashboard', 'Patients: read', 'Inventory'],
+]
 
 function buildMockUsers(): User[] {
   const users: User[] = []
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 150; i++) {
     const id = String(1_458_100 + i)
+    const created = new Date(2024, i % 12, (i % 28) + 1)
+    const lastLogin = new Date(created.getTime() + (i % 20) * 86400000 + 3600000 * (i % 12))
     users.push({
       id,
       firstName: FIRST[i % FIRST.length],
@@ -26,10 +34,13 @@ function buildMockUsers(): User[] {
       status: i % 9 === 0 ? 'pending' : i % 11 === 0 ? 'inactive' : 'active',
       packagePlan: PACKAGES[i % PACKAGES.length],
       membershipType: i % 2 === 0 ? 'subscription' : 'member',
-      createdAt: new Date(2024, i % 12, (i % 28) + 1).toISOString(),
+      createdAt: created.toISOString(),
       updatedAt: new Date().toISOString(),
+      address: `${100 + (i % 80)} George Street`,
       city: 'Sydney',
       country: 'Australia',
+      lastLoginAt: lastLogin.toISOString(),
+      permissions: PERMISSION_SETS[i % PERMISSION_SETS.length],
     })
   }
   return users

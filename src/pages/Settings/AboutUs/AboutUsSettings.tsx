@@ -214,13 +214,13 @@ export default function AboutUsSettings() {
             onChange={setSearch}
             placeholder="Search here"
             className="w-full sm:w-[min(100%,280px)] sm:ml-auto"
-            inputClassName="h-10 rounded-lg border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] shadow-sm"
+            inputClassName=" rounded-lg border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] shadow-sm"
           />
           <Select
             value={dateFilter}
             onValueChange={(v) => setDateFilter(v as DateFilter)}
           >
-            <SelectTrigger className="h-10 w-full rounded-lg border-[#E5E7EB] bg-white text-[#374151] shadow-sm sm:w-[140px]">
+            <SelectTrigger className=" w-full rounded-lg border-[#E5E7EB] bg-white text-[#374151] shadow-sm sm:w-[140px]">
               <SelectValue placeholder="Date" />
             </SelectTrigger>
             <SelectContent>
@@ -234,7 +234,7 @@ export default function AboutUsSettings() {
             <Button
               type="button"
               onClick={openAdd}
-              className="h-10 rounded-lg bg-[#1E293B] px-4 font-medium text-white shadow-sm hover:bg-[#334155]"
+              className="rounded-md  px-4 font-medium text-white "
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Template
