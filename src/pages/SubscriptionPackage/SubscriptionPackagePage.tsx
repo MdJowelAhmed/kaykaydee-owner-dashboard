@@ -77,7 +77,7 @@ export default function SubscriptionPackagePage() {
             Subscription Package
           </h1>
           <p className="mt-1 text-sm text-muted-foreground md:text-base">
-            Create and manage subscription plans shown to hosts and businesses
+            Create and manage subscription plans shown to admins and businesses
           </p>
         </div>
         <Button

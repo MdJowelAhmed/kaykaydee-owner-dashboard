@@ -1,7 +1,12 @@
 import { ReactNode } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAppSelector } from '@/redux/hooks'
-import { UserRole, hasRouteAccess, getDefaultRouteForRole } from '@/types/roles'
+import {
+  UserRole,
+  hasRouteAccess,
+  getDefaultRouteForRole,
+  normalizeRoleKey,
+} from '@/types/roles'
 
 interface RoleBasedRouteProps {
   children: ReactNode
@@ -20,7 +25,8 @@ export const RoleBasedRoute = ({
     return <Navigate to="/auth/login" state={{ from: location }} replace />
   }
 
-  const hasAccess = allowedRoles.includes(user.role as UserRole)
+  const role = normalizeRoleKey(user.role) as UserRole
+  const hasAccess = allowedRoles.includes(role)
 
   if (!hasAccess) {
     return <Navigate to={getDefaultRouteForRole(user.role)} replace />

@@ -22,7 +22,7 @@
 │                          App.tsx                                 │
 │  Routes: /auth/* | / (Protected) | * (404)                        │
 │  Layouts: AuthLayout | DashboardLayout (ProtectedRoute)           │
-│  Access model: super-admin, host, business (ProtectedRoute)       │
+│  Access model: super-admin + admin (`UserRole.ADMIN`) only         │
 └─────────────────────────────────────────────────────────────────┘
                                     │
         ┌───────────────────────────┼───────────────────────────┐
@@ -40,7 +40,7 @@
 - **API:** RTK Query (`baseApi` + `injectEndpoints`) → auto caching, invalidation
 - **Local State:** Redux slices (createSlice) → `useAppDispatch`, `useAppSelector`
 - **Auth:** `authSlice` + localStorage (token, user) → `loadUserFromStorage` on mount
-- **Access model:** three roles (`super-admin`, `host`, `business`) with `ProtectedRoute` + `RoleBasedRoute` per feature
+- **Access model:** dashboard shell for `super-admin` and `admin`; legacy API value `host` is normalized to `admin` in `authSlice`. `business` is rejected at login and by `DashboardAccessGuard`.
 
 ## 2. Folder Structure
 
@@ -132,14 +132,14 @@ src/
 
 - **Auth:** `/auth/login`, `/auth/forgot-password`, `/auth/verify-email`, `/auth/reset-password`
 - **Protected:** All routes under `/` require `ProtectedRoute`
-- **Access control:** `super-admin`, `host`, `business` – see `src/types/roles.ts` (`UserRole`, `ROUTE_PERMISSIONS`, `getDefaultRouteForRole`)
-- **Redirect:** After login, `super-admin` → `/dashboard`, `host` → `/booking-management`, `business` → `/my-listing`
+- **Access control:** Auth enum `super-admin`, `admin`, `business` — only the first two may use this dashboard; see `src/types/roles.ts` (`UserRole`, `ROUTE_PERMISSIONS`, `normalizeRoleKey`, `getDefaultRouteForRole`)
+- **Redirect:** After login, allowed roles → `/dashboard`; others → `/auth/login`
 
-### Role Rules (three roles)
+### Role Rules (auth enum)
 
-- **super-admin:** Dashboard, user management, transactions, legal/FAQ settings, full nav where allowed
-- **host:** Operational views (bookings, listings, calendar, reviews, app slider, subscription, notifications, support); sees all data in role-based helpers (with super-admin)
-- **business:** Same app areas as host; data scoped by `businessId` / `userId` in `useRoleBasedData` and related helpers
+- **super-admin:** Full dashboard; super-admin-only nav items (users, clinics, subscriptions admin, FAQ, etc.)
+- **admin (`UserRole.ADMIN`, string `admin`):** Shared dashboard areas with super-admin where `allowedRoles` includes both; no separate “host” product role in code
+- **business:** Not permitted on this dashboard (blocked at login / guard). Legacy `host` from API/storage maps to `admin` via `normalizeAuthRole`
 
 ### Modal Rules
 

@@ -5,8 +5,9 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import AuthLayout from '@/components/layout/AuthLayout'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
+import { DashboardAccessGuard } from '@/components/auth/DashboardAccessGuard'
 import { RoleBasedRoute } from '@/components/auth/RoleBasedRoute'
-import { UserRole, getDefaultRouteForRole } from '@/types/roles'
+import { UserRole, getDefaultRouteForRole, DASHBOARD_ALLOWED_ROLES } from '@/types/roles'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { loadUserFromStorage } from '@/redux/slices/authSlice'
 
@@ -41,18 +42,11 @@ import NotFound from './pages/NotFound/NotFound'
 function RoleBasedRedirect() {
   const { user } = useAppSelector((state) => state.auth)
   
-  // 🔍 Console log for debugging
-  console.log('🔄 RoleBasedRedirect Debug:')
-  console.log('User:', user)
-  console.log('User Role:', user?.role)
-  
   if (!user) {
-    console.log('❌ No user, redirecting to /auth/login')
     return <Navigate to="/auth/login" replace />
   }
 
   const home = getDefaultRouteForRole(user.role)
-  console.log('✅ Redirecting by role to:', home)
   return <Navigate to={home} replace />
 }
 
@@ -81,19 +75,19 @@ function App() {
           path="/"
           element={
             <ProtectedRoute>
-              <DashboardLayout />
+              <DashboardAccessGuard>
+                <DashboardLayout />
+              </DashboardAccessGuard>
             </ProtectedRoute>
           }
         >
           <Route index element={<RoleBasedRedirect />} />
           
-          {/* Dashboard — all authenticated app roles */}
+          {/* Dashboard — Super Admin + Admin only */}
           <Route
             path="dashboard"
             element={
-              <RoleBasedRoute
-                allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}
-              >
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <Dashboard />
               </RoleBasedRoute>
             }
@@ -178,9 +172,7 @@ function App() {
           <Route
             path="zealth-ai"
             element={
-              <RoleBasedRoute
-                allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}
-              >
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <ZealthAIPage />
               </RoleBasedRoute>
             }
@@ -195,7 +187,7 @@ function App() {
           <Route
             path="subscription"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <Subscription />
               </RoleBasedRoute>
             }
@@ -204,7 +196,7 @@ function App() {
           <Route
             path="notification"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <NotificationPage />
               </RoleBasedRoute>
             }
@@ -213,7 +205,7 @@ function App() {
           <Route
             path="support"
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <Support />
               </RoleBasedRoute>
             }
@@ -222,11 +214,11 @@ function App() {
           
      
           
-          {/* Calendar - All roles can access */}
+          {/* Calendar — Super Admin + Admin */}
           <Route 
             path="calender" 
             element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]}>
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <Calender />
               </RoleBasedRoute>
             } 
@@ -235,15 +227,57 @@ function App() {
           
           
           {/* Category Management */}
-          <Route path="categories" element={<CategoryList />} />
+          <Route
+            path="categories"
+            element={
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                <CategoryList />
+              </RoleBasedRoute>
+            }
+          />
           
           {/* Settings */}
           <Route path="settings">
-            <Route path="profile" element={<ProfileSettings />} />
-            <Route path="password" element={<ChangePassword />} />
-            <Route path="terms" element={<TermsSettings />} />
-            <Route path="privacy" element={<PrivacySettings />} />
-            <Route path="about-us" element={<AboutUsSettings />} />
+            <Route
+              path="profile"
+              element={
+                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                  <ProfileSettings />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="password"
+              element={
+                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                  <ChangePassword />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="terms"
+              element={
+                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                  <TermsSettings />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="privacy"
+              element={
+                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                  <PrivacySettings />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="about-us"
+              element={
+                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                  <AboutUsSettings />
+                </RoleBasedRoute>
+              }
+            />
             <Route 
               path="faq" 
               element={

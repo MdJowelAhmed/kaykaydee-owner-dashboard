@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useAppSelector } from '@/redux/hooks'
-import { UserRole } from '@/types/roles'
+import { UserRole, canAccessDashboard } from '@/types/roles'
 
 interface DataItem {
   businessId?: string
@@ -8,14 +8,14 @@ interface DataItem {
   [key: string]: string | number | undefined
 }
 
-/** Super Admin and Host see all rows; Business sees only its scope. */
+/** Super Admin and Admin see all rows; Business sees only its scope. */
 export const useRoleBasedData = <T extends DataItem>(data: T[]): T[] => {
   const { user } = useAppSelector((state) => state.auth)
 
   return useMemo(() => {
     if (!user) return []
 
-    if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.HOST) {
+    if (canAccessDashboard(user.role)) {
       return data
     }
 
@@ -30,15 +30,16 @@ export const useRoleBasedData = <T extends DataItem>(data: T[]): T[] => {
   }, [data, user])
 }
 
-/** @deprecated Use useIsHost — kept for compatibility */
+/** True when the logged-in user is Admin (non–super-admin). */
 export const useIsAdmin = (): boolean => {
   const { user } = useAppSelector((state) => state.auth)
-  return user?.role === UserRole.HOST
+  return user?.role === UserRole.ADMIN
 }
 
+/** @deprecated Use `useIsAdmin` (legacy name for the admin role). */
 export const useIsHost = (): boolean => {
   const { user } = useAppSelector((state) => state.auth)
-  return user?.role === UserRole.HOST
+  return user?.role === UserRole.ADMIN
 }
 
 export const useIsBusiness = (): boolean => {
@@ -56,7 +57,7 @@ export const useCanModifyItem = (item: DataItem): boolean => {
 
   if (!user) return false
 
-  if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.HOST) {
+  if (canAccessDashboard(user.role)) {
     return true
   }
 

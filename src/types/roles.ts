@@ -1,11 +1,31 @@
-// Auth roles — exactly three
+// Auth roles — exactly three (dashboard: super-admin + admin only)
 export enum UserRole {
   SUPER_ADMIN = 'super-admin',
-  HOST = 'host',
+  ADMIN = 'admin',
   BUSINESS = 'business',
 }
 
-const ALL_APP_ROLES = [UserRole.SUPER_ADMIN, UserRole.HOST, UserRole.BUSINESS]
+/** Legacy API/storage value; normalized to `UserRole.ADMIN` in `normalizeAuthRole`. */
+export const LEGACY_ADMIN_ROLE_KEY = 'host' as const
+
+/** Super Admin + Admin (non–super-admin operators). */
+export const DASHBOARD_ALLOWED_ROLES: readonly UserRole[] = [
+  UserRole.SUPER_ADMIN,
+  UserRole.ADMIN,
+]
+
+/** Map legacy `host` to admin for permission checks and persisted sessions. */
+export function normalizeRoleKey(role: string): string {
+  if (role === LEGACY_ADMIN_ROLE_KEY) return UserRole.ADMIN
+  return role
+}
+
+export function canAccessDashboard(role: string): boolean {
+  const key = normalizeRoleKey(role)
+  return DASHBOARD_ALLOWED_ROLES.includes(key as UserRole)
+}
+
+const ALL_DASHBOARD_ROLES = [UserRole.SUPER_ADMIN, UserRole.ADMIN]
 
 export interface RoutePermission {
   path: string
@@ -15,7 +35,7 @@ export interface RoutePermission {
 
 /** Route → allowed roles (extend as you add routes) */
 export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
-  '/dashboard': ALL_APP_ROLES,
+  '/dashboard': ALL_DASHBOARD_ROLES,
   '/users': [UserRole.SUPER_ADMIN],
   '/clinic-management': [UserRole.SUPER_ADMIN],
   '/controller': [UserRole.SUPER_ADMIN],
@@ -26,34 +46,34 @@ export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   '/agency-management': [UserRole.SUPER_ADMIN],
   '/transactions-history': [UserRole.SUPER_ADMIN],
   '/settings/faq': [UserRole.SUPER_ADMIN],
-  '/settings/terms': ALL_APP_ROLES,
-  '/settings/privacy': ALL_APP_ROLES,
-  '/settings/about-us': ALL_APP_ROLES,
-  '/cars': ALL_APP_ROLES,
-  '/booking-management': ALL_APP_ROLES,
-  '/my-listing': ALL_APP_ROLES,
-  '/calender': ALL_APP_ROLES,
-  '/clients': ALL_APP_ROLES,
-  '/reviews-ratings': ALL_APP_ROLES,
-  '/app-slider': ALL_APP_ROLES,
-  '/subscription': ALL_APP_ROLES,
-  '/notification': ALL_APP_ROLES,
-  '/support': ALL_APP_ROLES,
-  '/zealth-ai': ALL_APP_ROLES,
-  '/settings/profile': ALL_APP_ROLES,
-  '/settings/password': ALL_APP_ROLES,
+  '/settings/terms': ALL_DASHBOARD_ROLES,
+  '/settings/privacy': ALL_DASHBOARD_ROLES,
+  '/settings/about-us': ALL_DASHBOARD_ROLES,
+  '/cars': ALL_DASHBOARD_ROLES,
+  '/booking-management': ALL_DASHBOARD_ROLES,
+  '/my-listing': ALL_DASHBOARD_ROLES,
+  '/calender': ALL_DASHBOARD_ROLES,
+  '/clients': ALL_DASHBOARD_ROLES,
+  '/reviews-ratings': ALL_DASHBOARD_ROLES,
+  '/app-slider': ALL_DASHBOARD_ROLES,
+  '/subscription': ALL_DASHBOARD_ROLES,
+  '/notification': ALL_DASHBOARD_ROLES,
+  '/support': ALL_DASHBOARD_ROLES,
+  '/zealth-ai': ALL_DASHBOARD_ROLES,
+  '/settings/profile': ALL_DASHBOARD_ROLES,
+  '/settings/password': ALL_DASHBOARD_ROLES,
+  '/categories': ALL_DASHBOARD_ROLES,
 }
 
 export const getDefaultRouteForRole = (role: string): string => {
-  if (role === UserRole.SUPER_ADMIN) return '/dashboard'
-  if (role === UserRole.HOST) return '/booking-management'
-  if (role === UserRole.BUSINESS) return '/my-listing'
-  return '/booking-management'
+  if (canAccessDashboard(role)) return '/dashboard'
+  return '/auth/login'
 }
 
 export const hasRouteAccess = (userRole: string, routePath: string): boolean => {
+  const role = normalizeRoleKey(userRole) as UserRole
   if (ROUTE_PERMISSIONS[routePath]) {
-    return ROUTE_PERMISSIONS[routePath].includes(userRole as UserRole)
+    return ROUTE_PERMISSIONS[routePath].includes(role)
   }
 
   const matchingRoute = Object.keys(ROUTE_PERMISSIONS).find((route) =>
@@ -61,13 +81,13 @@ export const hasRouteAccess = (userRole: string, routePath: string): boolean => 
   )
 
   if (matchingRoute) {
-    return ROUTE_PERMISSIONS[matchingRoute].includes(userRole as UserRole)
+    return ROUTE_PERMISSIONS[matchingRoute].includes(role)
   }
 
   return false
 }
 
-/** Host + Business may see scoped data on these areas */
+/** Business may see scoped data on these areas */
 export const shouldFilterData = (userRole: string, routePath: string): boolean => {
   const sharedRoutes = ['/cars', '/booking-management', '/calender']
   return (

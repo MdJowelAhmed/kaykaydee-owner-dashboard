@@ -9,12 +9,11 @@ import { FAQTable } from './components/FAQTable'
 import { AddEditFAQModal } from './components/AddEditFAQModal'
 // import { ViewFAQModal } from './components/ViewFAQModal'
 import { DeleteFAQModal } from './components/DeleteFAQModal'
-import { FAQFilterDropdown } from './components/FAQFilterDropdown'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setFilters, setPage, setLimit, deleteFAQ } from '@/redux/slices/faqSlice'
 import { useUrlString, useUrlNumber } from '@/hooks/useUrlState'
 import { toast } from '@/utils/toast'
-import type { FAQ, FAQPosition } from '@/types'
+import type { FAQ } from '@/types'
 
 const FAQ = () => {
   const dispatch = useAppDispatch()
@@ -27,7 +26,6 @@ const FAQ = () => {
 
   // URL state management
   const [searchQuery, setSearchQuery] = useUrlString('search', '')
-  const [positionFilter, setPositionFilter] = useUrlString('position', 'all')
   const [currentPage, setCurrentPage] = useUrlNumber('page', 1)
   const [itemsPerPage, setItemsPerPage] = useUrlNumber('limit', 10)
 
@@ -39,10 +37,9 @@ const FAQ = () => {
     dispatch(
       setFilters({
         search: searchQuery,
-        position: positionFilter as FAQPosition | 'all',
       })
     )
-  }, [searchQuery, positionFilter, dispatch])
+  }, [searchQuery, dispatch])
 
   // Sync URL pagination with Redux
   useEffect(() => {
@@ -125,10 +122,10 @@ const FAQ = () => {
             />
 
             {/* Filter Dropdown */}
-            <FAQFilterDropdown
+            {/* <FAQFilterDropdown
               value={positionFilter as FAQPosition | 'all'}
               onChange={setPositionFilter}
-            />
+            /> */}
 
             {/* Add New FAQ Button */}
             <Button

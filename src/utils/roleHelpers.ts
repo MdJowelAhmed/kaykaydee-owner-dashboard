@@ -1,4 +1,11 @@
-import { UserRole } from '@/types/roles'
+import { UserRole, canAccessDashboard, normalizeRoleKey } from '@/types/roles'
+
+export {
+  canAccessDashboard,
+  DASHBOARD_ALLOWED_ROLES,
+  normalizeRoleKey,
+  LEGACY_ADMIN_ROLE_KEY,
+} from '@/types/roles'
 
 export const addBusinessIdToMockData = <T extends Record<string, unknown>>(
   data: T[],
@@ -17,7 +24,7 @@ export const filterDataByRole = <T extends Record<string, unknown>>(
   userBusinessId?: string,
   businessIdField: string = 'businessId'
 ): T[] => {
-  if (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.HOST) {
+  if (canAccessDashboard(userRole)) {
     return data
   }
 
@@ -34,7 +41,7 @@ export const canAccessItem = (
   userBusinessId?: string,
   businessIdField: string = 'businessId'
 ): boolean => {
-  if (userRole === UserRole.SUPER_ADMIN || userRole === UserRole.HOST) {
+  if (canAccessDashboard(userRole)) {
     return true
   }
 
@@ -46,10 +53,10 @@ export const canAccessItem = (
 }
 
 export const getRoleBadgeColor = (role: string): string => {
-  switch (role) {
+  switch (normalizeRoleKey(role)) {
     case UserRole.SUPER_ADMIN:
       return 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-100'
-    case UserRole.HOST:
+    case UserRole.ADMIN:
       return 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
     case UserRole.BUSINESS:
       return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
@@ -59,11 +66,11 @@ export const getRoleBadgeColor = (role: string): string => {
 }
 
 export const getRoleDisplayName = (role: string): string => {
-  switch (role) {
+  switch (normalizeRoleKey(role)) {
     case UserRole.SUPER_ADMIN:
       return 'Super Admin'
-    case UserRole.HOST:
-      return 'Host'
+    case UserRole.ADMIN:
+      return 'Admin'
     case UserRole.BUSINESS:
       return 'Business'
     default:

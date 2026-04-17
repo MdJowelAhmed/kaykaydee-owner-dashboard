@@ -1,11 +1,9 @@
 import { RootState } from '../store'
-import { UserRole } from '@/types/roles'
+import { UserRole, canAccessDashboard } from '@/types/roles'
 import { Car } from '@/types'
 
 export const selectRoleBasedCars = (state: RootState): Car[] => {
-  const { user } = state.auth
-  if (!user) return []
-  void UserRole
+  if (!state.auth.user) return []
   return []
 }
 
@@ -28,7 +26,7 @@ export const selectCanModifyItem = (
   const { user } = state.auth
   if (!user) return false
 
-  if (user.role === UserRole.SUPER_ADMIN || user.role === UserRole.HOST) {
+  if (canAccessDashboard(user.role)) {
     return true
   }
 

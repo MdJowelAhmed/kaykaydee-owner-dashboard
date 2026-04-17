@@ -210,6 +210,7 @@ export default function SubscriptionInvoicePage() {
         title="Invoice details"
         description={detailRow ? `${detailRow.userName} · #${detailRow.id}` : undefined}
         size="md"
+        className="bg-white max-w-2xl"
       >
         {detailRow && (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">

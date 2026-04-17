@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { Shield, Building2, Briefcase } from 'lucide-react'
 import { cn } from '@/utils/cn'
-import { UserRole } from '@/types/roles'
+import { UserRole, LEGACY_ADMIN_ROLE_KEY } from '@/types/roles'
 import { getRoleDisplayName } from '@/utils/roleHelpers'
 
 interface RoleBadgeProps {
@@ -10,27 +10,35 @@ interface RoleBadgeProps {
   showIcon?: boolean
 }
 
+type BadgeTier = 'superAdmin' | 'admin' | 'business'
+
+function badgeTier(role: string): BadgeTier {
+  if (role === UserRole.SUPER_ADMIN) return 'superAdmin'
+  if (role === UserRole.ADMIN || role === LEGACY_ADMIN_ROLE_KEY) return 'admin'
+  return 'business'
+}
+
 export function RoleBadge({ role, className, showIcon = true }: RoleBadgeProps) {
-  const variant = role === UserRole.SUPER_ADMIN ? 'admin' : role === UserRole.HOST ? 'host' : 'business'
+  const tier = badgeTier(role)
 
   return (
     <Badge
       variant="outline"
       className={cn(
         'gap-1 font-medium border-0',
-        variant === 'admin' &&
+        tier === 'superAdmin' &&
           'bg-amber-100 text-amber-900 hover:bg-amber-200/90',
-        variant === 'host' &&
+        tier === 'admin' &&
           'bg-purple-100 text-purple-800 hover:bg-purple-200/90',
-        variant === 'business' &&
+        tier === 'business' &&
           'bg-blue-100 text-blue-800 hover:bg-blue-200/90',
         className
       )}
     >
       {showIcon &&
-        (variant === 'admin' ? (
+        (tier === 'superAdmin' ? (
           <Shield className="h-3 w-3" />
-        ) : variant === 'host' ? (
+        ) : tier === 'admin' ? (
           <Building2 className="h-3 w-3" />
         ) : (
           <Briefcase className="h-3 w-3" />
