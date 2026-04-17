@@ -371,10 +371,10 @@ function SidebarNavItem({ item, collapsed }: SidebarNavItemProps) {
       className={({ isActive }) =>
         cn(
           'flex items-center gap-3 px-3 py-2.5 rounded-sm transition-all duration-200',
-          'hover:bg-[#CEF8DA] hover:text-[#0C5822]',
+          'hover:bg-[#f0f8ff] hover:text-[#0C5822]',
           collapsed && 'justify-center',
           isActive
-            ? 'bg-[#CEF8DA] text-[#0C5822] shadow-md'
+            ? 'bg-[#f0f8ff] text-[#0C5822] shadow'
             : 'text-[#656565]'
         )
       }
