@@ -51,16 +51,11 @@ const navItems: NavItem[] = [
     icon: Users,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
+  
   {
     title: 'Clinic Management',
     href: '/clinic-management',
     icon: Building2,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
-    title: 'App User',
-    href: '/app-user',
-    icon: UserRound,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
@@ -69,6 +64,25 @@ const navItems: NavItem[] = [
     icon: UserRound,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
+  {
+    title: 'Subscription Invoice',
+    href: '/subscription-invoice',
+    icon: Receipt,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Subscription Manage',
+    href: '/subscription-manage',
+    icon: Layers,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'App User',
+    href: '/app-user',
+    icon: UserRound,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  
 
   
   // {
@@ -104,18 +118,7 @@ const navItems: NavItem[] = [
   //   icon: Package,
   //   allowedRoles: [UserRole.SUPER_ADMIN],
   // },
-  {
-    title: 'Subscription Invoice',
-    href: '/subscription-invoice',
-    icon: Receipt,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
-    title: 'Subscription Manage',
-    href: '/subscription-manage',
-    icon: Layers,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
+
   {
     title: 'Admin Manage',
     href: '/admin-manage',
