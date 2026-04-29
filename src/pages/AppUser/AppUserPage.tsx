@@ -14,19 +14,8 @@ import {
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
-import { AppUserTable } from './components/AppUserTable'
-
-type AppUserStatus = 'active' | 'inactive'
-
-interface AppUserRow {
-  id: string
-  patientName: string
-  contactNo: string
-  email: string
-  joinedDate: string
-  address: string
-  status: AppUserStatus
-}
+import { AppUserTable, type AppUserRow } from './components/AppUserTable'
+import { AppUserDetailsModal } from './components/AppUserDetailsModal'
 
 const DATE_FILTER_OPTIONS = [
   { value: 'all', label: 'Date' },
@@ -56,6 +45,8 @@ export default function AppUserPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<AppUserRow | null>(null)
+  const [detailsUser, setDetailsUser] = useState<AppUserRow | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false)
   const [users, setUsers] = useState<AppUserRow[]>(mockUsers)
 
@@ -104,6 +95,11 @@ export default function AppUserPage() {
   const handleStatusClick = (user: AppUserRow) => {
     setSelectedUser(user)
     setDialogOpen(true)
+  }
+
+  const handleInfoClick = (user: AppUserRow) => {
+    setDetailsUser(user)
+    setDetailsOpen(true)
   }
 
   const handleConfirmStatusChange = async () => {
@@ -169,7 +165,11 @@ export default function AppUserPage() {
         </CardContent>
       </Card>
 
-      <AppUserTable users={paginatedUsers} onStatusClick={handleStatusClick} />
+      <AppUserTable
+        users={paginatedUsers}
+        onStatusClick={handleStatusClick}
+        onInfoClick={handleInfoClick}
+      />
 
       <Pagination
         currentPage={Math.min(currentPage, totalPages)}
@@ -202,6 +202,17 @@ export default function AppUserPage() {
         cancelText="Cancel"
         variant="warning"
         isLoading={isUpdatingStatus}
+      />
+
+      <AppUserDetailsModal
+        user={detailsUser}
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          setDetailsOpen(open)
+          if (!open) {
+            setDetailsUser(null)
+          }
+        }}
       />
     </motion.div>
   )

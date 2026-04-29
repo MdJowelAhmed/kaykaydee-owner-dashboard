@@ -2,9 +2,9 @@ import { Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/cn'
 
-type AppUserStatus = 'active' | 'inactive'
+export type AppUserStatus = 'active' | 'inactive'
 
-interface AppUserRow {
+export interface AppUserRow {
   id: string
   patientName: string
   contactNo: string
@@ -17,9 +17,10 @@ interface AppUserRow {
 interface AppUserTableProps {
   users: AppUserRow[]
   onStatusClick: (user: AppUserRow) => void
+  onInfoClick?: (user: AppUserRow) => void
 }
 
-export function AppUserTable({ users, onStatusClick }: AppUserTableProps) {
+export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTableProps) {
   return (
     <div className="w-full overflow-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
       <table className="w-full min-w-[1100px]">
@@ -60,6 +61,7 @@ export function AppUserTable({ users, onStatusClick }: AppUserTableProps) {
                       size="icon-sm"
                       className="h-7 w-7 rounded-full text-[#6F6F6F] hover:bg-slate-100"
                       aria-label="User details"
+                      onClick={() => onInfoClick?.(user)}
                     >
                       <Info className="h-4 w-4" />
                     </Button>
