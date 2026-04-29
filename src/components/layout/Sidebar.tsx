@@ -14,6 +14,7 @@ import {
   Sparkles,
   LogOut,
   Users,
+  UserRound,
   Building2,
   HelpCircle,
 } from 'lucide-react'
@@ -54,6 +55,18 @@ const navItems: NavItem[] = [
     title: 'Clinic Management',
     href: '/clinic-management',
     icon: Building2,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'App User',
+    href: '/app-user',
+    icon: UserRound,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Registered User',
+    href: '/registered-users',
+    icon: UserRound,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
 
