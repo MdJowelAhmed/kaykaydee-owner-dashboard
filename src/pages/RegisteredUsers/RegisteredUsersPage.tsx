@@ -53,7 +53,7 @@ function formatRegDateLabel(iso: string) {
   return `${day},${monthShort} ${year}`
 }
 
-function createMockUsers(): RegisteredUserRow[] {
+function createMockUsers(): RegisteredUserForState[] {
   const total = 150
   const baseDate = new Date('2026-01-02T12:00:00Z')
 
