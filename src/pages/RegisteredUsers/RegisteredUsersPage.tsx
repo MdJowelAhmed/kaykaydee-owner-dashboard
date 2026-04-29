@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Select,
@@ -11,19 +10,14 @@ import {
 } from '@/components/ui/select'
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
-import { RegisteredUsersTable } from './components/RegisteredUsersTable'
+import { RegisteredUsersTable, type RegisteredUserRow } from './components/RegisteredUsersTable'
+import { RegisteredUserDetailsModal } from './components/RegisteredUserDetailsModal'
 
 type UserStatus = 'active' | 'inactive'
 type Dateline = 'subscription' | 'member'
 type PackageKind = 'free_trial' | 'basic' | 'pro' | 'enterprise' | 'none'
 
-interface RegisteredUserRow {
-  id: string
-  userName: string
-  contactNo: string
-  email: string
-  packageKind: PackageKind
-  regDateLabel: string
+type RegisteredUserForState = RegisteredUserRow & {
   regDateIso: string
   status: UserStatus
   dateline: Dateline
@@ -98,8 +92,10 @@ export default function RegisteredUsersPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [datelineFilter, setDatelineFilter] = useState('all')
   const [currentPage, setCurrentPage] = useState(1)
+  const [selectedUser, setSelectedUser] = useState<RegisteredUserForState | null>(null)
+  const [detailsOpen, setDetailsOpen] = useState(false)
 
-  const [users] = useState<RegisteredUserRow[]>(mockUsers)
+  const [users] = useState<RegisteredUserForState[]>(mockUsers)
 
   const itemsPerPage = 15
 
@@ -141,15 +137,15 @@ export default function RegisteredUsersPage() {
 
   const totalPages = Math.max(1, Math.ceil(filteredUsers.length / itemsPerPage))
 
-  const paginatedUsers = useMemo(() => {
+  const paginatedUsers: RegisteredUserRow[] = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage
     return filteredUsers.slice(start, start + itemsPerPage)
   }, [filteredUsers, currentPage])
 
-  const handleInfoClick = (user: { userName: string; email: string; contactNo: string }) => {
-    toast.message(user.userName, {
-      description: `${user.email} · ${user.contactNo}`,
-    })
+  const handleInfoClick = (user: RegisteredUserRow) => {
+    const full = users.find((u) => u.id === user.id && u.email === user.email)
+    setSelectedUser(full ?? { ...user, regDateIso: new Date().toISOString(), status: 'active', dateline: 'subscription' })
+    setDetailsOpen(true)
   }
 
   return (
@@ -253,6 +249,15 @@ export default function RegisteredUsersPage() {
           </div>
         </CardContent>
       </Card>
+
+      <RegisteredUserDetailsModal
+        user={selectedUser}
+        open={detailsOpen}
+        onOpenChange={(open) => {
+          setDetailsOpen(open)
+          if (!open) setSelectedUser(null)
+        }}
+      />
     </motion.div>
   )
 }

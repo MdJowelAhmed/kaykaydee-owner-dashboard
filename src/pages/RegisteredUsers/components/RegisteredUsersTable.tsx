@@ -1,9 +1,9 @@
 import { Info } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
-type PackageKind = 'free_trial' | 'basic' | 'pro' | 'enterprise' | 'none'
+export type PackageKind = 'free_trial' | 'basic' | 'pro' | 'enterprise' | 'none'
 
-interface RegisteredUserRow {
+export interface RegisteredUserRow {
   id: string
   userName: string
   contactNo: string
@@ -38,7 +38,7 @@ export function RegisteredUsersTable({ users, onInfoClick }: RegisteredUsersTabl
     <div className="w-full overflow-auto">
       <table className="w-full min-w-[1200px]">
         <thead>
-          <tr className="bg-[#F5F6F8] text-[#868686]">
+          <tr className="bg-primary text-white">
             <th className="px-5 py-4 text-left text-sm font-medium">Reg. ID</th>
             <th className="px-5 py-4 text-left text-sm font-medium">User Name</th>
             <th className="px-5 py-4 text-left text-sm font-medium">Contact</th>

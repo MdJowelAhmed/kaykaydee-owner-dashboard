@@ -24,7 +24,7 @@ export function AppUserTable({ users, onStatusClick }: AppUserTableProps) {
     <div className="w-full overflow-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
       <table className="w-full min-w-[1100px]">
         <thead>
-          <tr className="bg-[#F5F6F8] text-[#868686]">
+          <tr className="bg-primary text-white">
             <th className="px-5 py-4 text-left text-sm font-medium">ID. No</th>
             <th className="px-5 py-4 text-left text-sm font-medium">Patient Name</th>
             <th className="px-5 py-4 text-left text-sm font-medium">Contact No</th>
