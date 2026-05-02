@@ -40,6 +40,11 @@ import Support from './pages/Support/Support'
 import FAQ from './pages/FAQ/FAQ'
 import NotFound from './pages/NotFound/NotFound'
 
+function AppToaster() {
+  const theme = useAppSelector((state) => state.ui.theme)
+  return <Toaster position="top-right" richColors closeButton theme={theme} />
+}
+
 // Component to redirect based on user role
 function RoleBasedRedirect() {
   const { user } = useAppSelector((state) => state.auth)
@@ -312,7 +317,7 @@ function App() {
         {/* Catch all - 404 Not Found */}
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster position="top-right" richColors closeButton />
+      <AppToaster />
     </TooltipProvider>
   )
 }

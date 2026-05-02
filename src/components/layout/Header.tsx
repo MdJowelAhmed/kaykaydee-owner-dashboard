@@ -1,5 +1,5 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Menu, LogOut, User, Settings } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { LogOut, Moon, Settings, Sun, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -11,47 +11,22 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { toggleSidebar } from '@/redux/slices/uiSlice'
+import { toggleTheme } from '@/redux/slices/uiSlice'
 import { logout } from '@/redux/slices/authSlice'
 import { getInitials } from '@/utils/formatters'
 import { NotificationPreviewDialog } from '@/components/layout/NotificationPreviewDialog'
 import { useState } from 'react'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
-
-const routeTitles: Record<string, string> = {
-  '/dashboard': 'Dashboard',
-  '/cars': 'Car List',
-  '/my-listing': 'My Listing',
-  '/booking-management': 'Booking Management',
-  '/calender': 'Calendar',
-  '/transactions-history': 'Transactions History',
-  '/reviews-ratings': 'Reviews & Ratings',
-  '/notification': 'Notification',
-  '/subscription-packages': 'Subscription Package',
-  '/support': 'Support',
-  '/client-management': 'Client Management',
-  '/agency-management': 'Agency Management',
-  '/users': 'User Management',
-  '/controller': 'Controller',
-  '/products': 'Product Management',
-  '/categories': 'Category Management',
-  '/settings/profile': 'Profile Settings',
-  '/settings/password': 'Change Password',
-  '/settings/terms': 'Terms & Conditions',
-  '/settings/privacy': 'Privacy Policy',
-  '/settings/about-us': 'About Us',
-}
+import { DASHBOARD_HEADER_Z } from '@/components/layout/dashboardLayoutTokens'
+import { cn } from '@/utils/cn'
 
 export function Header() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  // const { theme } = useAppSelector((state) => state.ui)
+  const theme = useAppSelector((state) => state.ui.theme)
   const { user } = useAppSelector((state) => state.auth)
-  const location = useLocation()
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
-
-  const pageTitle = routeTitles[location.pathname] || 'Dashboard'
 
   const handleLogout = async () => {
     setIsLoggingOut(true)
@@ -64,11 +39,17 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-30 h-20 shadow-md bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+   <div
+      className={cn(
+        'fixed left-0 right-0 top-0 h-28 bg-background p-2',
+        DASHBOARD_HEADER_Z
+      )}
+    >
+     <header className="fixed left-0 right-0 top-0 z-[100] mx-5 mt-4 h-20 rounded-2xl bg-card shadow-md backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-full items-center justify-between px-4 lg:px-6">
         {/* Left side */}
         <div className="flex items-center gap-4">
-          <Button
+          {/* <Button
             variant="ghost"
             size="icon"
             onClick={() => dispatch(toggleSidebar())}
@@ -81,6 +62,17 @@ export function Header() {
             <p className="text-sm text-accent hidden sm:block">
               Welcome back, {user?.firstName || 'Admin'}
             </p>
+          </div> */}
+
+<div className="flex items-center gap-3">
+            <div className="h-32 w-full mx-auto rounded-lg flex items-center justify-center ">
+              <div className="text-primary text-white font-bold text-lg">
+                <img src="/logo.png" alt="Booking Dashboard" className="h-20 w-32" />
+              </div>
+            </div>
+            {/* {!sidebarCollapsed && (
+              <span className="font-display font-bold text-xl text-accent">Dashboard</span>
+            )} */}
           </div>
         </div>
 
@@ -98,18 +90,20 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-5">
-          {/* Theme toggle */}
-          {/* <Button
+          <Button
             variant="ghost"
             size="icon"
+            type="button"
+            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
             onClick={() => dispatch(toggleTheme())}
+            className="text-accent"
           >
             {theme === 'light' ? (
-              <Moon className="h-5 w-5 text-accent" />
+              <Moon className="h-5 w-5" />
             ) : (
-              <Sun className="h-5 w-5 text-accent" />
+              <Sun className="h-5 w-5" />
             )}
-          </Button> */}
+          </Button>
 
           {/* Notifications — anchored popover under bell */}
           <NotificationPreviewDialog />
@@ -171,5 +165,6 @@ export function Header() {
         isLoading={isLoggingOut}
       />
     </header>
+   </div>
   )
 }

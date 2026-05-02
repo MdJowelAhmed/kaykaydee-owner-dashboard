@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import type { ModalType } from '@/types'
+import {
+  applyThemeToDocument,
+  getInitialTheme,
+  persistTheme,
+  type ThemeMode,
+} from '@/utils/theme'
 
 interface ModalState {
   isOpen: boolean
@@ -10,7 +16,7 @@ interface ModalState {
 interface UIState {
   modal: ModalState
   sidebarCollapsed: boolean
-  theme: 'light' | 'dark'
+  theme: ThemeMode
   globalLoading: boolean
   toast: {
     isOpen: boolean
@@ -26,7 +32,7 @@ const initialState: UIState = {
     data: null,
   },
   sidebarCollapsed: false,
-  theme: 'light',
+  theme: getInitialTheme(),
   globalLoading: false,
   toast: {
     isOpen: false,
@@ -55,22 +61,16 @@ const uiSlice = createSlice({
     setSidebarCollapsed: (state, action: PayloadAction<boolean>) => {
       state.sidebarCollapsed = action.payload
     },
-    setTheme: (state, action: PayloadAction<'light' | 'dark'>) => {
+    setTheme: (state, action: PayloadAction<ThemeMode>) => {
       state.theme = action.payload
-      if (action.payload === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+      applyThemeToDocument(action.payload)
+      persistTheme(action.payload)
     },
     toggleTheme: (state) => {
-      const newTheme = state.theme === 'light' ? 'dark' : 'light'
+      const newTheme: ThemeMode = state.theme === 'light' ? 'dark' : 'light'
       state.theme = newTheme
-      if (newTheme === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+      applyThemeToDocument(newTheme)
+      persistTheme(newTheme)
     },
     setGlobalLoading: (state, action: PayloadAction<boolean>) => {
       state.globalLoading = action.payload
