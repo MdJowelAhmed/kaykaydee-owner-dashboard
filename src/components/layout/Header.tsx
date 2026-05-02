@@ -1,19 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { LogOut, Moon, Settings, Sun, User } from 'lucide-react'
+import {  Moon,  Sun,  } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toggleTheme } from '@/redux/slices/uiSlice'
 import { logout } from '@/redux/slices/authSlice'
-import { getInitials } from '@/utils/formatters'
 import { NotificationPreviewDialog } from '@/components/layout/NotificationPreviewDialog'
 import { useState } from 'react'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
