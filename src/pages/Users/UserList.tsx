@@ -86,10 +86,10 @@ export default function UserList() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-6"
     >
-      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
-            <h1 className="text-xl font-bold text-slate-800 shrink-0 lg:min-w-[200px]">
+            <h1 className="shrink-0 text-xl font-bold text-foreground lg:min-w-[200px]">
               User Management
             </h1>
             <div className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 justify-end">
@@ -99,10 +99,10 @@ export default function UserList() {
                   onChange={handleSearch}
                   placeholder="Search here"
                   className="w-full min-w-0 flex-1"
-                  inputClassName="h-11 rounded-xl border-slate-200 bg-white shadow-sm max-w-xl"
+                  inputClassName="h-11 max-w-xl rounded-xl bg-background text-foreground shadow-sm placeholder:text-muted-foreground"
                 />
                 <Select value={status} onValueChange={handleStatusFilter}>
-                  <SelectTrigger className="h-11 w-full shrink-0 rounded-xl border-slate-200 bg-white shadow-sm sm:w-[160px]">
+                  <SelectTrigger className="h-11 w-full shrink-0 rounded-xl border-border bg-background text-foreground shadow-sm sm:w-[160px] placeholder:text-muted-foreground">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -119,11 +119,11 @@ export default function UserList() {
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <CardContent className="p-0">
           <UserManagementTable users={paginatedData} onOpenDetails={handleOpenDetails} />
 
-          <div className="border-t border-slate-100 px-4 sm:px-6">
+          <div className="border-t border-border px-4 sm:px-6">
             <Pagination
               variant="minimal"
               currentPage={Math.min(pagination.page, totalPages)}

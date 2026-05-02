@@ -121,7 +121,7 @@ export function AddEditPackageModal({
       onClose={onClose}
       title={mode === 'create' ? 'Create subscription package' : 'Edit subscription package'}
       size="lg"
-      className="bg-white rounded-2xl"
+      className="rounded-2xl"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -151,7 +151,7 @@ export function AddEditPackageModal({
           name="mostPopular"
           control={control}
           render={({ field }) => (
-            <div className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+            <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2">
               <div>
                 <Label htmlFor="most-popular">Most popular</Label>
                 <p className="text-xs text-muted-foreground">Show badge on this package</p>
@@ -161,7 +161,7 @@ export function AddEditPackageModal({
           )}
         />
 
-        <p className="text-sm font-medium text-slate-800 pt-2">Features (up to 3)</p>
+        <p className="pt-2 text-sm font-medium text-foreground">Features (up to 3)</p>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
           <div className="flex-1">
@@ -224,7 +224,7 @@ export function AddEditPackageModal({
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-[#6BBF2D] hover:bg-[#5aad26] text-white">
+          <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90">
             {mode === 'create' ? 'Create' : 'Save'}
           </Button>
         </div>

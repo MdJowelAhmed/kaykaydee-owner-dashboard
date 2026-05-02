@@ -118,11 +118,11 @@ export default function AdminManagePage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-6"
     >
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden rounded-2xl">
+      <Card className="overflow-hidden rounded-2xl bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-              <h1 className="text-xl font-bold text-slate-800 shrink-0">Admin Manage</h1>
+              <h1 className="shrink-0 text-xl font-bold text-foreground">Admin Manage</h1>
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
@@ -131,11 +131,11 @@ export default function AdminManagePage() {
                 onChange={(v) => setParams({ search: v, page: 1 })}
                 placeholder="Search here"
                 className="w-full sm:w-[320px]"
-                inputClassName="rounded-full h-11 bg-white border-slate-200"
+                inputClassName="h-11 rounded-full border-border bg-background text-foreground placeholder:text-muted-foreground"
               />
 
               <Select value={status} onValueChange={(v) => setParams({ status: v, page: 1 })}>
-                <SelectTrigger className="w-full sm:w-44 h-11 rounded-full bg-white border-slate-200 text-slate-700">
+                <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-44">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -150,7 +150,7 @@ export default function AdminManagePage() {
               <Button
                 type="button"
                 onClick={openCreate}
-                className="shrink-0 gap-2 rounded-md bg-[#0F1F44] text-white hover:bg-[#0F1F44]/90 h-11 px-5"
+                className="h-11 shrink-0 gap-2 rounded-md bg-secondary px-5 text-secondary-foreground hover:bg-secondary/90"
               >
                 <Plus className="h-5 w-5" />
                 Add Admin
@@ -160,11 +160,11 @@ export default function AdminManagePage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden rounded-2xl">
+      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <CardContent className="p-0">
           <AdminTable rows={paginated} onInfo={setDetailRow} onEdit={openEdit} />
 
-          <div className="px-4 sm:px-6 border-t border-slate-100">
+          <div className="border-t border-border px-4 sm:px-6">
             <Pagination
               variant="minimal"
               showItemsPerPage={false}
@@ -200,33 +200,35 @@ export default function AdminManagePage() {
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
               <dt className="text-muted-foreground">Admin Id</dt>
-              <dd className="font-medium text-slate-800">{detailRow.id}</dd>
+              <dd className="font-medium text-foreground">{detailRow.id}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Status</dt>
-              <dd className="font-medium text-slate-800 capitalize">{detailRow.status}</dd>
+              <dd className="font-medium capitalize text-foreground">{detailRow.status}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Clinic name</dt>
-              <dd className="font-medium text-slate-800">{detailRow.clinicName}</dd>
+              <dd className="font-medium text-foreground">{detailRow.clinicName}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Role</dt>
-              <dd className="font-medium text-slate-800">
+              <dd className="font-medium text-foreground">
                 {detailRow.role === 'head-admin' ? 'Head Admin' : 'Admin'}
               </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Email</dt>
-              <dd className="font-medium text-slate-800 break-all">{detailRow.email}</dd>
+              <dd className="break-all font-medium text-foreground">{detailRow.email}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Phone</dt>
-              <dd className="font-medium text-slate-800">{detailRow.phone}</dd>
+              <dd className="font-medium text-foreground">{detailRow.phone}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Join date</dt>
-              <dd className="font-medium text-slate-800">{formatDate(detailRow.joinDate, 'd MMM yyyy')}</dd>
+              <dd className="font-medium text-foreground">
+                {formatDate(detailRow.joinDate, 'd MMM yyyy')}
+              </dd>
             </div>
           </dl>
         )}

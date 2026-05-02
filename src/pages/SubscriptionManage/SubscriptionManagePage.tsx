@@ -109,16 +109,16 @@ export default function SubscriptionManagePage() {
       className="space-y-6"
     >
       <div className="grid gap-4 lg:grid-cols-2">
-        <Card className="bg-white border border-slate-100 shadow-sm rounded-2xl overflow-hidden">
+        <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Monthly subscription</p>
-                <p className="mt-3 text-3xl font-bold text-slate-900 tabular-nums">{monthlyCount}</p>
+                <p className="mt-3 text-3xl font-bold tabular-nums text-foreground">{monthlyCount}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground"> </p>
-                <p className="mt-7 text-2xl font-semibold text-slate-900 tabular-nums">
+                <p className="mt-7 text-2xl font-semibold tabular-nums text-foreground">
                   ${monthlyRevenue.toFixed(0)}
                 </p>
               </div>
@@ -126,16 +126,16 @@ export default function SubscriptionManagePage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-white border border-slate-100 shadow-sm rounded-2xl overflow-hidden">
+        <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Total Subscription</p>
-                <p className="mt-3 text-3xl font-bold text-slate-900 tabular-nums">{totalCount}</p>
+                <p className="mt-3 text-3xl font-bold tabular-nums text-foreground">{totalCount}</p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-muted-foreground"> </p>
-                <p className="mt-7 text-2xl font-semibold text-slate-900 tabular-nums">
+                <p className="mt-7 text-2xl font-semibold tabular-nums text-foreground">
                   ${totalRevenue.toFixed(0)}
                 </p>
               </div>
@@ -145,7 +145,7 @@ export default function SubscriptionManagePage() {
       </div>
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="inline-flex items-center gap-1 rounded-full bg-slate-100 p-1 w-fit">
+        <div className="inline-flex w-fit items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
           {(Object.keys(TAB_LABELS) as TabKey[]).map((key) => (
             <button
               key={key}
@@ -153,7 +153,9 @@ export default function SubscriptionManagePage() {
               onClick={() => setTab(key)}
               className={cn(
                 'rounded-full px-4 py-2 text-sm font-medium transition-colors',
-                tab === key ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-600 hover:text-slate-800'
+                tab === key
+                  ? 'bg-background text-foreground shadow-sm ring-1 ring-border'
+                  : 'text-muted-foreground hover:text-foreground'
               )}
             >
               {TAB_LABELS[key]}
@@ -164,7 +166,7 @@ export default function SubscriptionManagePage() {
         <Button
           type="button"
           onClick={openCreate}
-          className="shrink-0 gap-2 rounded-md bg-primary text-white hover:bg-[#5aad26]"
+          className="shrink-0 gap-2 rounded-md bg-primary text-accent-foreground hover:bg-primary/90"
         >
           <Plus className="h-5 w-5" />
           Add New Package
@@ -198,7 +200,7 @@ export default function SubscriptionManagePage() {
       </div>
 
       {filtered.length === 0 && (
-        <p className="text-center text-muted-foreground py-12 border rounded-2xl bg-white">
+        <p className="rounded-2xl border border-border bg-card py-12 text-center text-muted-foreground">
           No packages yet. Click “Add New Package” to create one.
         </p>
       )}

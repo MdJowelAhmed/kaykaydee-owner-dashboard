@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Download, Info } from 'lucide-react'
+import { cn } from '@/utils/cn'
 import { formatInvoiceDate } from '../utils'
 import type { SubscriptionInvoiceRow } from '../types'
 
@@ -11,28 +12,31 @@ interface SubscriptionInvoiceTableProps {
   onInfo: (row: SubscriptionInvoiceRow) => void
 }
 
+const thBase =
+  'bg-primary px-6 py-4 text-sm font-semibold text-accent-foreground first:rounded-tl-xl last:rounded-tr-xl'
+
 export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: SubscriptionInvoiceTableProps) {
   return (
     <div className="w-full overflow-auto rounded-xl">
       <table className="w-full min-w-[1200px]">
         <thead>
-          <tr className="bg-primary text-white">
-            <th className="px-6 py-4 text-left text-sm font-semibold first:rounded-tl-xl">Reg. ID</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Pac. ID</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">User Name</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Contact</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Email</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Package</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">price</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Issue Date</th>
-            <th className="px-6 py-4 text-left text-sm font-semibold">Dateline</th>
-            <th className="px-6 py-4 text-right text-sm font-semibold last:rounded-tr-xl">Action</th>
+          <tr>
+            <th className={cn(thBase, 'text-left')}>Reg. ID</th>
+            <th className={cn(thBase, 'text-left')}>Pac. ID</th>
+            <th className={cn(thBase, 'text-left')}>User Name</th>
+            <th className={cn(thBase, 'text-left')}>Contact</th>
+            <th className={cn(thBase, 'text-left')}>Email</th>
+            <th className={cn(thBase, 'text-left')}>Package</th>
+            <th className={cn(thBase, 'text-left')}>price</th>
+            <th className={cn(thBase, 'text-left')}>Issue Date</th>
+            <th className={cn(thBase, 'text-left')}>Dateline</th>
+            <th className={cn(thBase, 'text-right')}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100 bg-white">
+        <tbody className="divide-y divide-border bg-card">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={10} className="px-6 py-10 text-center text-slate-500 text-sm">
+              <td colSpan={10} className="px-6 py-10 text-center text-sm text-muted-foreground">
                 No subscription invoices found
               </td>
             </tr>
@@ -43,39 +47,39 @@ export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: Subscript
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: Math.min(0.04 * index, 0.4) }}
-                className="hover:bg-slate-50/80 transition-colors"
+                className="transition-colors hover:bg-muted/50"
               >
                 <td className="px-6 py-4">
-                  <span className="text-sm font-medium text-slate-500">#{row.id}</span>
+                  <span className="text-sm font-medium text-muted-foreground">#{row.id}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm font-medium text-slate-500">{row.pacId}</span>
+                  <span className="text-sm font-medium text-muted-foreground">{row.pacId}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-800">{row.userName}</span>
+                  <span className="text-sm text-foreground">{row.userName}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-700">{row.contact}</span>
+                  <span className="text-sm text-foreground">{row.contact}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-700 break-all">{row.email}</span>
+                  <span className="break-all text-sm text-foreground">{row.email}</span>
                 </td>
                 <td className="px-6 py-4">
                   <Badge
                     variant="outline"
-                    className="rounded-full border-0 bg-slate-100 text-slate-700 font-medium px-3"
+                    className="rounded-full border-border bg-muted px-3 font-medium text-foreground"
                   >
                     {row.package}
                   </Badge>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-700">${row.price}</span>
+                  <span className="text-sm text-foreground">${row.price}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-700">{formatInvoiceDate(row.issueDate)}</span>
+                  <span className="text-sm text-foreground">{formatInvoiceDate(row.issueDate)}</span>
                 </td>
                 <td className="px-6 py-4">
-                  <span className="text-sm text-slate-700">{formatInvoiceDate(row.dateline)}</span>
+                  <span className="text-sm text-foreground">{formatInvoiceDate(row.dateline)}</span>
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex justify-end gap-2">
@@ -83,7 +87,7 @@ export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: Subscript
                       type="button"
                       variant="ghost"
                       size="icon-sm"
-                      className="h-9 w-9 rounded-full text-slate-500 hover:text-secondary hover:bg-slate-100"
+                      className="h-9 w-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
                       onClick={() => onDownload(row)}
                       aria-label="Download invoice"
                     >
@@ -93,7 +97,7 @@ export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: Subscript
                       type="button"
                       variant="ghost"
                       size="icon-sm"
-                      className="h-9 w-9 rounded-full text-slate-500 hover:text-secondary hover:bg-slate-100"
+                      className="h-9 w-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
                       onClick={() => onInfo(row)}
                       aria-label="Invoice details"
                     >

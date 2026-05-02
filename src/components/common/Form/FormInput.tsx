@@ -16,19 +16,19 @@ export const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
     return (
       <div className="space-y-1.5 ">
         {label && (
-          <Label htmlFor={inputId} className={cn(error && 'text-destructive')}>
+          <Label htmlFor={inputId} className={cn(error && 'text-accent')}>
             {label}
-            {props.required && <span className="text-destructive ml-1">*</span>}
+            {props.required && <span className="text-accent ml-1">*</span>}
           </Label>
         )}
         <Input
           ref={ref}
           id={inputId}
-          className={cn(className, 'bg-[#EBEBEB]')}
+          className={cn(className, 'bg-input')}
           error={!!error}
           {...props}
         />
-        {error && <p className="text-xs text-destructive">{error}</p>}
+          {error && <p className="text-xs text-accent">{error}</p>}
         {helperText && !error && (
           <p className="text-xs text-muted-foreground">{helperText}</p>
         )}

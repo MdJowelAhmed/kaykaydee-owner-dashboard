@@ -155,7 +155,7 @@ export default function RegisteredUsersPage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <SearchInput
@@ -166,7 +166,7 @@ export default function RegisteredUsersPage() {
               }}
               placeholder="Search here"
               className="w-full lg:max-w-xl"
-              inputClassName="h-11 rounded-full border-slate-200 bg-white"
+              inputClassName="h-11 rounded-full border-border bg-background text-foreground placeholder:text-muted-foreground"
             />
 
             <div className="flex flex-wrap items-center justify-end gap-3">
@@ -177,7 +177,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full sm:w-44 rounded-full bg-[#F5F6F8] border-slate-100">
+                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-44">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -196,7 +196,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full sm:w-36 rounded-full bg-[#F5F6F8] border-slate-100">
+                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-36">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -215,7 +215,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full sm:w-36 rounded-full bg-[#F5F6F8] border-slate-100">
+                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-36">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -231,11 +231,11 @@ export default function RegisteredUsersPage() {
         </CardContent>
       </Card>
 
-      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <CardContent className="p-0">
           <RegisteredUsersTable users={paginatedUsers} onInfoClick={handleInfoClick} />
 
-          <div className="border-t border-slate-100 px-4 sm:px-6">
+          <div className="border-t border-border px-4 sm:px-6">
             <Pagination
               variant="minimal"
               currentPage={Math.min(currentPage, totalPages)}

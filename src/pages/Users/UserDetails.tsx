@@ -33,7 +33,7 @@ export default function UserDetails() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="space-y-6 bg-white"
+      className="space-y-6"
     >
       {/* Back Button */}
       <Button
@@ -52,11 +52,11 @@ export default function UserDetails() {
             <div className="flex flex-col items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
                 <AvatarImage src={user.avatar} />
-                <AvatarFallback className="text-2xl">
+                <AvatarFallback className="bg-primary text-2xl text-primary-foreground">
                   {getInitials(user.firstName, user.lastName)}
                 </AvatarFallback>
               </Avatar>
-              <h2 className="text-xl font-semibold">
+              <h2 className="text-xl font-semibold text-foreground">
                 {user.firstName} {user.lastName}
               </h2>
               <p className="text-sm text-muted-foreground mb-4">{user.email}</p>
@@ -80,7 +80,7 @@ export default function UserDetails() {
         {/* Details Card */}
         <Card className="lg:col-span-2">
           <CardHeader>
-            <CardTitle>User Information</CardTitle>
+            <CardTitle className="text-foreground">User Information</CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Contact Information */}
@@ -95,7 +95,7 @@ export default function UserDetails() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Email</p>
-                    <p className="font-medium">{user.email}</p>
+                    <p className="font-medium text-foreground">{user.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export default function UserDetails() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Phone</p>
-                    <p className="font-medium">{user.phone}</p>
+                    <p className="font-medium text-foreground">{user.phone}</p>
                   </div>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function UserDetails() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Address</p>
-                  <p className="font-medium">
+                  <p className="font-medium text-foreground">
                     {user.address || 'N/A'}, {user.city || 'N/A'}, {user.country || 'N/A'}
                   </p>
                 </div>
@@ -153,7 +153,7 @@ export default function UserDetails() {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">Joined</p>
-                    <p className="font-medium">{formatDate(user.createdAt)}</p>
+                    <p className="font-medium text-foreground">{formatDate(user.createdAt)}</p>
                   </div>
                 </div>
               </div>

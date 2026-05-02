@@ -216,7 +216,7 @@ export function Sidebar() {
 
       <aside
         className={cn(
-          'fixed left-0 z-40 flex flex-col overflow-hidden border border-border/60 bg-card shadow-lg transition-all duration-300',
+          'fixed left-0 z-40 flex flex-col overflow-hidden bg-card shadow-lg transition-all duration-300',
           'ml-4 rounded-[2rem] lg:ml-5',
           sidebarCollapsed ? 'w-[80px]' : 'w-[280px]',
           'lg:translate-x-0',

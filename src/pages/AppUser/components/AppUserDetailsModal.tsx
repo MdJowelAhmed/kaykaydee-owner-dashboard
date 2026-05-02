@@ -25,21 +25,19 @@ export function AppUserDetailsModal({ user, open, onOpenChange }: AppUserDetails
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white">
+      <DialogContent className="max-h-[90vh] max-w-xl overflow-y-auto rounded-2xl">
         <DialogHeader className="space-y-1">
-          <DialogTitle className="text-xl font-semibold text-slate-900">
-            App user details
-          </DialogTitle>
-          <DialogDescription className="text-slate-600">
+          <DialogTitle className="text-xl font-semibold text-foreground">App user details</DialogTitle>
+          <DialogDescription className="text-muted-foreground">
             Basic profile and registration information for this app user.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 pt-1">
           <div>
-            <p className="text-lg font-semibold text-slate-900">{user.patientName}</p>
-            <p className="text-sm text-slate-500">
-              ID <span className="font-mono text-slate-700">#{user.id}</span>
+            <p className="text-lg font-semibold text-foreground">{user.patientName}</p>
+            <p className="text-sm text-muted-foreground">
+              ID <span className="font-mono text-foreground">#{user.id}</span>
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Badge
@@ -48,7 +46,10 @@ export function AppUserDetailsModal({ user, open, onOpenChange }: AppUserDetails
               >
                 {isActive ? 'Active' : 'Inactive'}
               </Badge>
-              <Badge variant="outline" className="rounded-full text-xs font-medium">
+              <Badge
+                variant="outline"
+                className="rounded-full border-border text-xs font-medium text-foreground"
+              >
                 App User
               </Badge>
             </div>
@@ -56,36 +57,36 @@ export function AppUserDetailsModal({ user, open, onOpenChange }: AppUserDetails
 
           <dl className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
             <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Email
               </dt>
-              <dd className="mt-1 text-sm text-slate-900 break-all">{user.email}</dd>
+              <dd className="mt-1 break-all text-sm text-foreground">{user.email}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Contact
               </dt>
-              <dd className="mt-1 text-sm text-slate-900">{user.contactNo}</dd>
+              <dd className="mt-1 text-sm text-foreground">{user.contactNo}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 User join date
               </dt>
-              <dd className="mt-1 text-sm text-slate-900">{user.joinedDate}</dd>
+              <dd className="mt-1 text-sm text-foreground">{user.joinedDate}</dd>
             </div>
             <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">
+              <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 Address
               </dt>
-              <dd className="mt-1 text-sm text-slate-900">{user.address}</dd>
+              <dd className="mt-1 text-sm text-foreground">{user.address}</dd>
             </div>
           </dl>
 
           <div>
-            <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
+            <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Notes
             </h4>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-foreground/90">
               This mock data is for design only. Replace it with real app user details from your API
               when backend integration is ready.
             </p>
@@ -95,4 +96,3 @@ export function AppUserDetailsModal({ user, open, onOpenChange }: AppUserDetails
     </Dialog>
   )
 }
-

@@ -93,7 +93,7 @@ export function AddEditPackageModal({
       onClose={onClose}
       title={mode === 'create' ? 'Add new package' : 'Edit package'}
       size="md"
-      className="bg-white rounded-2xl"
+      className="rounded-2xl"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
         <FormInput
@@ -114,11 +114,11 @@ export function AddEditPackageModal({
             error={errors.price?.message}
           />
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-foreground">
               Billing cycle <span className="text-destructive">*</span>
             </label>
             <select
-              className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm outline-none focus:border-slate-300"
+              className="h-10 w-full rounded-md border border-input  px-3 text-sm text-foreground outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
               {...register('cycle')}
             >
               <option value="monthly">Monthly</option>
@@ -135,9 +135,9 @@ export function AddEditPackageModal({
           name="enabled"
           control={control}
           render={({ field }) => (
-            <div className="flex items-center justify-between rounded-xl border border-slate-200 px-4 py-3">
+            <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
               <div>
-                <p className="text-sm font-medium text-slate-800">Enable</p>
+                <p className="text-sm font-medium text-foreground">Enable</p>
                 <p className="text-xs text-muted-foreground">
                   Make this package available to users
                 </p>
@@ -151,7 +151,7 @@ export function AddEditPackageModal({
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-[#6BBF2D] hover:bg-[#5aad26] text-white">
+          <Button type="submit" className="bg-primary text-accent-foreground hover:bg-primary/90">
             {mode === 'create' ? 'Create' : 'Save'}
           </Button>
         </div>

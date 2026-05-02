@@ -93,7 +93,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
       onClose={onClose}
       title={mode === 'create' ? 'Add admin' : 'Edit admin'}
       size="md"
-      className="bg-white rounded-2xl"
+      className="rounded-2xl"
     >
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 pt-2">
         <FormInput
@@ -140,7 +140,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="submit" className="bg-[#0F1F44] hover:bg-[#0F1F44]/90 text-white">
+          <Button type="submit" className="bg-secondary text-secondary-foreground hover:bg-secondary/90">
             {mode === 'create' ? 'Add' : 'Save'}
           </Button>
         </div>

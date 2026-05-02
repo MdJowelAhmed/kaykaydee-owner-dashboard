@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
@@ -14,8 +14,9 @@ import {
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
 import { ClinicTable } from './components/ClinicTable'
+import { AddClinicModal } from './components/AddClinicModal'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { setFilters, setPage, setLimit } from '@/redux/slices/clinicSlice'
+import { setFilters, setPage, setLimit, addClinic } from '@/redux/slices/clinicSlice'
 import { useUrlParams } from '@/hooks/useUrlState'
 import { USER_PACKAGES, CLINIC_STATUSES } from '@/utils/constants'
 import type { Clinic } from '@/types'
@@ -23,6 +24,7 @@ import type { Clinic } from '@/types'
 export default function ClinicManagementPage() {
   const dispatch = useAppDispatch()
   const { filteredList, pagination } = useAppSelector((state) => state.clinics)
+  const [addClinicOpen, setAddClinicOpen] = useState(false)
 
   const { getParam, getNumberParam, setParam, setParams } = useUrlParams()
 
@@ -74,7 +76,13 @@ export default function ClinicManagementPage() {
   }
 
   const handleAddClinic = () => {
-    toast.message('Add clinic', { description: 'Connect this action to your API when ready.' })
+    setAddClinicOpen(true)
+  }
+
+  const handleSaveNewClinic = (clinic: Clinic) => {
+    dispatch(addClinic(clinic))
+    setParams({ page: 1 })
+    toast.success('Clinic added', { description: clinic.name })
   }
 
   const handleInfo = (clinic: Clinic) => {
@@ -90,7 +98,7 @@ export default function ClinicManagementPage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-8"
     >
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
             <div className="flex items-center justify-end gap-4">
@@ -99,11 +107,11 @@ export default function ClinicManagementPage() {
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full sm:flex-1 sm:max-w-xl"
-                inputClassName="h-11 rounded-full border-slate-200 bg-white "
+                inputClassName="h-11 rounded-full border-border bg-background text-foreground shadow-sm placeholder:text-muted-foreground"
               />
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Select value={packageFilter} onValueChange={handlePackageFilter}>
-                  <SelectTrigger className="h-11 w-full sm:w-44 rounded-full border-slate-200 bg-white">
+                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-44 placeholder:text-muted-foreground">
                     <SelectValue placeholder="Package" />
                   </SelectTrigger>
                   <SelectContent>
@@ -115,7 +123,7 @@ export default function ClinicManagementPage() {
                   </SelectContent>
                 </Select>
                 <Select value={status} onValueChange={handleStatusFilter}>
-                  <SelectTrigger className="h-11 w-full sm:w-44 rounded-full border-slate-200 bg-white">
+                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-44 placeholder:text-muted-foreground">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -131,7 +139,7 @@ export default function ClinicManagementPage() {
             <Button
               type="button"
               onClick={handleAddClinic}
-              className="h-11 shrink-0 rounded-full bg-[#1A284B] px-5 text-white hover:bg-[#1A284B]/90"
+              className="h-11 shrink-0 rounded-full bg-secondary px-5 text-secondary-foreground hover:bg-secondary/90"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Clinics
@@ -151,6 +159,12 @@ export default function ClinicManagementPage() {
         showItemsPerPage={false}
         variant="minimal"
         className="px-1"
+      />
+
+      <AddClinicModal
+        open={addClinicOpen}
+        onClose={() => setAddClinicOpen(false)}
+        onSave={handleSaveNewClinic}
       />
     </motion.div>
   )

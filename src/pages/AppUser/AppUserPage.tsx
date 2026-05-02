@@ -129,19 +129,19 @@ export default function AppUserPage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden">
+      <Card className="overflow-hidden rounded-2xl bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-end w-full">
+            <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <SearchInput
                 value={search}
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full sm:max-w-xl"
-                inputClassName="h-11 rounded-xl border-slate-200 bg-white"
+                inputClassName="h-11 rounded-xl border-border bg-background text-foreground placeholder:text-muted-foreground"
               />
               <Select value={dateFilter} onValueChange={handleDateFilter}>
-                <SelectTrigger className="h-11 w-full sm:w-36 rounded-xl border-slate-200 bg-white">
+                <SelectTrigger className="h-11 w-full rounded-xl border-border bg-background text-foreground sm:w-36">
                   <SelectValue placeholder="Date" />
                 </SelectTrigger>
                 <SelectContent>
@@ -156,7 +156,7 @@ export default function AppUserPage() {
             <Button
               type="button"
               onClick={handleIncludePatient}
-              className="h-11 shrink-0 rounded-xl bg-[#1A284B] px-5 text-white hover:bg-[#1A284B]/90"
+              className="h-11 shrink-0 rounded-xl bg-secondary px-5 text-secondary-foreground hover:bg-secondary/90"
             >
               <Plus className="h-4 w-4 mr-2" />
               Include Patient

@@ -45,26 +45,26 @@ export function EditFeaturesModal({ open, onClose, pkg, onSave }: EditFeaturesMo
       title="Edit features"
       description={pkg ? `${pkg.name} · ${pkg.cycle}` : undefined}
       size="full"
-      className="bg-white rounded-2xl"
+      className="rounded-2xl"
     >
       <div className="space-y-6">
         {groups.map((group) => (
-          <div key={group.id} className="rounded-2xl border border-slate-100 bg-white shadow-sm">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h3 className="text-base font-semibold text-slate-800">{group.title}</h3>
+          <div key={group.id} className="rounded-2xl border border-border bg-card shadow-sm">
+            <div className="border-b border-border px-6 py-4">
+              <h3 className="text-base font-semibold text-foreground">{group.title}</h3>
             </div>
             <div className="px-6 py-2">
               <div className="grid grid-cols-1 gap-0">
-                <div className="grid grid-cols-2 py-3 text-xs font-semibold text-slate-500">
+                <div className="grid grid-cols-2 py-3 text-xs font-semibold text-muted-foreground">
                   <div>Feature</div>
                   <div className="text-right">Status</div>
                 </div>
                 {group.items.map((item) => (
                   <div
                     key={item.id}
-                    className="grid grid-cols-2 items-center py-4 border-t border-slate-100"
+                    className="grid grid-cols-2 items-center border-t border-border py-4"
                   >
-                    <div className="text-sm text-slate-700">{item.label}</div>
+                    <div className="text-sm text-foreground">{item.label}</div>
                     <div className="flex justify-end">
                       <Switch
                         checked={item.enabled}
@@ -82,7 +82,11 @@ export function EditFeaturesModal({ open, onClose, pkg, onSave }: EditFeaturesMo
           <Button type="button" variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button type="button" className="bg-[#6BBF2D] hover:bg-[#5aad26] text-white" onClick={handleSave}>
+          <Button
+            type="button"
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={handleSave}
+          >
             Save changes
           </Button>
         </div>
@@ -90,4 +94,3 @@ export function EditFeaturesModal({ open, onClose, pkg, onSave }: EditFeaturesMo
     </ModalWrapper>
   )
 }
-

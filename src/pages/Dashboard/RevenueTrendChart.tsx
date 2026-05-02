@@ -58,7 +58,7 @@ export function RevenueTrendChart({ data, selectedYear, onYearChange }: RevenueT
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: 0.2 }}
     >
-      <Card className="rounded-2xl border border-border/60 bg-white shadow-sm">
+      <Card className="rounded-2xl  bg-card shadow-sm">
         <CardHeader className="pb-2">
           <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
             <div>

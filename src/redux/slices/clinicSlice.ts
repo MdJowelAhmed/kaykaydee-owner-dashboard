@@ -34,6 +34,26 @@ function buildMockClinics(): Clinic[] {
 
 const mockClinics = buildMockClinics()
 
+function applyClinicFilters(list: Clinic[], filters: ClinicFilters): Clinic[] {
+  let filtered = [...list]
+  if (filters.search) {
+    const q = filters.search.toLowerCase()
+    filtered = filtered.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.email.toLowerCase().includes(q) ||
+        c.contact.includes(filters.search)
+    )
+  }
+  if (filters.status !== 'all') {
+    filtered = filtered.filter((c) => c.status === filters.status)
+  }
+  if (filters.package !== 'all') {
+    filtered = filtered.filter((c) => c.packagePlan === filters.package)
+  }
+  return filtered
+}
+
 interface ClinicState {
   list: Clinic[]
   filteredList: Clinic[]
@@ -65,29 +85,16 @@ const clinicSlice = createSlice({
   reducers: {
     setFilters: (state, action: PayloadAction<Partial<ClinicFilters>>) => {
       state.filters = { ...state.filters, ...action.payload }
-      let filtered = [...state.list]
-
-      if (state.filters.search) {
-        const q = state.filters.search.toLowerCase()
-        filtered = filtered.filter(
-          (c) =>
-            c.name.toLowerCase().includes(q) ||
-            c.email.toLowerCase().includes(q) ||
-            c.contact.includes(state.filters.search)
-        )
-      }
-
-      if (state.filters.status !== 'all') {
-        filtered = filtered.filter((c) => c.status === state.filters.status)
-      }
-
-      if (state.filters.package !== 'all') {
-        filtered = filtered.filter((c) => c.packagePlan === state.filters.package)
-      }
-
-      state.filteredList = filtered
-      state.pagination.total = filtered.length
-      state.pagination.totalPages = Math.ceil(filtered.length / state.pagination.limit)
+      state.filteredList = applyClinicFilters(state.list, state.filters)
+      state.pagination.total = state.filteredList.length
+      state.pagination.totalPages = Math.ceil(state.filteredList.length / state.pagination.limit)
+      state.pagination.page = 1
+    },
+    addClinic: (state, action: PayloadAction<Clinic>) => {
+      state.list = [action.payload, ...state.list]
+      state.filteredList = applyClinicFilters(state.list, state.filters)
+      state.pagination.total = state.filteredList.length
+      state.pagination.totalPages = Math.ceil(state.filteredList.length / state.pagination.limit)
       state.pagination.page = 1
     },
     setPage: (state, action: PayloadAction<number>) => {
@@ -101,6 +108,6 @@ const clinicSlice = createSlice({
   },
 })
 
-export const { setFilters, setPage, setLimit } = clinicSlice.actions
+export const { setFilters, setPage, setLimit, addClinic } = clinicSlice.actions
 
 export default clinicSlice.reducer

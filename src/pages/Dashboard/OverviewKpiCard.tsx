@@ -30,7 +30,7 @@ export function OverviewKpiCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.06 }}
       className={cn(
-        'group relative overflow-hidden rounded-2xl border border-border/60 bg-white p-6 shadow-sm',
+        'group relative overflow-hidden rounded-2xl  p-6 shadow-sm bg-card',
         'transition-all duration-200 ease-out',
         'hover:border-black hover:bg-black hover:shadow-lg'
       )}

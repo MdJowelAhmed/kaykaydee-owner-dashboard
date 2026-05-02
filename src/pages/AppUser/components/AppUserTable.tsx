@@ -20,37 +20,40 @@ interface AppUserTableProps {
   onInfoClick?: (user: AppUserRow) => void
 }
 
+const thBase =
+  'bg-primary px-5 py-4 text-sm font-medium text-accent-foreground first:rounded-tl-2xl last:rounded-tr-2xl'
+
 export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTableProps) {
   return (
-    <div className="w-full overflow-auto rounded-2xl border border-slate-100 bg-white shadow-sm">
+    <div className="w-full overflow-auto rounded-2xl border border-border bg-card shadow-sm">
       <table className="w-full min-w-[1100px]">
         <thead>
-          <tr className="bg-primary text-white">
-            <th className="px-5 py-4 text-left text-sm font-medium">ID. No</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">Patient Name</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">Contact No</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">Email</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">Date</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">User Join Date</th>
-            <th className="px-5 py-4 text-left text-sm font-medium">Action</th>
+          <tr>
+            <th className={cn(thBase, 'text-left')}>ID. No</th>
+            <th className={cn(thBase, 'text-left')}>Patient Name</th>
+            <th className={cn(thBase, 'text-left')}>Contact No</th>
+            <th className={cn(thBase, 'text-left')}>Email</th>
+            <th className={cn(thBase, 'text-left')}>Date</th>
+            <th className={cn(thBase, 'text-left')}>User Join Date</th>
+            <th className={cn(thBase, 'text-left')}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-border bg-card">
           {users.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-5 py-8 text-center text-sm text-slate-500">
+              <td colSpan={7} className="px-5 py-8 text-center text-sm text-muted-foreground">
                 No app users found
               </td>
             </tr>
           ) : (
             users.map((user) => (
-              <tr key={user.id} className="hover:bg-slate-50/80 transition-colors">
-                <td className="px-5 py-3 text-sm text-[#666666]">#{user.id}</td>
-                <td className="px-5 py-3 text-sm text-[#666666]">{user.patientName}</td>
-                <td className="px-5 py-3 text-sm text-[#666666]">{user.contactNo}</td>
-                <td className="px-5 py-3 text-sm text-[#666666]">{user.email}</td>
-                <td className="px-5 py-3 text-sm text-[#666666]">{user.joinedDate}</td>
-                <td className="px-5 py-3 text-sm text-[#666666] max-w-[240px] truncate">
+              <tr key={user.id} className="transition-colors hover:bg-muted/50">
+                <td className="px-5 py-3 text-sm text-muted-foreground">#{user.id}</td>
+                <td className="px-5 py-3 text-sm text-foreground">{user.patientName}</td>
+                <td className="px-5 py-3 text-sm text-foreground">{user.contactNo}</td>
+                <td className="px-5 py-3 text-sm text-foreground">{user.email}</td>
+                <td className="px-5 py-3 text-sm text-foreground">{user.joinedDate}</td>
+                <td className="max-w-[240px] truncate px-5 py-3 text-sm text-foreground">
                   {user.address}
                 </td>
                 <td className="px-5 py-3">
@@ -59,7 +62,7 @@ export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTable
                       type="button"
                       variant="ghost"
                       size="icon-sm"
-                      className="h-7 w-7 rounded-full text-[#6F6F6F] hover:bg-slate-100"
+                      className="h-7 w-7 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
                       aria-label="User details"
                       onClick={() => onInfoClick?.(user)}
                     >
@@ -69,8 +72,10 @@ export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTable
                       type="button"
                       onClick={() => onStatusClick(user)}
                       className={cn(
-                        'text-sm font-medium capitalize',
-                        user.status === 'active' ? 'text-[#1CB84E]' : 'text-[#FF5A5F]'
+                        'text-sm font-medium capitalize hover:underline',
+                        user.status === 'active'
+                          ? 'text-emerald-600 dark:text-emerald-400'
+                          : 'text-red-600 dark:text-red-400'
                       )}
                     >
                       {user.status}

@@ -73,7 +73,7 @@ export default function SubscriptionPackagePage() {
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#2d2d2d] md:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
             Subscription Package
           </h1>
           <p className="mt-1 text-sm text-muted-foreground md:text-base">
@@ -83,7 +83,7 @@ export default function SubscriptionPackagePage() {
         <Button
           type="button"
           onClick={openCreate}
-          className="shrink-0 gap-2 rounded-md bg-primary text-white hover:bg-[#5aad26]"
+          className="shrink-0 gap-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90"
         >
           <Plus className="h-5 w-5" />
           Add package
@@ -108,7 +108,7 @@ export default function SubscriptionPackagePage() {
       </div>
 
       {packages.length === 0 && (
-        <p className="text-center text-muted-foreground py-12 border rounded-xl bg-white">
+        <p className="rounded-xl border border-border bg-card py-12 text-center text-muted-foreground">
           No packages yet. Click &quot;Add package&quot; to create one.
         </p>
       )}

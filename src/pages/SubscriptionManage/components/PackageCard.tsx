@@ -18,53 +18,47 @@ export function PackageCard({ pkg, onToggleEnabled, onEditFeatures }: PackageCar
   const flatFeatures = pkg.featureGroups.flatMap((g) => g.items)
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white shadow-sm overflow-hidden">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <div className="p-6">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-800">{pkg.name}</h3>
+            <h3 className="text-lg font-semibold text-foreground">{pkg.name}</h3>
             <p className="mt-1 text-sm text-muted-foreground">
-              {pkg.cycle === 'trial' ? '0' : `$${pkg.price}`} <span className="text-slate-500">{cycleLabel(pkg.cycle)}</span>
+              {pkg.cycle === 'trial' ? '0' : `$${pkg.price}`}{' '}
+              <span className="text-muted-foreground/90">{cycleLabel(pkg.cycle)}</span>
             </p>
           </div>
-          
         </div>
 
-        <div className="mt-4 flex items-center justify-between gap-4 border-t border-slate-100 pt-4">
+        <div className="mt-4 flex items-center justify-between gap-4 border-t border-border pt-4">
           <div>
-            <p className="text-sm font-medium text-slate-800">Enable</p>
+            <p className="text-sm font-medium text-foreground">Enable</p>
           </div>
           <Switch checked={pkg.enabled} onCheckedChange={onToggleEnabled} />
         </div>
 
-        <div className="mt-4 border-t border-slate-100 pt-4">
+        <div className="mt-4 border-t border-border pt-4">
           <ul className="space-y-2 text-sm">
             {flatFeatures.slice(0, 6).map((f) => (
-              <li key={f.id} className="flex items-center gap-2 text-slate-700">
+              <li key={f.id} className="flex items-center gap-2 text-foreground">
                 <span
                   className={cn(
                     'inline-block h-1.5 w-1.5 rounded-full',
-                    f.enabled ? 'bg-[#6BBF2D]' : 'bg-slate-300'
+                    f.enabled ? 'bg-primary' : 'bg-muted-foreground/40'
                   )}
                 />
-                <span className={cn(!f.enabled && 'text-slate-400')}>{f.label}</span>
+                <span className={cn(!f.enabled && 'text-muted-foreground')}>{f.label}</span>
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="p-4 border-t border-slate-100 bg-slate-50/40 mt-12">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full rounded-xl bg-white"
-          onClick={onEditFeatures}
-        >
+      <div className="mt-12 border-t border-border bg-muted/30 p-4">
+        <Button type="button" variant="outline" className="w-full rounded-xl" onClick={onEditFeatures}>
           Edit Features
         </Button>
       </div>
     </div>
   )
 }
-

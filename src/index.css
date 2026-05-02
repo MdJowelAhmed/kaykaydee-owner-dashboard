@@ -36,24 +36,24 @@
 
   .dark {
     color-scheme: dark;
-    --background: #0c0e10;
+    --background: #181c1f;
     --foreground: #f1f5f9;
-    --card: #15181c;
+    --card: #212529;
     --card-foreground: #f1f5f9;
     --popover: #1a1e24;
     --popover-foreground: #f1f5f9;
-    --primary: #b794f6;
+    --primary: #0c0e10;
     --primary-foreground: #1a1033;
     --secondary: #1e293b;
     --secondary-foreground: #e2e8f0;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
-    --accent: #e2e8f0;
-    --accent-foreground: #0f172a;
+    --accent: ffffffcc;
+    --accent-foreground: #ffffffcc;
     --destructive: #f87171;
     --destructive-foreground: #1f2937;
     --border: #2d3748;
-    --input: #1e293b;
+    --input: #181c1f;
     --ring: #b794f6;
     --sidebar: #12161c;
     --sidebar-foreground: #e2e8f0;

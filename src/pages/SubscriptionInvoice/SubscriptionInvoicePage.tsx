@@ -94,10 +94,10 @@ export default function SubscriptionInvoicePage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-6"
     >
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden rounded-xl">
+      <Card className="overflow-hidden rounded-2xl bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <h1 className="text-xl font-bold text-slate-800 shrink-0">Subscription Invoice</h1>
+            <h1 className="shrink-0 text-xl font-bold text-foreground">Subscription Invoice</h1>
 
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:flex-1 lg:justify-end lg:gap-3">
               <SearchInput
@@ -105,14 +105,14 @@ export default function SubscriptionInvoicePage() {
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full lg:max-w-md lg:flex-1"
-                inputClassName="rounded-full h-11 bg-white border-slate-200"
+                inputClassName="h-11 rounded-full border-border bg-background text-foreground placeholder:text-muted-foreground"
               />
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Select
                   value={issueDate}
                   onValueChange={(v) => setParams({ issueDate: v, page: 1 })}
                 >
-                  <SelectTrigger className="w-full sm:w-[140px] h-11 rounded-full bg-white border-slate-200 text-slate-700">
+                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[140px]">
                     <SelectValue placeholder="Issue Date" />
                   </SelectTrigger>
                   <SelectContent>
@@ -127,7 +127,7 @@ export default function SubscriptionInvoicePage() {
                   value={status}
                   onValueChange={(v) => setParams({ status: v, page: 1 })}
                 >
-                  <SelectTrigger className="w-full sm:w-[130px] h-11 rounded-full bg-white border-slate-200 text-slate-700">
+                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[130px]">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -142,7 +142,7 @@ export default function SubscriptionInvoicePage() {
                   value={dateline}
                   onValueChange={(v) => setParams({ dateline: v, page: 1 })}
                 >
-                  <SelectTrigger className="w-full sm:w-[140px] h-11 rounded-full bg-white border-slate-200 text-slate-700">
+                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[140px]">
                     <SelectValue placeholder="Dateline" />
                   </SelectTrigger>
                   <SelectContent>
@@ -159,7 +159,7 @@ export default function SubscriptionInvoicePage() {
         </CardContent>
       </Card>
 
-      <Card className="bg-white border border-slate-100 shadow-sm overflow-hidden rounded-xl">
+      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
         <CardContent className="p-0">
           <SubscriptionInvoiceTable
             rows={paginated}
@@ -190,7 +190,7 @@ export default function SubscriptionInvoicePage() {
             onInfo={setDetailRow}
           />
 
-          <div className="px-4 sm:px-6 border-t border-slate-100">
+          <div className="border-t border-border px-4 sm:px-6">
             <Pagination
               variant="minimal"
               showItemsPerPage={false}
@@ -210,47 +210,47 @@ export default function SubscriptionInvoicePage() {
         title="Invoice details"
         description={detailRow ? `${detailRow.userName} · #${detailRow.id}` : undefined}
         size="md"
-        className="bg-white max-w-2xl"
+        className="max-w-2xl"
       >
         {detailRow && (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
             <div>
               <dt className="text-muted-foreground">Reg. ID</dt>
-              <dd className="font-medium text-slate-800">#{detailRow.id}</dd>
+              <dd className="font-medium text-foreground">#{detailRow.id}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Pac. ID</dt>
-              <dd className="font-medium text-slate-800">{detailRow.pacId}</dd>
+              <dd className="font-medium text-foreground">{detailRow.pacId}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Status</dt>
-              <dd className="font-medium text-slate-800 capitalize">{detailRow.status}</dd>
+              <dd className="font-medium capitalize text-foreground">{detailRow.status}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Contact</dt>
-              <dd className="font-medium text-slate-800">{detailRow.contact}</dd>
+              <dd className="font-medium text-foreground">{detailRow.contact}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Email</dt>
-              <dd className="font-medium text-slate-800 break-all">{detailRow.email}</dd>
+              <dd className="break-all font-medium text-foreground">{detailRow.email}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Package</dt>
-              <dd className="font-medium text-slate-800">{detailRow.package}</dd>
+              <dd className="font-medium text-foreground">{detailRow.package}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Price</dt>
-              <dd className="font-medium text-slate-800">${detailRow.price}</dd>
+              <dd className="font-medium text-foreground">${detailRow.price}</dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Issue Date</dt>
-              <dd className="font-medium text-slate-800">
+              <dd className="font-medium text-foreground">
                 {formatInvoiceDate(detailRow.issueDate)}
               </dd>
             </div>
             <div>
               <dt className="text-muted-foreground">Dateline</dt>
-              <dd className="font-medium text-slate-800">
+              <dd className="font-medium text-foreground">
                 {formatInvoiceDate(detailRow.dateline)}
               </dd>
             </div>

@@ -13,7 +13,7 @@ export function AdminRowActions({ onInfo, onEdit }: AdminRowActionsProps) {
         type="button"
         variant="ghost"
         size="icon-sm"
-        className="h-9 w-9 rounded-full text-slate-500 hover:text-secondary hover:bg-slate-100"
+        className="h-9 w-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
         onClick={onInfo}
         aria-label="Admin details"
       >
@@ -23,7 +23,7 @@ export function AdminRowActions({ onInfo, onEdit }: AdminRowActionsProps) {
         type="button"
         variant="ghost"
         size="icon-sm"
-        className="h-9 w-9 rounded-full text-slate-500 hover:text-secondary hover:bg-slate-100"
+        className="h-9 w-9 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
         onClick={onEdit}
         aria-label="Edit admin"
       >
@@ -32,4 +32,3 @@ export function AdminRowActions({ onInfo, onEdit }: AdminRowActionsProps) {
     </div>
   )
 }
-
