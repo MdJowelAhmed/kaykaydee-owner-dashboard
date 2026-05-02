@@ -109,9 +109,9 @@ const FAQ = () => {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <Card className="bg-white border-0 shadow-sm">
+      <Card className="bg-card  border-0 shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between pb-6">
-          <CardTitle className="text-xl font-bold text-slate-800">FAQ</CardTitle>
+          <CardTitle className="text-xl font-bold text-accent">FAQ</CardTitle>
           <div className="flex items-center gap-3">
             {/* Search Input */}
             <SearchInput
@@ -130,7 +130,7 @@ const FAQ = () => {
             {/* Add New FAQ Button */}
             <Button
               onClick={handleAddNew}
-              className="bg-primary-foreground hover:bg-blue-700 text-white"
+              className="bg-primary text-accent-foreground hover:bg-primary/90"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add New FAQ

@@ -24,7 +24,6 @@ export function Header() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const theme = useAppSelector((state) => state.ui.theme)
-  const { user } = useAppSelector((state) => state.auth)
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
@@ -109,7 +108,7 @@ export function Header() {
           <NotificationPreviewDialog />
 
           {/* User menu */}
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-12 w-12">
@@ -149,7 +148,7 @@ export function Header() {
                 Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       </div>
       <ConfirmDialog

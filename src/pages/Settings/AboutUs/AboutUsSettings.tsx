@@ -205,7 +205,7 @@ export default function AboutUsSettings() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="-mx-6 -mt-6 mb-0 min-h-[calc(100vh-5rem)] bg-[#F3F4F6] px-6 pb-10 pt-6 lg:-mx-8 lg:px-8"
+      className="-mx-6 -mt-6 mb-0 min-h-[calc(100vh-5rem)] bg-card px-6 pb-10 pt-6 lg:-mx-8 lg:px-8"
     >
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
@@ -214,13 +214,13 @@ export default function AboutUsSettings() {
             onChange={setSearch}
             placeholder="Search here"
             className="w-full sm:w-[min(100%,280px)] sm:ml-auto"
-            inputClassName=" rounded-lg border-[#E5E7EB] bg-white text-[#111827] placeholder:text-[#9CA3AF] shadow-sm"
+            inputClassName=" rounded-lg border-border bg-background text-accent placeholder:text-accent-foreground shadow-sm"
           />
           <Select
             value={dateFilter}
             onValueChange={(v) => setDateFilter(v as DateFilter)}
           >
-            <SelectTrigger className=" w-full rounded-lg border-[#E5E7EB] bg-white text-[#374151] shadow-sm sm:w-[140px]">
+            <SelectTrigger className=" w-full rounded-lg border-border bg-background text-accent shadow-sm sm:w-[140px]">
               <SelectValue placeholder="Date" />
             </SelectTrigger>
             <SelectContent>
@@ -234,7 +234,7 @@ export default function AboutUsSettings() {
             <Button
               type="button"
               onClick={openAdd}
-              className="rounded-md  px-4 font-medium text-white "
+              className="rounded-md  px-4 font-medium text-accent  "
             >
               <Plus className="mr-2 h-4 w-4" />
               Add Template
@@ -244,20 +244,20 @@ export default function AboutUsSettings() {
 
         <div className="space-y-4">
           {filtered.length === 0 ? (
-            <div className="rounded-xl border border-[#E5E7EB] bg-white p-10 text-center text-sm text-[#6B7280] shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-10 text-center text-sm text-accent shadow-sm">
               No sections match your search or date filter.
             </div>
           ) : (
             filtered.map((section) => (
               <article
                 key={section.id}
-                className="flex gap-4 rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-sm"
+                className="flex gap-4 rounded-xl border border-border bg-card p-5 shadow-sm"
               >
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-base font-bold text-[#111827]">
+                  <h2 className="text-base font-bold text-accent">
                     {section.title}
                   </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">
+                  <p className="mt-2 text-sm leading-relaxed text-accent">
                     {section.body}
                   </p>
                 </div>
@@ -266,7 +266,7 @@ export default function AboutUsSettings() {
                     <TooltipTrigger asChild>
                       <button
                         type="button"
-                        className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition-colors hover:bg-[#F3F4F6] hover:text-[#374151]"
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-accent transition-colors hover:bg-primary hover:text-accent-foreground"
                         aria-label={`About ${section.title}`}
                       >
                         <Info className="h-5 w-5" strokeWidth={1.75} />
@@ -274,15 +274,15 @@ export default function AboutUsSettings() {
                     </TooltipTrigger>
                     <TooltipContent
                       side="left"
-                      className="max-w-xs border-[#E5E7EB] bg-white text-left text-[#374151] shadow-md"
+                      className="max-w-xs border-border bg-background text-left text-accent shadow-md"
                     >
                       <p className="font-medium text-[#111827]">
                         {section.title}
                       </p>
-                      <p className="mt-1 text-xs text-[#6B7280]">
+                      <p className="mt-1 text-xs text-accent">
                         Last updated: {formatDisplayDate(section.updatedAt)}
                       </p>
-                      <p className="mt-1 text-xs text-[#9CA3AF]">
+                      <p className="mt-1 text-xs text-accent">
                         {section.body.length} characters
                       </p>
                     </TooltipContent>
@@ -292,7 +292,7 @@ export default function AboutUsSettings() {
                       type="button"
                       onClick={() => openEdit(section)}
                       className={cn(
-                        'flex h-9 w-9 items-center justify-center rounded-full text-[#6B7280] transition-colors hover:bg-[#F3F4F6] hover:text-[#374151]'
+                        'flex h-9 w-9 items-center justify-center rounded-full text-accent transition-colors hover:bg-primary hover:text-accent-foreground'
                       )}
                       aria-label={`Edit ${section.title}`}
                     >
@@ -312,7 +312,7 @@ export default function AboutUsSettings() {
           if (!open) closeModal()
         }}
       >
-        <DialogContent className="max-w-2xl border-[#E5E7EB] bg-white">
+        <DialogContent className="max-w-2xl border-border bg-background">
           <DialogHeader>
             <DialogTitle>
               {modalMode === 'create' ? 'Add template' : 'Edit section'}
@@ -331,7 +331,7 @@ export default function AboutUsSettings() {
                 value={formTitle}
                 onChange={(e) => setFormTitle(e.target.value)}
                 placeholder={titleFieldPlaceholder}
-                className="rounded-lg border-[#E5E7EB]"
+                className="rounded-lg border-border bg-background text-accent placeholder:text-accent-foreground"
               />
             </div>
             <div className="grid gap-2">
@@ -342,7 +342,7 @@ export default function AboutUsSettings() {
                 onChange={(e) => setFormBody(e.target.value)}
                 placeholder={bodyFieldPlaceholder}
                 rows={6}
-                className="resize-y rounded-lg border-[#E5E7EB] text-sm"
+                className="resize-y rounded-lg border-border bg-background text-accent placeholder:text-accent-foreground"
               />
             </div>
           </div>
@@ -354,7 +354,7 @@ export default function AboutUsSettings() {
               type="button"
               onClick={handleModalSave}
               isLoading={saving}
-              className="bg-[#1E293B] text-white hover:bg-[#334155]"
+              className="bg-primary text-accent-foreground hover:bg-primary/90"
             >
               {modalMode === 'create' ? 'Save' : 'Save changes'}
             </Button>

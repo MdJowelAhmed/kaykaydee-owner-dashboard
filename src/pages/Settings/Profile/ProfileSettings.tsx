@@ -87,19 +87,19 @@ export default function ProfileSettings() {
       className="flex flex-col gap-6"
     >
       {/* Top profile banner */}
-      <Card className="overflow-hidden rounded-2xl border border-indigo-500/40 bg-slate-900 shadow-sm">
+      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
         <CardContent className="p-0">
           <div className="flex items-stretch gap-5 p-4 sm:p-5">
-            <div className="h-[110px] w-[140px] shrink-0 overflow-hidden rounded-xl bg-slate-800 ring-1 ring-white/10">
+            <div className="h-[110px] w-[140px] shrink-0 overflow-hidden rounded-xl bg-card ring-1 ring-white/10">
               <img src={avatar} alt="" className="h-full w-full object-cover" />
             </div>
             <div className="flex min-w-0 flex-1 items-start justify-between gap-4">
               <div className="min-w-0">
-                <p className="text-lg font-semibold text-white truncate">{helloName}</p>
-                <p className="mt-1 text-xs text-white/70">{roleLabel}</p>
-                <p className="mt-2 text-xs text-white/60">{idLabel}</p>
+                <p className="text-lg font-semibold text-accent truncate">{helloName}</p>
+                <p className="mt-1 text-xs text-accent">{roleLabel}</p>
+                <p className="mt-2 text-xs text-accent">{idLabel}</p>
               </div>
-              <span className="inline-flex items-center rounded-full bg-violet-600/20 px-4 py-1 text-xs font-medium text-violet-200 ring-1 ring-violet-500/40">
+              <span className="inline-flex items-center rounded-full  px-4 py-1 text-xs font-medium text-accent ring-1 ring-primary/40">
                 {status}
               </span>
             </div>
@@ -108,7 +108,7 @@ export default function ProfileSettings() {
       </Card>
 
       {/* Form card */}
-      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm">
+      <Card className="overflow-hidden rounded-2xl border border-slate-100 bg-card shadow-sm">
         <CardContent className="p-5 sm:p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -116,7 +116,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.name && 'text-destructive')}>Name</Label>
                 <Input
                   {...register('name')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   placeholder="Name"
                 />
                 {errors.name?.message && (
@@ -131,7 +131,7 @@ export default function ProfileSettings() {
                   name="designation"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-11 bg-white border-slate-200 rounded-md">
+                      <SelectTrigger className="h-11 bg-background border-slate-200 rounded-md">
                         <SelectValue placeholder="Designation" />
                       </SelectTrigger>
                       <SelectContent>
@@ -151,7 +151,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.contact && 'text-destructive')}>Contact</Label>
                 <Input
                   {...register('contact')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   placeholder="Contact"
                 />
                 {errors.contact?.message && (
@@ -163,7 +163,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.email && 'text-destructive')}>Email</Label>
                 <Input
                   {...register('email')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   placeholder="Email"
                   type="email"
                 />
@@ -176,7 +176,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.dateOfBirth && 'text-destructive')}>Date of Birth</Label>
                 <Input
                   {...register('dateOfBirth')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   type="date"
                 />
                 {errors.dateOfBirth?.message && (
@@ -191,7 +191,7 @@ export default function ProfileSettings() {
                   name="gender"
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="h-11 bg-white border-slate-200 rounded-md">
+                      <SelectTrigger className="h-11 bg-background border-slate-200 rounded-md">
                         <SelectValue placeholder="Gender" />
                       </SelectTrigger>
                       <SelectContent>
@@ -211,7 +211,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.address && 'text-destructive')}>Address</Label>
                 <Input
                   {...register('address')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   placeholder="Address"
                 />
                 {errors.address?.message && (
@@ -223,7 +223,7 @@ export default function ProfileSettings() {
                 <Label className={cn(errors.nationalId && 'text-destructive')}>National ID</Label>
                 <Input
                   {...register('nationalId')}
-                  className="bg-white border-slate-200 rounded-md"
+                  className="bg-background border-slate-200 rounded-md"
                   placeholder="National ID"
                 />
                 {errors.nationalId?.message && (
@@ -233,14 +233,14 @@ export default function ProfileSettings() {
             </div>
 
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pt-2">
-              <label className="flex items-center gap-3 text-xs text-slate-500 select-none">
+              <label className="flex items-center gap-3 text-xs text-accent select-none">
                 <Checkbox checked={confirm} onCheckedChange={(v) => setConfirm(v === true)} />
                 Confirm changes of your profile info, this will save permanently.
               </label>
 
               <Button
                 type="submit"
-                className="h-11 w-full sm:w-auto px-10 rounded-xl bg-slate-900 text-white hover:bg-slate-900/90"
+                className="h-11 w-full sm:w-auto px-10 rounded-xl bg-primary text-accent-foreground hover:bg-primary/90"
                 isLoading={isSubmitting}
                 disabled={!confirm || isSubmitting}
               >
