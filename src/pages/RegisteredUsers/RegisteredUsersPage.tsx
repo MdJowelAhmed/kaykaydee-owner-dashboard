@@ -148,6 +148,9 @@ export default function RegisteredUsersPage() {
     setDetailsOpen(true)
   }
 
+  const filterInputClass =
+    'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -155,9 +158,12 @@ export default function RegisteredUsersPage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
-        <CardContent className="p-5 sm:p-6">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="overflow-hidden">
+        <div>
+         
+         
+
+            <div className="flex flex-wrap items-center justify-end gap-3">
             <SearchInput
               value={search}
               onChange={(value) => {
@@ -166,10 +172,8 @@ export default function RegisteredUsersPage() {
               }}
               placeholder="Search here"
               className="w-full lg:max-w-xl"
-              inputClassName="h-11 rounded-full border-border bg-background text-foreground placeholder:text-muted-foreground"
+              inputClassName={filterInputClass}
             />
-
-            <div className="flex flex-wrap items-center justify-end gap-3">
               <Select
                 value={regDateFilter}
                 onValueChange={(value) => {
@@ -177,7 +181,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-44">
+                <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -196,7 +200,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-36">
+                <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -215,7 +219,7 @@ export default function RegisteredUsersPage() {
                   setCurrentPage(1)
                 }}
               >
-                <SelectTrigger className="h-11 w-full rounded-full border-border bg-muted/50 text-foreground sm:w-36">
+                <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -228,11 +232,11 @@ export default function RegisteredUsersPage() {
               </Select>
             </div>
           </div>
-        </CardContent>
-      </Card>
+       
+      </div>
 
-      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <CardContent className="p-0">
+      <div className="overflow-hidden p-4 rounded-2xl border border-border bg-card shadow-sm">
+        <div className="">
           <RegisteredUsersTable users={paginatedUsers} onInfoClick={handleInfoClick} />
 
           <div className="border-t border-border px-4 sm:px-6">
@@ -247,8 +251,8 @@ export default function RegisteredUsersPage() {
               showItemsPerPage={false}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <RegisteredUserDetailsModal
         user={selectedUser}

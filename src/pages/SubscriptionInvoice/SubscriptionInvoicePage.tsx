@@ -87,6 +87,9 @@ export default function SubscriptionInvoicePage() {
     setParams({ page: newPage })
   }
 
+  const filterInputClass =
+    'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -94,8 +97,7 @@ export default function SubscriptionInvoicePage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-6"
     >
-      <Card className="overflow-hidden rounded-2xl bg-card shadow-sm">
-        <CardContent className="p-5 sm:p-6">
+      <div className="overflow-hidden">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <h1 className="shrink-0 text-xl font-bold text-foreground">Subscription Invoice</h1>
 
@@ -105,14 +107,14 @@ export default function SubscriptionInvoicePage() {
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full lg:max-w-md lg:flex-1"
-                inputClassName="h-11 rounded-full border-border bg-background text-foreground placeholder:text-muted-foreground"
+                inputClassName={filterInputClass}
               />
               <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 <Select
                   value={issueDate}
                   onValueChange={(v) => setParams({ issueDate: v, page: 1 })}
                 >
-                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[140px]">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Issue Date" />
                   </SelectTrigger>
                   <SelectContent>
@@ -127,7 +129,7 @@ export default function SubscriptionInvoicePage() {
                   value={status}
                   onValueChange={(v) => setParams({ status: v, page: 1 })}
                 >
-                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[130px]">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -142,7 +144,7 @@ export default function SubscriptionInvoicePage() {
                   value={dateline}
                   onValueChange={(v) => setParams({ dateline: v, page: 1 })}
                 >
-                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-[140px]">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Dateline" />
                   </SelectTrigger>
                   <SelectContent>
@@ -156,11 +158,10 @@ export default function SubscriptionInvoicePage() {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        
+      </div>
 
-      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <CardContent className="p-0">
+      <div className="overflow-hidden p-4 rounded-2xl  bg-card shadow-sm">
           <SubscriptionInvoiceTable
             rows={paginated}
             onDownload={(row) => {
@@ -201,8 +202,8 @@ export default function SubscriptionInvoicePage() {
               onPageChange={handlePageChange}
             />
           </div>
-        </CardContent>
-      </Card>
+        
+      </div>
 
       <ModalWrapper
         open={!!detailRow}

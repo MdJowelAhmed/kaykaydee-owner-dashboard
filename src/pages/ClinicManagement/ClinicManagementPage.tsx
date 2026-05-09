@@ -90,6 +90,8 @@ export default function ClinicManagementPage() {
       description: `${clinic.email} · ${clinic.staff} staff · ${clinic.patients} patients`,
     })
   }
+  const filterInputClass =
+    'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
 
   return (
     <motion.div
@@ -98,8 +100,8 @@ export default function ClinicManagementPage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-8"
     >
-      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
-        <CardContent className="p-5 sm:p-6">
+      <div className="overflow-hidden">
+        <div>
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
             <div className="flex items-center justify-end gap-4">
               <SearchInput
@@ -107,11 +109,11 @@ export default function ClinicManagementPage() {
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full sm:flex-1 sm:max-w-xl"
-                inputClassName="h-11 rounded-full border-border bg-background text-foreground shadow-sm placeholder:text-muted-foreground"
+                inputClassName={filterInputClass}
               />
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Select value={packageFilter} onValueChange={handlePackageFilter}>
-                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-44 placeholder:text-muted-foreground">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Package" />
                   </SelectTrigger>
                   <SelectContent>
@@ -123,7 +125,7 @@ export default function ClinicManagementPage() {
                   </SelectContent>
                 </Select>
                 <Select value={status} onValueChange={handleStatusFilter}>
-                  <SelectTrigger className="h-11 w-full rounded-full border-border bg-background text-foreground sm:w-44 placeholder:text-muted-foreground">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -145,10 +147,14 @@ export default function ClinicManagementPage() {
               Add Clinics
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <ClinicTable clinics={paginatedData} onInfo={handleInfo} />
+      <div className="overflow-hidden p-4 rounded-2xl  bg-card shadow-sm">
+        <div className="">
+          <ClinicTable clinics={paginatedData} onInfo={handleInfo} />
+        </div>
+      </div>
 
       <Pagination
         currentPage={Math.min(pagination.page, totalPages)}

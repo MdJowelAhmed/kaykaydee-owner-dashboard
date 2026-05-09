@@ -121,6 +121,8 @@ export default function AppUserPage() {
       setIsUpdatingStatus(false)
     }
   }
+  const filterInputClass =
+    'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
 
   return (
     <motion.div
@@ -129,8 +131,8 @@ export default function AppUserPage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <Card className="overflow-hidden rounded-2xl bg-card shadow-sm">
-        <CardContent className="p-5 sm:p-6">
+      <div className="overflow-hidden">
+        <div>
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
             <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
               <SearchInput
@@ -138,10 +140,10 @@ export default function AppUserPage() {
                 onChange={handleSearch}
                 placeholder="Search here"
                 className="w-full sm:max-w-xl"
-                inputClassName="h-11 rounded-xl border-border bg-background text-foreground placeholder:text-muted-foreground"
+                inputClassName={filterInputClass}
               />
               <Select value={dateFilter} onValueChange={handleDateFilter}>
-                <SelectTrigger className="h-11 w-full rounded-xl border-border bg-background text-foreground sm:w-36">
+                <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                   <SelectValue placeholder="Date" />
                 </SelectTrigger>
                 <SelectContent>
@@ -162,14 +164,18 @@ export default function AppUserPage() {
               Include Patient
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <AppUserTable
-        users={paginatedUsers}
-        onStatusClick={handleStatusClick}
-        onInfoClick={handleInfoClick}
-      />
+      <div className="overflow-hidden p-4 rounded-2xl border border-border bg-card shadow-sm">
+        <div className="">
+          <AppUserTable
+            users={paginatedUsers}
+            onStatusClick={handleStatusClick}
+            onInfoClick={handleInfoClick}
+          />
+        </div>
+      </div>
 
       <Pagination
         currentPage={Math.min(currentPage, totalPages)}

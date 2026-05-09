@@ -36,43 +36,48 @@ function packageLabel(kind: PackageKind) {
 
 const thBase =
   'bg-primary px-5 py-4 text-sm font-medium text-accent-foreground first:rounded-tl-xl last:rounded-tr-xl'
+  const headerBg = 'bg-[#E9EBF0] dark:bg-background'
+  const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
+  const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
 
 export function RegisteredUsersTable({ users, onInfoClick }: RegisteredUsersTableProps) {
   return (
-    <div className="w-full overflow-auto">
+    <div className="w-full overflow-auto rounded-2xl  bg-card ">
       <table className="w-full min-w-[1200px]">
         <thead>
-          <tr className="bg-primary text-accent-foreground">
-            <th className={cn(thBase, 'text-left')}>Reg. ID</th>
-            <th className={cn(thBase, 'text-left')}>User Name</th>
-            <th className={cn(thBase, 'text-left')}>Contact</th>
-            <th className={cn(thBase, 'text-left')}>Email</th>
-            <th className={cn(thBase, 'text-left')}>Package</th>
-            <th className={cn(thBase, 'text-left')}>Reg. Date</th>
-            <th className={cn(thBase, 'text-right')}>Action</th>
+          <tr className="">
+            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>Reg. ID</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>User Name</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Contact</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Email</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Package</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Reg. Date</th>
+            <th className={cn(headerCell, headerBg, 'text-right rounded-r-full')}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border bg-card">
+        <tbody className="bg-card text-accent-foreground">
           {users.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-5 py-10 text-center text-sm text-muted-foreground">
+              <td colSpan={7} className="px-5 py-10 text-center text-sm text-accent-foreground">
                 No registered users found
               </td>
             </tr>
           ) : (
             users.map((user) => (
               <tr key={user.id} className="transition-colors hover:bg-muted/50">
-                <td className="px-5 py-3 text-sm text-muted-foreground">#{user.id}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.userName}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.contactNo}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.email}</td>
-                <td className="px-5 py-3">
+                  <td className={bodyCell}>#{user.id}</td>
+                <td className={bodyCell}>{user.userName}</td>
+                <td className={bodyCell}>{user.contactNo}</td>
+                <td className={bodyCell}>
+                  <span className="break-all text-sm text-foreground">{user.email}</span>
+                </td>
+                <td className={bodyCell}>
                   <span className="inline-flex rounded-md bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
                     {packageLabel(user.packageKind)}
-                  </span>
+                    </span>
                 </td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.regDateLabel}</td>
-                <td className="px-5 py-3 text-right">
+                <td className={bodyCell}>{user.regDateLabel}</td>
+                <td className={bodyCell}>
                   <Button
                     type="button"
                     variant="ghost"

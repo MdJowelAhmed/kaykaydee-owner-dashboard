@@ -16,27 +16,30 @@ const thBase =
   'bg-primary px-6 py-4 text-sm font-semibold text-accent-foreground first:rounded-tl-xl last:rounded-tr-xl'
 
 export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: SubscriptionInvoiceTableProps) {
+  const headerBg = 'bg-[#E9EBF0] dark:bg-background'
+  const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
+  const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
   return (
-    <div className="w-full overflow-auto rounded-xl">
+    <div className="w-full overflow-auto rounded-2xl  bg-card ">
       <table className="w-full min-w-[1200px]">
         <thead>
           <tr>
-            <th className={cn(thBase, 'text-left')}>Reg. ID</th>
-            <th className={cn(thBase, 'text-left')}>Pac. ID</th>
-            <th className={cn(thBase, 'text-left')}>User Name</th>
-            <th className={cn(thBase, 'text-left')}>Contact</th>
-            <th className={cn(thBase, 'text-left')}>Email</th>
-            <th className={cn(thBase, 'text-left')}>Package</th>
-            <th className={cn(thBase, 'text-left')}>price</th>
-            <th className={cn(thBase, 'text-left')}>Issue Date</th>
-            <th className={cn(thBase, 'text-left')}>Dateline</th>
-            <th className={cn(thBase, 'text-right')}>Action</th>
+            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>Reg. ID</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Pac. ID</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>User Name</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Contact</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Email</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Package</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>price</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Issue Date</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Dateline</th>
+            <th className={cn(headerCell, headerBg, 'text-right rounded-r-full')}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border bg-card">
+        <tbody className="bg-card text-accent-foreground">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={10} className="px-6 py-10 text-center text-sm text-muted-foreground">
+                  <td colSpan={10} className="px-6 py-10 text-center text-sm text-accent-foreground">
                 No subscription invoices found
               </td>
             </tr>
@@ -49,22 +52,22 @@ export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: Subscript
                 transition={{ delay: Math.min(0.04 * index, 0.4) }}
                 className="transition-colors hover:bg-muted/50"
               >
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm font-medium text-muted-foreground">#{row.id}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm font-medium text-muted-foreground">{row.pacId}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm text-foreground">{row.userName}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm text-foreground">{row.contact}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="break-all text-sm text-foreground">{row.email}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <Badge
                     variant="outline"
                     className="rounded-full border-border bg-muted px-3 font-medium text-foreground"
@@ -72,16 +75,16 @@ export function SubscriptionInvoiceTable({ rows, onDownload, onInfo }: Subscript
                     {row.package}
                   </Badge>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm text-foreground">${row.price}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm text-foreground">{formatInvoiceDate(row.issueDate)}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <span className="text-sm text-foreground">{formatInvoiceDate(row.dateline)}</span>
                 </td>
-                <td className="px-6 py-4">
+                <td className={bodyCell}>
                   <div className="flex justify-end gap-2">
                     <Button
                       type="button"

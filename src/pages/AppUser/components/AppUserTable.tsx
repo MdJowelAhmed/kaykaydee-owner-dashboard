@@ -22,41 +22,46 @@ interface AppUserTableProps {
 
 const thBase =
   'bg-primary px-5 py-4 text-sm font-medium text-accent-foreground first:rounded-tl-2xl last:rounded-tr-2xl'
+  const headerBg = 'bg-[#E9EBF0] dark:bg-background'
+  const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
+  const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
 
 export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTableProps) {
   return (
-    <div className="w-full overflow-auto rounded-2xl border border-border bg-card shadow-sm">
+    <div className="w-full overflow-auto rounded-2xl  bg-card ">
       <table className="w-full min-w-[1100px]">
         <thead>
           <tr>
-            <th className={cn(thBase, 'text-left')}>ID. No</th>
-            <th className={cn(thBase, 'text-left')}>Patient Name</th>
-            <th className={cn(thBase, 'text-left')}>Contact No</th>
-            <th className={cn(thBase, 'text-left')}>Email</th>
-            <th className={cn(thBase, 'text-left')}>Date</th>
-            <th className={cn(thBase, 'text-left')}>User Join Date</th>
-            <th className={cn(thBase, 'text-left')}>Action</th>
+              <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>ID. No</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Patient Name</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Contact No</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Email</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>Date</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>User Join Date</th>
+            <th className={cn(headerCell, headerBg, 'text-right rounded-r-full')}>Action</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-border bg-card">
+        <tbody className="bg-card text-accent-foreground">
           {users.length === 0 ? (
             <tr>
-              <td colSpan={7} className="px-5 py-8 text-center text-sm text-muted-foreground">
+              <td colSpan={7} className="px-5 py-8 text-center text-sm text-accent-foreground">
                 No app users found
               </td>
             </tr>
           ) : (
             users.map((user) => (
               <tr key={user.id} className="transition-colors hover:bg-muted/50">
-                <td className="px-5 py-3 text-sm text-muted-foreground">#{user.id}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.patientName}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.contactNo}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.email}</td>
-                <td className="px-5 py-3 text-sm text-foreground">{user.joinedDate}</td>
-                <td className="max-w-[240px] truncate px-5 py-3 text-sm text-foreground">
-                  {user.address}
+                  <td className={bodyCell}>#{user.id}</td>
+                <td className={bodyCell}>{user.patientName}</td>
+                <td className={bodyCell}>{user.contactNo}</td>
+                <td className={bodyCell}>
+                  <span className="break-all text-sm text-foreground">{user.email}</span>
                 </td>
-                <td className="px-5 py-3">
+                <td className={bodyCell}>{user.joinedDate}</td>
+                  <td className={bodyCell}>
+                    <span className="break-all text-sm text-foreground">{user.address}</span>
+                </td>
+                <td className={bodyCell}>
                   <div className="flex items-center gap-2">
                     <Button
                       type="button"

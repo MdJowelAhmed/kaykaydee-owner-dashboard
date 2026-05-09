@@ -78,6 +78,8 @@ export default function UserList() {
     setDetailsUser(user)
     setDetailsOpen(true)
   }, [])
+    const filterInputClass =
+    'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
 
   return (
     <motion.div
@@ -86,8 +88,8 @@ export default function UserList() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-6"
     >
-      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
-        <CardContent className="p-5 sm:p-6">
+      <div className="overflow-hidden">
+        <div>
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             <h1 className="shrink-0 text-xl font-bold text-foreground lg:min-w-[200px]">
               User Management
@@ -99,10 +101,10 @@ export default function UserList() {
                   onChange={handleSearch}
                   placeholder="Search here"
                   className="w-full min-w-0 flex-1"
-                  inputClassName="h-11 max-w-xl rounded-xl bg-background text-foreground shadow-sm placeholder:text-muted-foreground"
+                  inputClassName={filterInputClass}
                 />
                 <Select value={status} onValueChange={handleStatusFilter}>
-                  <SelectTrigger className="h-11 w-full shrink-0 rounded-xl border-border bg-background text-foreground shadow-sm sm:w-[160px] placeholder:text-muted-foreground">
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -116,11 +118,11 @@ export default function UserList() {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
-        <CardContent className="p-0">
+      <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
+        <CardContent className="p-4">
           <UserManagementTable users={paginatedData} onOpenDetails={handleOpenDetails} />
 
           <div className="border-t border-border px-4 sm:px-6">
