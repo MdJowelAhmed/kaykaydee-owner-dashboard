@@ -139,7 +139,7 @@ export default function Login() {
   return (
     <div className="space-y-6">
       <div className="mb-8 flex flex-col items-center justify-center gap-3">
-        <img src="/assets/logo.png" alt="" className="h-20 w-20" />
+        <img src="/assets/logo.png" alt="" className="h-12 w-20" />
         <img src="/assets/logo3.png" alt="Kay Kay Dee" className="h-8 w-20 object-contain" />
       </div>
 
@@ -182,7 +182,7 @@ export default function Login() {
               type="email"
               autoComplete="email"
               placeholder="you@organization.com"
-              className={cn('pl-10', errors.email && 'border-destructive')}
+              className={cn('pl-10 bg-white dark:bg-background', errors.email && 'border-destructive')}
               {...register('email')}
             />
           </div>
@@ -201,7 +201,7 @@ export default function Login() {
               autoComplete="current-password"
               placeholder="Enter your password"
               className={cn(
-                'pl-10 pr-10',
+                'pl-10 pr-10 bg-white dark:bg-background',
                 errors.password && 'border-destructive'
               )}
               {...register('password')}
@@ -244,7 +244,7 @@ export default function Login() {
           </Link>
         </div>
 
-        <Button type="submit" className="w-full" size="lg" isLoading={isLoading}>
+        <Button type="submit" className="w-full bg-gradient-to-r from-[#7946CD] to-[#BC45E4] text-white hover:from-[#BC45E4] hover:to-[#7946CD]" size="lg" isLoading={isLoading}>
           {!isLoading && (
             <>
               Sign in

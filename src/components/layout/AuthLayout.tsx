@@ -11,7 +11,7 @@ export default function AuthLayout() {
   }
 
   return (
-    <div className="h-screen flex">
+    <div className="h-screen flex bg-[#f3f4f7]">
       {/* Left side - Branding */}
       <div className=" flex lg:w-1/2   overflow-hidden my-6 rounded-2xl">
         {/* Background Pattern */}
@@ -25,12 +25,12 @@ export default function AuthLayout() {
             <rect width="100" height="100" fill="url(#grid)" />
           </svg>
         </div> */}
-<img src="/assets/auth.webp" alt="auth-bg" className="w-full h-full object-cover rounded-2xl" />
+<img src="/assets/auth.webp" alt="auth-bg" className="w-full h-full object-contain rounded-2xl" />
      
       </div>
 
       {/* Right side - Auth Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 bg-white ">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12  ">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

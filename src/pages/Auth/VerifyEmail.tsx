@@ -112,7 +112,7 @@ export default function VerifyEmail() {
     <div className="space-y-6">
       {/* Mobile Logo */}
       <div className=" flex flex-col items-center justify-center gap-3 mb-8">
-        <img src="/assets/logo.png" alt="logo" className="w-20 h-20" />
+        <img src="/assets/logo.png" alt="logo" className="w-20 h-12" />
         <img src="/assets/logo3.png" alt="logo" className="w-20 h-8" />
       </div>
 
@@ -159,14 +159,14 @@ export default function VerifyEmail() {
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
               className={cn(
-                'w-12 h-14 text-center text-xl font-semibold',
+                'w-12 h-14 text-center text-xl font-semibold bg-white dark:bg-background',
                 error && 'border-destructive'
               )}
             />
           ))}
         </div>
 
-        <Button type="submit" className="w-full" size="lg" isLoading={isLoading}>
+        <Button type="submit" className="w-full bg-gradient-to-r from-[#7946CD] to-[#BC45E4] text-white hover:from-[#BC45E4] hover:to-[#7946CD]" size="lg" isLoading={isLoading}>
           {!isLoading && (
             <>
               Verify
