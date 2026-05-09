@@ -34,11 +34,9 @@ function packageLabel(kind: PackageKind) {
   }
 }
 
-const thBase =
-  'bg-primary px-5 py-4 text-sm font-medium text-accent-foreground first:rounded-tl-xl last:rounded-tr-xl'
-  const headerBg = 'bg-[#E9EBF0] dark:bg-background'
-  const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
-  const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
+const headerBg = 'bg-[#E9EBF0] dark:bg-background'
+const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
+const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
 
 export function RegisteredUsersTable({ users, onInfoClick }: RegisteredUsersTableProps) {
   return (

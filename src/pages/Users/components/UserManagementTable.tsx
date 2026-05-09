@@ -21,10 +21,6 @@ interface UserManagementTableProps {
   onOpenDetails: (user: User) => void
 }
 
-/** Per-cell: many browsers ignore `tr` background; `th` gets `var(--primary)` so light/dark switches correctly */
-const thBase =
-  'bg-primary px-6 py-4 text-sm font-semibold text-accent-foreground first:rounded-tl-xl last:rounded-tr-xl'
-
 export function UserManagementTable({ users, onOpenDetails }: UserManagementTableProps) {
   const headerBg = 'bg-[#E9EBF0] dark:bg-background'
   const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'

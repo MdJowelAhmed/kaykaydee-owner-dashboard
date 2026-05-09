@@ -20,11 +20,9 @@ interface AppUserTableProps {
   onInfoClick?: (user: AppUserRow) => void
 }
 
-const thBase =
-  'bg-primary px-5 py-4 text-sm font-medium text-accent-foreground first:rounded-tl-2xl last:rounded-tr-2xl'
-  const headerBg = 'bg-[#E9EBF0] dark:bg-background'
-  const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
-  const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
+const headerBg = 'bg-[#E9EBF0] dark:bg-background'
+const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
+const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
 
 export function AppUserTable({ users, onStatusClick, onInfoClick }: AppUserTableProps) {
   return (
