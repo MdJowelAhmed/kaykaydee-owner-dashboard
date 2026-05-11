@@ -23,7 +23,7 @@ export default function DashboardLayout() {
         className={cn(
           'relative transition-all duration-300',
           DASHBOARD_MAIN_Z,
-          sidebarCollapsed ? 'lg:ml-[80px]' : 'lg:ml-[280px]'
+          sidebarCollapsed ? 'lg:ml-[80px]' : 'lg:ml-[230px]'
         )}
         style={{ paddingTop: shellTop }}
       >

@@ -30,11 +30,11 @@ export function Header() {
   return (
    <div
       className={cn(
-        'fixed left-0 right-0 top-0 h-28 bg-background p-2',
+        'fixed left-0 right-0 top-0 h-[72px] bg-background p-2',
         DASHBOARD_HEADER_Z
       )}
     >
-     <header className="fixed left-0 right-0 top-0 z-[100] mx-5 mt-4 h-20 rounded-2xl bg-card shadow-md backdrop-blur supports-[backdrop-filter]:bg-background/60">
+     <header className="fixed left-0 right-0 top-0 z-[100] mx-5 mt-4 h-[72px] rounded-2xl bg-card shadow-md backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex h-full items-center justify-between px-4 lg:px-6">
         {/* Left side */}
         <div className="flex items-center gap-4">
@@ -56,7 +56,7 @@ export function Header() {
 <div className="flex items-center gap-3">
             <div className="h-32 w-full mx-auto rounded-lg flex items-center justify-center ">
               <div className="text-primary text-white font-bold text-lg">
-                <img src="/logo.png" alt="Booking Dashboard" className="h-16 w-24" />
+                <img src="/assets/logo2.png" alt="Booking Dashboard" className="h-8 w-24" />
               </div>
             </div>
             {/* {!sidebarCollapsed && (
@@ -79,19 +79,37 @@ export function Header() {
 
         {/* Right side */}
         <div className="flex items-center gap-5">
-          <Button
-            variant="ghost"
-            size="icon"
+        <Button
             type="button"
-            aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
+            variant="ghost"
             onClick={() => dispatch(toggleTheme())}
-            className="text-accent"
-          >
-            {theme === 'light' ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
+            className={cn(
+              'relative h-8 w-[72px] rounded-full p-1 transition-colors border ',
+              theme === 'dark' ? 'bg-[#414141]' : 'bg-[#414141]'
             )}
+            aria-label="Toggle theme"
+            aria-pressed={theme === 'dark'}
+          >
+            <span
+              className={cn(
+                'absolute  h-8 w-8 rounded-3xl bg-white shadow-sm transition-all duration-200',
+                theme === 'dark' ? 'left-[38px]' : 'left-0'
+              )}
+            />
+            <span className="relative z-10 flex w-full items-center justify-between px-1">
+              <Sun
+                className={cn(
+                  'h-5 w-5 transition-colors',
+                  theme === 'light' ? 'text-[#111827]' : 'text-[#8f949b]'
+                )}
+              />
+              <Moon
+                className={cn(
+                  'h-5 w-5 transition-colors',
+                  theme === 'dark' ? 'text-[#1f3f69]' : 'text-[#d0d4db]'
+                )}
+              />
+            </span>
           </Button>
 
           {/* Notifications — anchored popover under bell */}

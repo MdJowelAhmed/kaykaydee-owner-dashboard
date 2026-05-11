@@ -218,7 +218,7 @@ export function Sidebar() {
         className={cn(
           'fixed left-0 z-40 flex flex-col overflow-hidden bg-card shadow-lg transition-all duration-300',
           'ml-4 rounded-[2rem] lg:ml-5',
-          sidebarCollapsed ? 'w-[80px]' : 'w-[280px]',
+          sidebarCollapsed ? 'w-[80px]' : 'w-[230px]',
           'lg:translate-x-0',
           sidebarCollapsed ? '-translate-x-full lg:translate-x-0' : 'translate-x-0'
         )}
@@ -410,11 +410,13 @@ function SidebarNavItem({ item, collapsed, variant = 'default' }: SidebarNavItem
         <>
           <Icon
             className={cn(
-              'h-[1.125rem] w-[1.125rem] shrink-0 stroke-[1.75]',
+              'h-[1.125rem] w-[1.125rem] shrink-0',
               variant === 'default' &&
-                (isActive ? 'text-accent' : 'text-muted-foreground')
+                (isActive ? 'text-accent' : 'text-accent/75')
             )}
-            stroke={variant === 'ai' ? 'url(#sidebar-ai-nav-gradient)' : undefined}
+            size={18}
+            strokeWidth={1.75}
+            stroke={variant === 'ai' ? 'url(#sidebar-ai-nav-gradient)' : 'currentColor'}
           />
           {!collapsed &&
             (variant === 'ai' ? (
