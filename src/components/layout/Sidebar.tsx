@@ -250,7 +250,7 @@ export function Sidebar() {
               />
             ))}
 
-          {!sidebarCollapsed && (
+          {/* {!sidebarCollapsed && (
             <div className="mt-3 px-1">
               <div
                 className="relative overflow-hidden rounded-2xl p-4 text-white shadow-md"
@@ -275,7 +275,7 @@ export function Sidebar() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </nav>
 
         <div className="mt-auto space-y-3 border-t border-border px-3 py-1">

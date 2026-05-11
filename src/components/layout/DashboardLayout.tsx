@@ -27,7 +27,7 @@ export default function DashboardLayout() {
         )}
         style={{ paddingTop: shellTop }}
       >
-        <main className="p-6 lg:p-8 " style={{ minHeight: mainMinH }}>
+        <main className="p-6 pt-7 lg:px-9 " style={{ minHeight: mainMinH }}>
           <Outlet />
         </main>
       </div>
