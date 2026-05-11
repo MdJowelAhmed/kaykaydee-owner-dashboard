@@ -27,7 +27,7 @@ export function NotificationPreviewDialog() {
       <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 rounded-2xl border border-border text-muted-foreground  "
+          className="h-10 w-10 rounded-2xl border border-border text-muted-foreground  mr-2"
           aria-label="Open notifications"
           aria-expanded={open}
         >
