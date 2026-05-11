@@ -16,7 +16,6 @@ import {
   UserRound,
   Building2,
   HelpCircle,
-  Crown,
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -38,10 +37,10 @@ import { getRoleDisplayName } from '@/utils/roleHelpers'
 /** Sidebar AI strip + progress card (matches design reference) */
 const COL_AI_FROM = '#6737BE'
 const COL_AI_TO = '#E055FA'
-const COL_CARD_FROM = '#44A9C4'
-const COL_CARD_MID = '#48DAC9'
-const COL_CARD_TO = '#E055FA'
-const COL_PROGRESS_FILL = '#48DAC9'
+// const COL_CARD_FROM = '#44A9C4'
+// const COL_CARD_MID = '#48DAC9'
+// const COL_CARD_TO = '#E055FA'
+// const COL_PROGRESS_FILL = '#48DAC9'
 
 const ZEALTH_AI_HREF = '/zealth-ai' as const
 

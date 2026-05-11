@@ -56,7 +56,7 @@ export function Header() {
 <div className="flex items-center gap-3">
             <div className="h-32 w-full mx-auto rounded-lg flex items-center justify-center ">
               <div className="text-primary text-white font-bold text-lg">
-                <img src="/assets/logo2.png" alt="Booking Dashboard" className="h-8 w-24" />
+                <img src="/assets/logo2.png" alt="Booking Dashboard" className="h-7 w-40" />
               </div>
             </div>
             {/* {!sidebarCollapsed && (
