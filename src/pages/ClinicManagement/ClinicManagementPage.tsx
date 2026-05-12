@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
@@ -22,6 +23,7 @@ import type { Clinic } from '@/types'
 
 export default function ClinicManagementPage() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const { filteredList, pagination } = useAppSelector((state) => state.clinics)
   const [addClinicOpen, setAddClinicOpen] = useState(false)
 
@@ -84,11 +86,10 @@ export default function ClinicManagementPage() {
     toast.success('Clinic added', { description: clinic.name })
   }
 
-  const handleInfo = (clinic: Clinic) => {
-    toast.message(clinic.name, {
-      description: `${clinic.email} · ${clinic.staff} staff · ${clinic.patients} patients`,
-    })
+  const handleOpenClinic = (clinic: Clinic) => {
+    navigate(`/clinic-management/${clinic.id}`)
   }
+
   const filterInputClass =
     'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
 
@@ -99,14 +100,21 @@ export default function ClinicManagementPage() {
       transition={{ duration: 0.3 }}
       className="flex flex-col gap-8"
     >
-      <div className="overflow-hidden">
+      <div className="space-y-6">
         <div>
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Clinic Management</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Search by clinic name and manage each sub-account from one place.
+          </p>
+        </div>
+        <div className="overflow-hidden">
+          <div>
+            <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-end">
             <div className="flex items-center justify-end gap-4">
               <SearchInput
                 value={search}
                 onChange={handleSearch}
-                placeholder="Search here"
+                placeholder="Search by clinic name…"
                 className="w-full sm:flex-1 sm:max-w-xl"
                 inputClassName={filterInputClass}
               />
@@ -148,10 +156,11 @@ export default function ClinicManagementPage() {
           </div>
         </div>
       </div>
+      </div>
 
       <div className="overflow-hidden p-4 rounded-2xl  bg-card shadow-sm">
         <div className="">
-          <ClinicTable clinics={paginatedData} onInfo={handleInfo} />
+          <ClinicTable clinics={paginatedData} onOpenClinic={handleOpenClinic} />
         </div>
       </div>
 

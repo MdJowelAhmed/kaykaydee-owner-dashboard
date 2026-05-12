@@ -14,15 +14,20 @@ const NAMES = [
 ]
 const PACKAGES: Clinic['packagePlan'][] = ['basic', 'pro', 'enterprise']
 
+const CONTACT_NAMES = ['Ava Chen', 'Jordan Smith', 'Priya Patel', 'Sam Wilson', 'Taylor Brooks']
+
 function buildMockClinics(): Clinic[] {
   const rows: Clinic[] = []
   let idBase = 1_458_118
   for (let i = 0; i < 50; i++) {
+    const slug = NAMES[i % NAMES.length].toLowerCase().replace(/\s+/g, '')
     rows.push({
       id: String(idBase + i),
       name: NAMES[i % NAMES.length],
       contact: `+61 ${2569 + (i % 900)} ${2100 + (i % 900)}`,
       email: `clinic${i}@health.test`,
+      contactPerson: CONTACT_NAMES[i % CONTACT_NAMES.length],
+      website: i % 5 === 0 ? '' : `https://www.${slug}${i % 3}.example`,
       staff: 3 + (i % 25),
       patients: 40 + i * 3,
       status: i % 7 === 0 ? 'deactive' : 'active',
@@ -42,7 +47,8 @@ function applyClinicFilters(list: Clinic[], filters: ClinicFilters): Clinic[] {
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.email.toLowerCase().includes(q) ||
-        c.contact.includes(filters.search)
+        c.contact.includes(filters.search) ||
+        c.contactPerson.toLowerCase().includes(q)
     )
   }
   if (filters.status !== 'all') {

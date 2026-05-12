@@ -45,6 +45,8 @@ export interface Clinic {
   name: string
   contact: string
   email: string
+  contactPerson: string
+  website: string
   staff: number
   patients: number
   status: ClinicStatus

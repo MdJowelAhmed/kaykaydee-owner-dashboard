@@ -19,6 +19,7 @@ import Dashboard from '@/pages/Dashboard'
 import UserList from '@/pages/Users/UserList'
 import UserDetails from '@/pages/Users/UserDetails'
 import ClinicManagementPage from '@/pages/ClinicManagement/ClinicManagementPage'
+import ClinicDetailsPage from '@/pages/ClinicManagement/ClinicDetailsPage'
 import CategoryList from '@/pages/Categories/CategoryList'
 import ProfileSettings from '@/pages/Settings/Profile/ProfileSettings'
 import ChangePassword from '@/pages/Settings/ChangePassword/ChangePassword'
@@ -123,6 +124,14 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
                 <ClinicManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+          <Route
+            path="clinic-management/:id"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <ClinicDetailsPage />
               </RoleBasedRoute>
             }
           />

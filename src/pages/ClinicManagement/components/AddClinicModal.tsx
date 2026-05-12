@@ -14,6 +14,13 @@ const schema = z.object({
   name: z.string().min(1, 'Clinic name is required'),
   contact: z.string().min(1, 'Contact is required'),
   email: z.string().email('Enter a valid email'),
+  contactPerson: z.string().min(1, 'Contact person is required'),
+  website: z
+    .string()
+    .trim()
+    .refine((val) => val === '' || /^https?:\/\/.+/i.test(val), {
+      message: 'Use a full URL (https://…)',
+    }),
   staff: z.coerce.number().int().min(0, 'Must be 0 or greater'),
   patients: z.coerce.number().int().min(0, 'Must be 0 or greater'),
   status: z.enum(['active', 'deactive']),
@@ -26,6 +33,8 @@ const defaults: FormValues = {
   name: '',
   contact: '',
   email: '',
+  contactPerson: '',
+  website: '',
   staff: 1,
   patients: 0,
   status: 'active',
@@ -64,6 +73,8 @@ export function AddClinicModal({ open, onClose, onSave }: AddClinicModalProps) {
       name: data.name.trim(),
       contact: data.contact.trim(),
       email: data.email.trim(),
+      contactPerson: data.contactPerson.trim(),
+      website: data.website.trim(),
       staff: data.staff,
       patients: data.patients,
       status: data.status,
@@ -104,6 +115,21 @@ export function AddClinicModal({ open, onClose, onSave }: AddClinicModalProps) {
             placeholder="clinic@example.com"
             {...register('email')}
             error={errors.email?.message}
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormInput
+            label="Contact person"
+            required
+            placeholder="Full name"
+            {...register('contactPerson')}
+            error={errors.contactPerson?.message}
+          />
+          <FormInput
+            label="Website"
+            placeholder="https://example.com"
+            {...register('website')}
+            error={errors.website?.message}
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
