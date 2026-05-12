@@ -1,12 +1,9 @@
 import React, { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard,
   User,
-  Lock,
-  FileText,
-  Shield,
-  Info,
+  Settings,
   Receipt,
   Layers,
   UserCog,
@@ -15,16 +12,14 @@ import {
   Users,
   UserRound,
   Building2,
-  HelpCircle,
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { toggleSidebar } from '@/redux/slices/uiSlice'
 import { cn } from '@/utils/cn'
-import { UserRole, normalizeRoleKey } from '@/types/roles'
+import { UserRole, normalizeRoleKey, DASHBOARD_ALLOWED_ROLES } from '@/types/roles'
 import { Button } from '../ui/button'
 import { logout } from '@/redux/slices/authSlice'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import {
@@ -49,6 +44,8 @@ interface NavItem {
   href: string
   icon: React.ElementType
   allowedRoles?: UserRole[]
+  /** Treat as active when pathname starts with this (e.g. `/settings` for all settings tabs). */
+  activePathPrefix?: string
 }
 
 const navItems: NavItem[] = [
@@ -108,44 +105,14 @@ const navItems: NavItem[] = [
   },
 ]
 
-const settingsItems: NavItem[] = [
-  {
-    title: 'Profile',
-    href: '/settings/profile',
-    icon: User,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-  },
-  {
-    title: 'About Us',
-    href: '/settings/about-us',
-    icon: Info,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-  },
-  {
-    title: 'FAQ',
-    href: '/settings/faq',
-    icon: HelpCircle,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
-    title: 'Password',
-    href: '/settings/password',
-    icon: Lock,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-  },
-  {
-    title: 'Terms',
-    href: '/settings/terms',
-    icon: FileText,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-  },
-  {
-    title: 'Privacy',
-    href: '/settings/privacy',
-    icon: Shield,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
-  },
-]
+/** Single entry → `SettingsLayout` tabs (profile, password, about, terms, privacy, FAQ). */
+const settingsNavItem: NavItem = {
+  title: 'Settings',
+  href: '/settings/profile',
+  icon: Settings,
+  allowedRoles: [...DASHBOARD_ALLOWED_ROLES],
+  activePathPrefix: '/settings',
+}
 
 function filterNavByRole(items: NavItem[], user: { role: string } | null): NavItem[] {
   return items.filter((item) => {
@@ -168,7 +135,7 @@ export function Sidebar() {
   const zealthAiItem = navItems.find((item) => item.href === ZEALTH_AI_HREF)
 
   const filteredMain = filterNavByRole(mainNavItems, user)
-  const filteredSettingsItems = filterNavByRole(settingsItems, user)
+  const settingsItem = filterNavByRole([settingsNavItem], user)[0]
   const filteredZealth = zealthAiItem ? filterNavByRole([zealthAiItem], user) : []
   const showZealth = filteredZealth.length > 0
 
@@ -228,16 +195,12 @@ export function Sidebar() {
             <SidebarNavItem key={item.href} item={item} collapsed={sidebarCollapsed} />
           ))}
 
-          {filteredMain.length > 0 && (filteredSettingsItems.length > 0 || showZealth) && (
-            <SidebarDivider />
+          {filteredMain.length > 0 && settingsItem && <SidebarDivider />}
+          {settingsItem && (
+            <SidebarNavItem key={settingsItem.href} item={settingsItem} collapsed={sidebarCollapsed} />
           )}
 
-          {filteredSettingsItems.map((item) => (
-            <SidebarNavItem key={item.href} item={item} collapsed={sidebarCollapsed} />
-          ))}
-
-          {showZealth &&
-            (filteredMain.length > 0 || filteredSettingsItems.length > 0) && <SidebarDivider />}
+          {(filteredMain.length > 0 || settingsItem) && showZealth && <SidebarDivider />}
 
           {showZealth &&
             filteredZealth.map((item) => (
@@ -386,6 +349,11 @@ interface SidebarNavItemProps {
 
 function SidebarNavItem({ item, collapsed, variant = 'default' }: SidebarNavItemProps) {
   const Icon = item.icon
+  const location = useLocation()
+  const prefixActive =
+    item.activePathPrefix != null &&
+    (location.pathname === item.activePathPrefix ||
+      location.pathname.startsWith(`${item.activePathPrefix}/`))
 
   const linkContent = (
     <NavLink
@@ -396,11 +364,11 @@ function SidebarNavItem({ item, collapsed, variant = 'default' }: SidebarNavItem
           collapsed && 'justify-center px-2',
           variant === 'default' && [
             'text-accent hover:bg-muted/50 hover:text-accent',
-            isActive && 'bg-background font-medium text-accent shadow-sm',
+            (isActive || prefixActive) && 'bg-background font-medium text-accent shadow-sm',
           ],
           variant === 'ai' && [
             'hover:bg-[#6737BE]/10',
-            isActive && 'bg-[#6737BE]/15 font-medium shadow-sm dark:bg-[#6737BE]/20',
+            (isActive || prefixActive) && 'bg-[#6737BE]/15 font-medium shadow-sm dark:bg-[#6737BE]/20',
           ]
         )
       }
@@ -411,7 +379,7 @@ function SidebarNavItem({ item, collapsed, variant = 'default' }: SidebarNavItem
             className={cn(
               'h-[1.125rem] w-[1.125rem] shrink-0',
               variant === 'default' &&
-                (isActive ? 'text-accent' : 'text-accent/75')
+                ((isActive || prefixActive) ? 'text-accent' : 'text-accent/75')
             )}
             size={18}
             strokeWidth={1.75}

@@ -107,9 +107,9 @@ const FAQ = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="space-y-6"
+      className="space-y-6 "
     >
-      <Card className="bg-card  border-0 shadow-sm">
+      <Card className="bg-card  border-0 shadow-sm ">
         <CardHeader className="flex flex-row items-center justify-between pb-6">
           <CardTitle className="text-xl font-bold text-accent">FAQ</CardTitle>
           <div className="flex items-center gap-3">

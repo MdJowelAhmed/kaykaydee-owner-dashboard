@@ -21,6 +21,7 @@ import UserDetails from '@/pages/Users/UserDetails'
 import ClinicManagementPage from '@/pages/ClinicManagement/ClinicManagementPage'
 import ClinicDetailsPage from '@/pages/ClinicManagement/ClinicDetailsPage'
 import CategoryList from '@/pages/Categories/CategoryList'
+import SettingsLayout from '@/pages/Settings/SettingsLayout'
 import ProfileSettings from '@/pages/Settings/Profile/ProfileSettings'
 import ChangePassword from '@/pages/Settings/ChangePassword/ChangePassword'
 import TermsSettings from '@/pages/Settings/Terms/TermsSettings'
@@ -270,55 +271,28 @@ function App() {
             }
           />
           
-          {/* Settings */}
-          <Route path="settings">
+          {/* Settings — shared header + tab nav (SettingsLayout) */}
+          <Route
+            path="settings"
+            element={
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                <SettingsLayout />
+              </RoleBasedRoute>
+            }
+          >
+            <Route index element={<Navigate to="profile" replace />} />
+            <Route path="profile" element={<ProfileSettings />} />
+            <Route path="password" element={<ChangePassword />} />
+            <Route path="terms" element={<TermsSettings />} />
+            <Route path="privacy" element={<PrivacySettings />} />
+            <Route path="about-us" element={<AboutUsSettings />} />
             <Route
-              path="profile"
-              element={
-                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
-                  <ProfileSettings />
-                </RoleBasedRoute>
-              }
-            />
-            <Route
-              path="password"
-              element={
-                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
-                  <ChangePassword />
-                </RoleBasedRoute>
-              }
-            />
-            <Route
-              path="terms"
-              element={
-                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
-                  <TermsSettings />
-                </RoleBasedRoute>
-              }
-            />
-            <Route
-              path="privacy"
-              element={
-                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
-                  <PrivacySettings />
-                </RoleBasedRoute>
-              }
-            />
-            <Route
-              path="about-us"
-              element={
-                <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
-                  <AboutUsSettings />
-                </RoleBasedRoute>
-              }
-            />
-            <Route 
-              path="faq" 
+              path="faq"
               element={
                 <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
                   <FAQ />
                 </RoleBasedRoute>
-              } 
+              }
             />
           </Route>
         </Route>

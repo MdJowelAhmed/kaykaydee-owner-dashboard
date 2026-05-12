@@ -205,7 +205,7 @@ export default function AboutUsSettings() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
-      className="-mx-6 -mt-6 mb-0 min-h-[calc(100vh-5rem)] bg-card px-6 pb-10 pt-6 lg:-mx-8 lg:px-8"
+      className="  mb-0 min-h-[calc(100vh-5rem)] bg-card p-6 rounded-2xl "
     >
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
