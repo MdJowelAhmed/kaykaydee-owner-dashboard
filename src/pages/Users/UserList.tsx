@@ -12,11 +12,12 @@ import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
 import { UserManagementTable } from './components/UserManagementTable'
 import { UserDetailsModal } from './components/UserDetailsModal'
+import { DeleteUserModal } from './components/DeleteUserModal'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
-import { setFilters, setPage, setLimit } from '@/redux/slices/userSlice'
+import { setFilters, setPage, setLimit, deleteUser } from '@/redux/slices/userSlice'
 import { useUrlParams } from '@/hooks/useUrlState'
-import { USER_STATUSES } from '@/utils/constants'
-import type { User } from '@/types'
+import { USER_STATUSES, USER_TYPES } from '@/utils/constants'
+import type { User, UserType } from '@/types'
 
 export default function UserList() {
   const dispatch = useAppDispatch()
@@ -26,11 +27,26 @@ export default function UserList() {
 
   const search = getParam('search', '')
   const status = getParam('status', 'all')
+  const userType = getParam('type', 'all')
   const page = getNumberParam('page', 1)
   const limit = getNumberParam('limit', 15)
 
-  const [detailsUser, setDetailsUser] = useState<User | null>(null)
+  const { list } = useAppSelector((state) => state.users)
+  const [detailsUserId, setDetailsUserId] = useState<string | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  // Read the live record so permission/security edits reflect instantly.
+  const detailsUser = useMemo(
+    () => list.find((u) => u.id === detailsUserId) ?? null,
+    [list, detailsUserId]
+  )
+
+  const userToDelete = useMemo(
+    () => list.find((u) => u.id === deleteUserId) ?? null,
+    [list, deleteUserId]
+  )
 
   useEffect(() => {
     dispatch(
@@ -38,10 +54,11 @@ export default function UserList() {
         search,
         status: status as User['status'] | 'all',
         role: 'all',
+        userType: userType as UserType | 'all',
         package: 'all',
       })
     )
-  }, [search, status, dispatch])
+  }, [search, status, userType, dispatch])
 
   useEffect(() => {
     dispatch(setPage(page))
@@ -66,6 +83,10 @@ export default function UserList() {
     setParams({ status: value, page: 1 })
   }
 
+  const handleUserTypeFilter = (value: string) => {
+    setParams({ type: value, page: 1 })
+  }
+
   const handlePageChange = (newPage: number) => {
     setParam('page', newPage)
   }
@@ -75,9 +96,21 @@ export default function UserList() {
   }
 
   const handleOpenDetails = useCallback((user: User) => {
-    setDetailsUser(user)
+    setDetailsUserId(user.id)
     setDetailsOpen(true)
   }, [])
+
+  const handleOpenDelete = useCallback((user: User) => {
+    setDeleteUserId(user.id)
+    setDeleteOpen(true)
+  }, [])
+
+  const handleConfirmDelete = useCallback(
+    (userId: string) => {
+      dispatch(deleteUser(userId))
+    },
+    [dispatch]
+  )
     const filterInputClass =
     'h-11 rounded-xl border-border bg-white dark:bg-background text-accent shadow-sm placeholder:text-accent'
 
@@ -100,9 +133,21 @@ export default function UserList() {
                   value={search}
                   onChange={handleSearch}
                   placeholder="Search here"
-                  className="w-full min-w-0 flex-1"
+                  className="w-[500px] flex-1"
                   inputClassName={filterInputClass}
                 />
+                <Select value={userType} onValueChange={handleUserTypeFilter}>
+                  <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[180px] ${filterInputClass}`}>
+                    <SelectValue placeholder="User Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USER_TYPES.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <Select value={status} onValueChange={handleStatusFilter}>
                   <SelectTrigger className={`h-11 w-full shrink-0 sm:w-[160px] ${filterInputClass}`}>
                     <SelectValue placeholder="Status" />
@@ -123,7 +168,11 @@ export default function UserList() {
 
       <Card className="overflow-hidden rounded-2xl  bg-card shadow-sm">
         <CardContent className="p-4">
-          <UserManagementTable users={paginatedData} onOpenDetails={handleOpenDetails} />
+          <UserManagementTable
+            users={paginatedData}
+            onOpenDetails={handleOpenDetails}
+            onDelete={handleOpenDelete}
+          />
 
           <div className="border-t border-border px-4 sm:px-6">
             <Pagination
@@ -145,8 +194,18 @@ export default function UserList() {
         open={detailsOpen}
         onOpenChange={(open) => {
           setDetailsOpen(open)
-          if (!open) setDetailsUser(null)
+          if (!open) setDetailsUserId(null)
         }}
+      />
+
+      <DeleteUserModal
+        user={userToDelete}
+        open={deleteOpen}
+        onClose={() => {
+          setDeleteOpen(false)
+          setDeleteUserId(null)
+        }}
+        onConfirm={handleConfirmDelete}
       />
     </motion.div>
   )

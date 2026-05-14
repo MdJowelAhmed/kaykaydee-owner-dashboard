@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
+import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from '@/components/common'
 import { useAppSelector } from '@/redux/hooks'
+import { USER_TYPE_LABELS } from '@/utils/constants'
 import { formatDate, getInitials } from '@/utils/formatters'
 import { motion } from 'framer-motion'
 
@@ -61,7 +63,9 @@ export default function UserDetails() {
               </h2>
               <p className="text-sm text-muted-foreground mb-4">{user.email}</p>
               <div className="flex gap-2 mb-4">
-                <StatusBadge status={user.role} type="role" />
+                <Badge variant="outline" className="rounded-full font-normal">
+                  {USER_TYPE_LABELS[user.userType] ?? '—'}
+                </Badge>
                 <StatusBadge status={user.status} />
               </div>
               <div className="flex gap-2 w-full">
@@ -143,8 +147,10 @@ export default function UserDetails() {
                     <Shield className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <p className="text-xs text-muted-foreground">Role</p>
-                    <StatusBadge status={user.role} type="role" />
+                    <p className="text-xs text-muted-foreground">User Type</p>
+                    <Badge variant="outline" className="rounded-full font-normal">
+                      {USER_TYPE_LABELS[user.userType] ?? '—'}
+                    </Badge>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

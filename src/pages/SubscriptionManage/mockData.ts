@@ -1,4 +1,4 @@
-import type { BillingCycle, FeatureGroup, SubscriptionManagePackage } from './types'
+import type { BillingCycle, Coupon, FeatureGroup, SubscriptionManagePackage } from './types'
 import { createId } from '@/utils/id'
 
 function seedGroups(): FeatureGroup[] {
@@ -57,5 +57,60 @@ export const mockSubscriptionManagePackages: SubscriptionManagePackage[] = [
   makePackage('Advanced', 499, 'annual', false),
   makePackage('Premium', 599, 'annual', true),
   makePackage('Free Trial', 0, 'trial', true),
+]
+
+function makeCoupon(coupon: Omit<Coupon, 'id'>): Coupon {
+  return { id: createId(), ...coupon }
+}
+
+export const mockCoupons: Coupon[] = [
+  makeCoupon({
+    code: 'WELCOME20',
+    description: 'New clinic onboarding discount',
+    packageId: null,
+    type: 'percentage',
+    value: 20,
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    usageLimit: 500,
+    usedCount: 132,
+    status: 'active',
+  }),
+  makeCoupon({
+    code: 'ANNUAL50',
+    description: '$50 off the Basic annual plan',
+    packageId: mockSubscriptionManagePackages[3]?.id ?? null,
+    type: 'fixed',
+    value: 50,
+    startDate: '2026-03-01',
+    endDate: '2026-06-30',
+    usageLimit: 200,
+    usedCount: 47,
+    status: 'active',
+  }),
+  makeCoupon({
+    code: 'SUMMER15',
+    description: 'Seasonal promotion for the Premium monthly plan',
+    packageId: mockSubscriptionManagePackages[2]?.id ?? null,
+    type: 'percentage',
+    value: 15,
+    startDate: '2026-06-01',
+    endDate: '2026-08-31',
+    usageLimit: null,
+    usedCount: 0,
+    status: 'inactive',
+  }),
+  makeCoupon({
+    code: 'EARLYBIRD',
+    description: 'Early access launch offer',
+    packageId: null,
+    type: 'percentage',
+    value: 30,
+    startDate: '2025-10-01',
+    endDate: '2026-01-31',
+    usageLimit: 1000,
+    usedCount: 884,
+    status: 'expired',
+  }),
 ]
 

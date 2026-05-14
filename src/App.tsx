@@ -36,9 +36,8 @@ import SubscriptionInvoicePage from './pages/SubscriptionInvoice/SubscriptionInv
 import SubscriptionManagePage from './pages/SubscriptionManage/SubscriptionManagePage'
 import AdminManagePage from './pages/AdminManage/AdminManagePage'
 import ZealthAIPage from './pages/ZealthAI/ZealthAIPage'
-import AppUserPage from './pages/AppUser/AppUserPage'
-import RegisteredUsersPage from './pages/RegisteredUsers/RegisteredUsersPage'
 import Support from './pages/Support/Support'
+import SupportCentrePage from './pages/SupportCentre/SupportCentrePage'
 import FAQ from './pages/FAQ/FAQ'
 import NotFound from './pages/NotFound/NotFound'
 
@@ -196,30 +195,6 @@ function App() {
           />
 
           <Route
-            path="app-user"
-            element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
-                <AppUserPage />
-              </RoleBasedRoute>
-            }
-          />
-
-          <Route
-            path="registered-users"
-            element={
-              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
-                <RegisteredUsersPage />
-              </RoleBasedRoute>
-            }
-          />
-          
-      
-
-     
-
-       
-
-          <Route
             path="subscription"
             element={
               <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
@@ -242,6 +217,15 @@ function App() {
             element={
               <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
                 <Support />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="support-centre"
+            element={
+              <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
+                <SupportCentrePage />
               </RoleBasedRoute>
             }
           />

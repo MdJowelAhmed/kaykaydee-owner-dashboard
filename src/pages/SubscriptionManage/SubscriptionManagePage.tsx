@@ -10,6 +10,7 @@ import type { BillingCycle, FeatureGroup, SubscriptionManagePackage } from './ty
 import { PackageCard } from './components/PackageCard'
 import { AddEditPackageModal, type SaveManagePackageInput } from './components/AddEditPackageModal'
 import { EditFeaturesModal } from './components/EditFeaturesModal'
+import { CouponsSection } from './components/CouponsSection'
 import { createId } from '@/utils/id'
 
 type TabKey = 'monthly' | 'annual' | 'trial'
@@ -18,6 +19,13 @@ const TAB_LABELS: Record<TabKey, string> = {
   monthly: 'Monthly Subscription',
   annual: 'Annual Subscription',
   trial: 'Free Trial',
+}
+
+type SectionKey = 'packages' | 'coupons'
+
+const SECTION_LABELS: Record<SectionKey, string> = {
+  packages: 'Subscription Management',
+  coupons: 'Coupons & Promotions',
 }
 
 function newPackageBase(cycle: BillingCycle): SubscriptionManagePackage {
@@ -39,6 +47,7 @@ function sumRevenue(packages: SubscriptionManagePackage[]) {
 }
 
 export default function SubscriptionManagePage() {
+  const [section, setSection] = useState<SectionKey>('packages')
   const [tab, setTab] = useState<TabKey>('monthly')
   const [packages, setPackages] = useState<SubscriptionManagePackage[]>(mockSubscriptionManagePackages)
 
@@ -108,6 +117,28 @@ export default function SubscriptionManagePage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
+      <div className="inline-flex w-fit items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+        {(Object.keys(SECTION_LABELS) as SectionKey[]).map((key) => (
+          <button
+            key={key}
+            type="button"
+            onClick={() => setSection(key)}
+            className={cn(
+              'rounded-full px-4 py-2 text-sm font-medium transition-colors',
+              section === key
+                ? 'bg-background text-foreground shadow-sm ring-1 ring-border'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            {SECTION_LABELS[key]}
+          </button>
+        ))}
+      </div>
+
+      {section === 'coupons' ? (
+        <CouponsSection packages={packages} />
+      ) : (
+        <>
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <CardContent className="p-6">
@@ -203,6 +234,8 @@ export default function SubscriptionManagePage() {
         <p className="rounded-2xl border border-border bg-card py-12 text-center text-muted-foreground">
           No packages yet. Click “Add New Package” to create one.
         </p>
+      )}
+        </>
       )}
 
       <AddEditPackageModal

@@ -10,8 +10,8 @@ import {
   Sparkles,
   LogOut,
   Users,
-  UserRound,
   Building2,
+  LifeBuoy,
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -56,39 +56,27 @@ const navItems: NavItem[] = [
     allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
   },
   {
-    title: 'User Management',
+    title: 'Users',
     href: '/users',
     icon: Users,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
-    title: 'Clinic Management',
+    title: 'Clinics',
     href: '/clinic-management',
     icon: Building2,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
-    title: 'Registered User',
-    href: '/registered-users',
-    icon: UserRound,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
-    title: 'Subscription Invoice',
+    title: 'Revenue & Billing',
     href: '/subscription-invoice',
     icon: Receipt,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
-    title: 'Subscription Manage',
+    title: 'Subscriptions',
     href: '/subscription-manage',
     icon: Layers,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
-    title: 'App User',
-    href: '/app-user',
-    icon: UserRound,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
@@ -96,6 +84,12 @@ const navItems: NavItem[] = [
     href: '/admin-manage',
     icon: UserCog,
     allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Support Centre',
+    href: '/support-centre',
+    icon: LifeBuoy,
+    allowedRoles: [...DASHBOARD_ALLOWED_ROLES],
   },
   {
     title: 'Zealth AI',

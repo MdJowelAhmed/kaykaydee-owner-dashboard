@@ -1,13 +1,18 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
+  Activity,
   ArrowLeft,
   CreditCard,
+  DollarSign,
   Edit,
   Globe,
+  LifeBuoy,
   KeyRound,
   Receipt,
+  Sparkles,
   User,
+  Users,
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { toast } from 'sonner'
@@ -17,10 +22,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { StatusBadge } from '@/components/common'
 import { useAppSelector } from '@/redux/hooks'
-import { USER_PACKAGES } from '@/utils/constants'
+import { CLINIC_PACKAGE_LABELS } from '@/utils/constants'
 import { cn } from '@/utils/cn'
 import { formatCurrency, formatDate, getInitialsFromName } from '@/utils/formatters'
+import type { Clinic } from '@/types'
+import { ClinicQuickActions } from './components/ClinicQuickActions'
 import {
   mockInvoicesForClinic,
   mockNextRenewalDate,
@@ -31,7 +39,7 @@ import {
 const COL_ACCENT = '#6737BE'
 
 const tabListClass =
-  'flex h-auto w-full flex-wrap justify-start gap-1 rounded-2xl border border-border bg-card p-3  sm:flex-nowrap sm:overflow-x-auto sm:scrollbar-thin'
+  'flex h-auto w-full flex-wrap justify-start gap-1 rounded-2xl border border-border bg-card p-3 sm:flex-nowrap sm:overflow-x-auto sm:scrollbar-thin'
 
 const tabTriggerClass = cn(
   'inline-flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
@@ -41,8 +49,8 @@ const tabTriggerClass = cn(
   'data-[state=active]:shadow-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
 )
 
-function packageLabel(plan: 'basic' | 'pro' | 'enterprise'): string {
-  return USER_PACKAGES.find((p) => p.value === plan)?.label ?? plan
+function packageLabel(plan: Clinic['packagePlan']): string {
+  return CLINIC_PACKAGE_LABELS[plan] ?? plan
 }
 
 function invoiceStatusClass(status: ClinicInvoiceRow['status']) {
@@ -51,12 +59,50 @@ function invoiceStatusClass(status: ClinicInvoiceRow['status']) {
   return 'bg-red-100 text-red-900 dark:bg-red-950/55 dark:text-red-300'
 }
 
+function clinicStatusClass(status: Clinic['status']) {
+  if (status === 'active') return 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/55 dark:text-emerald-300'
+  if (status === 'suspended') return 'bg-amber-100 text-amber-900 dark:bg-amber-950/55 dark:text-amber-300'
+  return 'bg-red-100 text-red-900 dark:bg-red-950/55 dark:text-red-300'
+}
+
+function statusLabel(status: Clinic['status']) {
+  if (status === 'suspended') return 'Suspended'
+  return status === 'deactive' ? 'Deactive' : 'Active'
+}
+
 function DetailField({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       <div className="mt-1 text-sm font-medium text-foreground">{children}</div>
     </div>
+  )
+}
+
+function MetricCard({
+  icon: Icon,
+  label,
+  value,
+  sub,
+}: {
+  icon: typeof Users
+  label: string
+  value: ReactNode
+  sub?: ReactNode
+}) {
+  return (
+    <Card className="rounded-2xl border-border bg-card shadow-sm">
+      <CardContent className="flex items-start gap-3 p-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+          <Icon className="h-5 w-5" strokeWidth={2} />
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-muted-foreground">{label}</p>
+          <p className="mt-0.5 text-lg font-bold tabular-nums text-foreground">{value}</p>
+          {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
+        </div>
+      </CardContent>
+    </Card>
   )
 }
 
@@ -85,6 +131,14 @@ export default function ClinicDetailsPage() {
   const initials = getInitialsFromName(clinic.name)
   const renewal = mockNextRenewalDate(clinic.id)
   const started = mockSubscriptionStartedAt(clinic.id)
+  const { aiUsage } = clinic
+  const aiPercent =
+    aiUsage.quota != null && aiUsage.quota > 0
+      ? Math.min(100, Math.round((aiUsage.used / aiUsage.quota) * 100))
+      : null
+  const openTickets = clinic.supportTickets.filter(
+    (t) => t.status === 'open' || t.status === 'in_progress'
+  ).length
 
   const handlePasswordReset = (e: React.FormEvent) => {
     e.preventDefault()
@@ -119,9 +173,9 @@ export default function ClinicDetailsPage() {
             onClick={() => navigate('/clinic-management')}
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Clinic Management
+            Back to Clinic Directory
           </Button>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Clinic details</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Clinic profile</h1>
         </div>
         <Button
           type="button"
@@ -135,6 +189,7 @@ export default function ClinicDetailsPage() {
         </Button>
       </div>
 
+      {/* Identity card */}
       <Card className="overflow-hidden rounded-2xl border-border bg-card shadow-sm">
         <CardContent className="flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:gap-6">
           <div
@@ -145,24 +200,74 @@ export default function ClinicDetailsPage() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">{clinic.name}</p>
-            <p className="mt-1 text-sm text-muted-foreground">Clinic ID: CLN{clinic.id}</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Clinic ID: CLN{clinic.id} · {clinic.state}, {clinic.country}
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span
+                className={cn(
+                  'inline-flex rounded-full px-3 py-1 text-xs font-semibold',
+                  clinicStatusClass(clinic.status)
+                )}
+              >
+                {statusLabel(clinic.status)}
+              </span>
+              <span
+                className="inline-flex rounded-full px-3 py-1 text-xs font-semibold text-white"
+                style={{ backgroundColor: COL_ACCENT }}
+              >
+                {packageLabel(clinic.packagePlan)}
+              </span>
+              <span className="inline-flex rounded-full bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                {clinic.features.whiteLabel ? 'White-label on' : 'White-label off'}
+              </span>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="profile" className="flex flex-col gap-4">
+      {/* Key metrics */}
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <MetricCard icon={Users} label="Number of users" value={clinic.staff} sub={`${clinic.patients} patients`} />
+        <MetricCard icon={DollarSign} label="Revenue generated" value={formatCurrency(clinic.revenue)} />
+        <MetricCard
+          icon={Sparkles}
+          label="AI usage"
+          value={`${aiUsage.used.toLocaleString()}`}
+          sub={aiUsage.quota != null ? `of ${aiUsage.quota.toLocaleString()} this period` : 'Unlimited plan'}
+        />
+        <MetricCard
+          icon={LifeBuoy}
+          label="Support tickets"
+          value={clinic.supportTickets.length}
+          sub={`${openTickets} open`}
+        />
+      </div>
+
+      {/* Quick actions */}
+      <ClinicQuickActions clinic={clinic} />
+
+      <Tabs defaultValue="overview" className="flex flex-col gap-4">
         <TabsList className={tabListClass}>
-          <TabsTrigger value="profile" className={tabTriggerClass}>
+          <TabsTrigger value="overview" className={tabTriggerClass}>
             <User className="h-4 w-4 shrink-0" strokeWidth={2} />
-            Clinic profile
+            Overview
           </TabsTrigger>
           <TabsTrigger value="subscription" className={tabTriggerClass}>
             <CreditCard className="h-4 w-4 shrink-0" strokeWidth={2} />
-            Subscription details
+            Subscription
           </TabsTrigger>
           <TabsTrigger value="invoices" className={tabTriggerClass}>
             <Receipt className="h-4 w-4 shrink-0" strokeWidth={2} />
-            Invoices
+            Payment history
+          </TabsTrigger>
+          <TabsTrigger value="support" className={tabTriggerClass}>
+            <LifeBuoy className="h-4 w-4 shrink-0" strokeWidth={2} />
+            Support tickets
+          </TabsTrigger>
+          <TabsTrigger value="activity" className={tabTriggerClass}>
+            <Activity className="h-4 w-4 shrink-0" strokeWidth={2} />
+            Activity log
           </TabsTrigger>
           <TabsTrigger value="password" className={tabTriggerClass}>
             <KeyRound className="h-4 w-4 shrink-0" strokeWidth={2} />
@@ -170,11 +275,12 @@ export default function ClinicDetailsPage() {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="profile" className="mt-0 focus-visible:outline-none">
+        {/* Overview */}
+        <TabsContent value="overview" className="mt-0 focus-visible:outline-none">
           <Card className="rounded-2xl border-border bg-card shadow-sm">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">
               <User className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
-              <CardTitle className="text-base font-semibold text-foreground">Profile details</CardTitle>
+              <CardTitle className="text-base font-semibold text-foreground">Clinic details</CardTitle>
             </CardHeader>
             <CardContent className="pb-6 pt-0">
               <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
@@ -198,28 +304,74 @@ export default function ClinicDetailsPage() {
                     <span className="text-muted-foreground">Not provided</span>
                   )}
                 </DetailField>
-                <Separator className="sm:col-span-2" />
-                <DetailField label="Staff">{clinic.staff}</DetailField>
-                <DetailField label="Patients">{clinic.patients}</DetailField>
-                <DetailField label="Status">
-                  <span className="capitalize">{clinic.status}</span>
+                <DetailField label="Country / State">
+                  {clinic.country} · {clinic.state}
                 </DetailField>
-                <DetailField label="Package">{packageLabel(clinic.packagePlan)}</DetailField>
+                <DetailField label="Assigned salesperson">{clinic.salesperson}</DetailField>
+                <DetailField label="Referral source">{clinic.referralSource}</DetailField>
+                <DetailField label="Status">
+                  <span
+                    className={cn(
+                      'inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                      clinicStatusClass(clinic.status)
+                    )}
+                  >
+                    {statusLabel(clinic.status)}
+                  </span>
+                </DetailField>
+                <Separator className="sm:col-span-2" />
+                <DetailField label="Number of users">{clinic.staff}</DetailField>
+                <DetailField label="Patients">{clinic.patients}</DetailField>
+                <DetailField label="Revenue generated">{formatCurrency(clinic.revenue)}</DetailField>
+                <DetailField label="Subscription tier">{packageLabel(clinic.packagePlan)}</DetailField>
+                <DetailField label="White-label status">
+                  <span
+                    className={cn(
+                      'inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                      clinic.features.whiteLabel
+                        ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/55 dark:text-emerald-300'
+                        : 'bg-muted text-muted-foreground'
+                    )}
+                  >
+                    {clinic.features.whiteLabel ? 'Enabled' : 'Disabled'}
+                  </span>
+                </DetailField>
+                <div className="sm:col-span-2">
+                  <p className="text-xs font-medium text-muted-foreground">AI usage</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-primary transition-all"
+                        style={{ width: `${aiPercent ?? 100}%` }}
+                      />
+                    </div>
+                    <span className="shrink-0 text-sm font-medium tabular-nums text-foreground">
+                      {aiUsage.used.toLocaleString()}
+                      {aiUsage.quota != null
+                        ? ` / ${aiUsage.quota.toLocaleString()}`
+                        : ' · Unlimited'}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Last used {formatDate(aiUsage.lastUsedAt, 'MMM dd, yyyy')}
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Subscription */}
         <TabsContent value="subscription" className="mt-0 focus-visible:outline-none">
           <Card className="rounded-2xl border-border bg-card shadow-sm">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">
               <CreditCard className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
-              <CardTitle className="text-base font-semibold text-foreground">Subscription details</CardTitle>
+              <CardTitle className="text-base font-semibold text-foreground">Subscription</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pb-6 pt-0">
               <p className="text-sm text-muted-foreground">Current package and renewal timeline.</p>
               <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
-                <DetailField label="Package">
+                <DetailField label="Subscription tier">
                   <span
                     className="inline-flex rounded-full px-3 py-1 text-sm font-semibold text-white"
                     style={{ backgroundColor: COL_ACCENT }}
@@ -227,18 +379,28 @@ export default function ClinicDetailsPage() {
                     {packageLabel(clinic.packagePlan)}
                   </span>
                 </DetailField>
-                <DetailField label="Billing">Monthly</DetailField>
+                <DetailField label="Billing cycle">
+                  <span className="capitalize">{clinic.billingCycle}</span>
+                </DetailField>
                 <DetailField label="Subscribed since">{started}</DetailField>
                 <DetailField label="Next renewal">{renewal}</DetailField>
+                <DetailField label="Revenue generated">{formatCurrency(clinic.revenue)}</DetailField>
+                <DetailField label="Last billing reset">
+                  {clinic.lastBillingResetAt
+                    ? formatDate(clinic.lastBillingResetAt, 'MMM dd, yyyy')
+                    : 'Never'}
+                </DetailField>
               </div>
               <Separator />
               <p className="text-xs text-muted-foreground">
-                Subscription data is mocked for this dashboard. Wire this tab to your billing API when ready.
+                Use Quick actions above to upgrade, downgrade or reset billing. Wire this tab to your
+                billing API when ready.
               </p>
             </CardContent>
           </Card>
         </TabsContent>
 
+        {/* Payment history */}
         <TabsContent value="invoices" className="mt-0 focus-visible:outline-none">
           <Card className="rounded-2xl border-border bg-card shadow-sm">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">
@@ -282,6 +444,80 @@ export default function ClinicDetailsPage() {
           </Card>
         </TabsContent>
 
+        {/* Support tickets */}
+        <TabsContent value="support" className="mt-0 focus-visible:outline-none">
+          <Card className="rounded-2xl border-border bg-card shadow-sm">
+            <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">
+              <LifeBuoy className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
+              <CardTitle className="text-base font-semibold text-foreground">Support tickets</CardTitle>
+            </CardHeader>
+            <CardContent className="pb-6 pt-0">
+              {clinic.supportTickets.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  No support tickets raised by this clinic.
+                </p>
+              ) : (
+                <ul className="divide-y divide-border rounded-xl border border-border">
+                  {clinic.supportTickets.map((ticket) => (
+                    <li key={ticket.id} className="flex items-center gap-3 px-4 py-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-foreground">
+                          <span className="text-muted-foreground">{ticket.ref}</span> · {ticket.subject}
+                        </p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">
+                          Opened {formatDate(ticket.createdAt, 'MMM dd, yyyy')}
+                        </p>
+                      </div>
+                      <StatusBadge status={ticket.status} />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Activity log */}
+        <TabsContent value="activity" className="mt-0 focus-visible:outline-none">
+          <Card className="rounded-2xl border-border bg-card shadow-sm">
+            <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">
+              <Activity className="h-5 w-5 text-muted-foreground" strokeWidth={2} />
+              <CardTitle className="text-base font-semibold text-foreground">
+                Activity log
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pb-6 pt-0">
+              <p className="mb-4 text-sm text-muted-foreground">
+                Every super-admin quick action against this clinic is securely logged here.
+              </p>
+              {clinic.auditLog.length === 0 ? (
+                <p className="py-6 text-center text-sm text-muted-foreground">
+                  No actions logged yet.
+                </p>
+              ) : (
+                <ol className="space-y-3">
+                  {clinic.auditLog.map((entry) => (
+                    <li
+                      key={entry.id}
+                      className="flex gap-3 rounded-xl border border-border px-4 py-3"
+                    >
+                      <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium text-foreground">{entry.action}</p>
+                        <p className="mt-0.5 text-xs text-muted-foreground">{entry.detail}</p>
+                        <p className="mt-1 text-[11px] text-muted-foreground">
+                          {entry.actor} · {formatDate(entry.timestamp, 'MMM dd, yyyy · h:mm a')}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Password reset */}
         <TabsContent value="password" className="mt-0 focus-visible:outline-none">
           <Card className="rounded-2xl border-border bg-card shadow-sm">
             <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-2 pt-6">

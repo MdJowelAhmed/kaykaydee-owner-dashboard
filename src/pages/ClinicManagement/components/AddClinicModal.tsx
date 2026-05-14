@@ -21,9 +21,14 @@ const schema = z.object({
     .refine((val) => val === '' || /^https?:\/\/.+/i.test(val), {
       message: 'Use a full URL (https://…)',
     }),
+  country: z.string().min(1, 'Country is required'),
+  state: z.string().min(1, 'State / region is required'),
+  salesperson: z.string().min(1, 'Assigned salesperson is required'),
+  referralSource: z.string().min(1, 'Referral source is required'),
   staff: z.coerce.number().int().min(0, 'Must be 0 or greater'),
   patients: z.coerce.number().int().min(0, 'Must be 0 or greater'),
-  status: z.enum(['active', 'deactive']),
+  revenue: z.coerce.number().min(0, 'Must be 0 or greater'),
+  status: z.enum(['active', 'deactive', 'suspended']),
   packagePlan: z.enum(['basic', 'pro', 'enterprise']),
 })
 
@@ -35,10 +40,21 @@ const defaults: FormValues = {
   email: '',
   contactPerson: '',
   website: '',
+  country: '',
+  state: '',
+  salesperson: '',
+  referralSource: '',
   staff: 1,
   patients: 0,
+  revenue: 0,
   status: 'active',
   packagePlan: 'basic',
+}
+
+function planQuota(plan: FormValues['packagePlan']): number | null {
+  if (plan === 'basic') return 200
+  if (plan === 'pro') return 1000
+  return null
 }
 
 interface AddClinicModalProps {
@@ -79,6 +95,25 @@ export function AddClinicModal({ open, onClose, onSave }: AddClinicModalProps) {
       patients: data.patients,
       status: data.status,
       packagePlan: data.packagePlan,
+      country: data.country.trim(),
+      state: data.state.trim(),
+      revenue: data.revenue,
+      salesperson: data.salesperson.trim(),
+      referralSource: data.referralSource.trim(),
+      billingCycle: 'monthly',
+      aiUsage: {
+        used: 0,
+        quota: planQuota(data.packagePlan),
+        lastUsedAt: new Date().toISOString(),
+      },
+      features: {
+        aiAssistant: data.packagePlan !== 'basic',
+        whiteLabel: data.packagePlan === 'enterprise',
+        advancedReporting: data.packagePlan !== 'basic',
+        patientPortal: true,
+      },
+      supportTickets: [],
+      auditLog: [],
     })
     onClose()
   }
@@ -134,6 +169,38 @@ export function AddClinicModal({ open, onClose, onSave }: AddClinicModalProps) {
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInput
+            label="Country"
+            required
+            placeholder="e.g. Australia"
+            {...register('country')}
+            error={errors.country?.message}
+          />
+          <FormInput
+            label="State / region"
+            required
+            placeholder="e.g. New South Wales"
+            {...register('state')}
+            error={errors.state?.message}
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormInput
+            label="Assigned salesperson"
+            required
+            placeholder="Full name"
+            {...register('salesperson')}
+            error={errors.salesperson?.message}
+          />
+          <FormInput
+            label="Referral source"
+            required
+            placeholder="e.g. Partner Referral"
+            {...register('referralSource')}
+            error={errors.referralSource?.message}
+          />
+        </div>
+        <div className="grid gap-4 sm:grid-cols-3">
+          <FormInput
             label="Staff count"
             type="number"
             min={0}
@@ -148,6 +215,14 @@ export function AddClinicModal({ open, onClose, onSave }: AddClinicModalProps) {
             required
             {...register('patients')}
             error={errors.patients?.message}
+          />
+          <FormInput
+            label="Revenue (USD)"
+            type="number"
+            min={0}
+            required
+            {...register('revenue')}
+            error={errors.revenue?.message}
           />
         </div>
         <div className="grid gap-4 sm:grid-cols-2">

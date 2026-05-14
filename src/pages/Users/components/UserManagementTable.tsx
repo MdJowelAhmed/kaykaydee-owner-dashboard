@@ -1,16 +1,10 @@
 import { motion } from 'framer-motion'
-import { Info } from 'lucide-react'
+import { Eye, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/utils/cn'
 import type { User } from '@/types'
+import { USER_TYPE_LABELS } from '@/utils/constants'
 import { userStatusPillClass } from '@/pages/Users/userStatusStyles'
-
-const ROLE_LABELS: Record<User['role'], string> = {
-  admin: 'Admin',
-  user: 'Staff',
-  moderator: 'Doctor',
-  editor: 'Doctor',
-}
 
 function userDisplayName(user: User) {
   return user.organizationName?.trim() || `${user.firstName} ${user.lastName}`.trim()
@@ -19,9 +13,10 @@ function userDisplayName(user: User) {
 interface UserManagementTableProps {
   users: User[]
   onOpenDetails: (user: User) => void
+  onDelete: (user: User) => void
 }
 
-export function UserManagementTable({ users, onOpenDetails }: UserManagementTableProps) {
+export function UserManagementTable({ users, onOpenDetails, onDelete }: UserManagementTableProps) {
   const headerBg = 'bg-[#E9EBF0] dark:bg-background'
   const headerCell = 'border-x-0 border-t-0 px-4 text-sm font-semibold text-accent sm:px-6 sm:py-4 align-middle'
   const bodyCell = 'border-b border-border px-4 py-3 text-sm text-accent sm:px-6 sm:py-4'
@@ -30,9 +25,9 @@ export function UserManagementTable({ users, onOpenDetails }: UserManagementTabl
       <table className="w-full min-w-[1100px]">
         <thead>
           <tr className="">
-            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>S. No</th>
+            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>User ID</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>User Name</th>
-            <th className={cn(headerCell, headerBg, 'text-left')}>Role</th>
+            <th className={cn(headerCell, headerBg, 'text-left')}>User Type</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Clinics</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Contact</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Email</th>
@@ -63,7 +58,9 @@ export function UserManagementTable({ users, onOpenDetails }: UserManagementTabl
                   <span className="text-sm text-foreground">{userDisplayName(user)}</span>
                 </td>
                 <td className={bodyCell}>
-                  <span className="text-sm text-foreground">{ROLE_LABELS[user.role]}</span>
+                  <span className="text-sm text-foreground">
+                    {USER_TYPE_LABELS[user.userType] ?? '—'}
+                  </span>
                 </td>
                 <td className={bodyCell}>
                   <span className="text-sm text-foreground">{user.clinicName ?? '—'}</span>
@@ -85,7 +82,7 @@ export function UserManagementTable({ users, onOpenDetails }: UserManagementTabl
                   </span>
                 </td>
                 <td className={bodyCell}>
-                  <div className="flex justify-end">
+                  <div className="flex justify-end gap-1">
                     <Button
                       type="button"
                       variant="ghost"
@@ -94,7 +91,17 @@ export function UserManagementTable({ users, onOpenDetails }: UserManagementTabl
                       aria-label="View details"
                       onClick={() => onOpenDetails(user)}
                     >
-                      <Info className="h-5 w-5" strokeWidth={2} />
+                      <Eye className="h-5 w-5" strokeWidth={2} />
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-9 w-9 rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Delete user"
+                      onClick={() => onDelete(user)}
+                    >
+                      <Trash2 className="h-5 w-5" strokeWidth={2} />
                     </Button>
                   </div>
                 </td>

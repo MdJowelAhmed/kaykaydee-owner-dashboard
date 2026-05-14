@@ -12,13 +12,20 @@ import {
 } from '@/components/ui/select'
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
-import { ModalWrapper } from '@/components/common/ModalWrapper'
+import { DrawerWrapper } from '@/components/common/DrawerWrapper'
 import { useUrlParams } from '@/hooks/useUrlState'
 import { formatDate } from '@/utils/formatters'
+import { cn } from '@/utils/cn'
 import { mockAdmins } from './adminData'
 import { AdminTable } from './components/AdminTable'
 import { AddEditAdminModal } from './components/AddEditAdminModal'
-import type { AdminRow } from './types'
+import {
+  PERMISSION_OPTIONS,
+  SCOPE_ITEMS,
+  type AdminPermissionEntry,
+  type AdminPermissionKey,
+  type AdminRow,
+} from './types'
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'Status' },
@@ -80,6 +87,7 @@ export default function AdminManagePage() {
     phone: string
     role: AdminRow['role']
     status: AdminRow['status']
+    permissions: AdminPermissionEntry[]
   }) => {
     if (modalMode === 'create') {
       const newRow: AdminRow = {
@@ -90,6 +98,7 @@ export default function AdminManagePage() {
         status: payload.status,
         email: payload.email,
         phone: payload.phone,
+        permissions: payload.permissions,
       }
       setRows((prev) => [newRow, ...prev])
       setParams({ page: 1 })
@@ -104,11 +113,31 @@ export default function AdminManagePage() {
                 phone: payload.phone,
                 role: payload.role,
                 status: payload.status,
+                permissions: payload.permissions,
               }
             : r
         )
       )
     }
+  }
+
+  const permissionLabel = (key: AdminPermissionKey) =>
+    PERMISSION_OPTIONS.find((o) => o.value === key)?.label ?? key
+
+  const scopeSummary = (entry: AdminPermissionEntry) => {
+    const items = SCOPE_ITEMS[entry.key] ?? []
+    if (entry.scope.type === 'all') {
+      return items.length > 0 ? `All ${items.length}` : 'Full access'
+    }
+    return `${entry.scope.ids.length} of ${items.length}`
+  }
+
+  const scopeItemLabels = (entry: AdminPermissionEntry): string[] => {
+    if (entry.scope.type === 'all') return []
+    const items = SCOPE_ITEMS[entry.key] ?? []
+    return entry.scope.ids
+      .map((id) => items.find((i) => i.id === id)?.label)
+      .filter((x): x is string => Boolean(x))
   }
 
   return (
@@ -189,12 +218,12 @@ export default function AdminManagePage() {
         onSave={handleSave}
       />
 
-      <ModalWrapper
+      <DrawerWrapper
         open={!!detailRow}
         onClose={() => setDetailRow(null)}
         title="Admin details"
         description={detailRow ? `${detailRow.clinicName} · ${detailRow.id}` : undefined}
-        size="md"
+        size="xl"
       >
         {detailRow && (
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
@@ -230,9 +259,59 @@ export default function AdminManagePage() {
                 {formatDate(detailRow.joinDate, 'd MMM yyyy')}
               </dd>
             </div>
+            <div className="sm:col-span-2">
+              <dt className="text-muted-foreground">Page permissions</dt>
+              <dd className="mt-1 space-y-2">
+                {detailRow.permissions && detailRow.permissions.length > 0 ? (
+                  detailRow.permissions.map((entry) => {
+                    const labels = scopeItemLabels(entry)
+                    const isAll = entry.scope.type === 'all'
+                    return (
+                      <div
+                        key={entry.key}
+                        className="rounded-lg border border-border bg-muted/40 px-3 py-2"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="text-sm font-medium text-foreground">
+                            {permissionLabel(entry.key)}
+                          </span>
+                          <span
+                            className={cn(
+                              'rounded-full px-2 py-0.5 text-[11px] font-semibold',
+                              isAll
+                                ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950/55 dark:text-emerald-300'
+                                : 'bg-amber-100 text-amber-900 dark:bg-amber-950/55 dark:text-amber-300'
+                            )}
+                          >
+                            {scopeSummary(entry)}
+                          </span>
+                        </div>
+                        {!isAll && labels.length > 0 && (
+                          <div className="mt-1.5 flex flex-wrap gap-1">
+                            {labels.map((l) => (
+                              <span
+                                key={l}
+                                className="rounded-full bg-card px-2 py-0.5 text-[11px] text-muted-foreground"
+                              >
+                                {l}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        {!isAll && labels.length === 0 && (
+                          <p className="mt-1 text-[11px] text-destructive">No items selected</p>
+                        )}
+                      </div>
+                    )
+                  })
+                ) : (
+                  <span className="text-sm text-muted-foreground">No permissions</span>
+                )}
+              </dd>
+            </div>
           </dl>
         )}
-      </ModalWrapper>
+      </DrawerWrapper>
     </motion.div>
   )
 }

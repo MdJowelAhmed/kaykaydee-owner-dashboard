@@ -1,8 +1,70 @@
 import { motion } from 'framer-motion'
 import { cn } from '@/utils/cn'
 import { formatDate } from '@/utils/formatters'
-import type { AdminRow } from '../types'
+import {
+  PERMISSION_OPTIONS,
+  SCOPE_ITEMS,
+  type AdminPermissionEntry,
+  type AdminPermissionKey,
+  type AdminRow,
+} from '../types'
 import { AdminRowActions } from './AdminRowActions'
+
+const PERMISSION_LABELS = PERMISSION_OPTIONS.reduce<Record<AdminPermissionKey, string>>(
+  (acc, opt) => {
+    acc[opt.value] = opt.label
+    return acc
+  },
+  {} as Record<AdminPermissionKey, string>
+)
+
+function describeEntry(entry: AdminPermissionEntry): string {
+  const label = PERMISSION_LABELS[entry.key] ?? entry.key
+  const items = SCOPE_ITEMS[entry.key] ?? []
+  if (entry.scope.type === 'all') {
+    return items.length > 0 ? `${label} · All ${items.length}` : label
+  }
+  return `${label} · ${entry.scope.ids.length}/${items.length}`
+}
+
+function PermissionsCell({ permissions }: { permissions: AdminRow['permissions'] }) {
+  if (!permissions || permissions.length === 0) {
+    return <span className="text-xs text-muted-foreground">—</span>
+  }
+
+  const visible = permissions.slice(0, 3)
+  const remaining = permissions.length - visible.length
+
+  return (
+    <div className="flex max-w-[280px] flex-wrap gap-1">
+      {visible.map((entry) => (
+        <span
+          key={entry.key}
+          className={cn(
+            'inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium',
+            entry.scope.type === 'selected'
+              ? 'bg-amber-100 text-amber-900 dark:bg-amber-950/55 dark:text-amber-300'
+              : 'bg-muted text-foreground'
+          )}
+          title={describeEntry(entry)}
+        >
+          {PERMISSION_LABELS[entry.key] ?? entry.key}
+          {entry.scope.type === 'selected' && (
+            <span className="ml-1 font-semibold">({entry.scope.ids.length})</span>
+          )}
+        </span>
+      ))}
+      {remaining > 0 && (
+        <span
+          className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+          title={permissions.slice(3).map(describeEntry).join(', ')}
+        >
+          +{remaining} more
+        </span>
+      )}
+    </div>
+  )
+}
 
 function RolePill({ role }: { role: AdminRow['role'] }) {
   return (
@@ -40,13 +102,14 @@ const thBase =
 export function AdminTable({ rows, onInfo, onEdit }: AdminTableProps) {
   return (
     <div className="w-full overflow-auto">
-      <table className="w-full min-w-[980px]">
+      <table className="w-full min-w-[1100px]">
         <thead>
           <tr>
             <th className={cn(thBase, 'text-left')}>Admin Id</th>
             <th className={cn(thBase, 'text-left')}>clinic Name</th>
             <th className={cn(thBase, 'text-left')}>Join Date</th>
             <th className={cn(thBase, 'text-left')}>Role</th>
+            <th className={cn(thBase, 'text-left')}>Page Permissions</th>
             <th className={cn(thBase, 'text-left')}>Status</th>
             <th className={cn(thBase, 'text-right')}>Action</th>
           </tr>
@@ -54,7 +117,7 @@ export function AdminTable({ rows, onInfo, onEdit }: AdminTableProps) {
         <tbody className="divide-y divide-border bg-card">
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={6} className="px-6 py-10 text-center text-sm text-muted-foreground">
+              <td colSpan={7} className="px-6 py-10 text-center text-sm text-muted-foreground">
                 No admins found
               </td>
             </tr>
@@ -74,6 +137,9 @@ export function AdminTable({ rows, onInfo, onEdit }: AdminTableProps) {
                 </td>
                 <td className="px-6 py-4">
                   <RolePill role={row.role} />
+                </td>
+                <td className="px-6 py-4">
+                  <PermissionsCell permissions={row.permissions} />
                 </td>
                 <td className="px-6 py-4">
                   <StatusPill status={row.status} />
