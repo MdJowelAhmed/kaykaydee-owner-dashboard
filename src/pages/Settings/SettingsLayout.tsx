@@ -7,6 +7,8 @@ import {
   Info,
   KeyRound,
   ShieldAlert,
+  Cog,
+  Smartphone,
 } from 'lucide-react'
 import { useAppSelector } from '@/redux/hooks'
 import { UserRole, normalizeRoleKey, DASHBOARD_ALLOWED_ROLES } from '@/types/roles'
@@ -37,6 +39,18 @@ const SETTINGS_TABS: SettingsTabDef[] = [
     label: 'Change password',
     Icon: KeyRound,
     allowedRoles: [...DASHBOARD_ALLOWED_ROLES],
+  },
+  {
+    to: '/settings/global',
+    label: 'Global settings',
+    Icon: Cog,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    to: '/settings/mobile',
+    label: 'Mobile app',
+    Icon: Smartphone,
+    allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
     to: '/settings/about-us',

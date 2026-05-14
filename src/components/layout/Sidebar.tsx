@@ -6,12 +6,14 @@ import {
   Settings,
   Receipt,
   Layers,
-  UserCog,
-  Sparkles,
   LogOut,
   Users,
   Building2,
   LifeBuoy,
+  BarChart3,
+  ShieldCheck,
+  BrainCircuit,
+  HeartHandshake,
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -28,16 +30,6 @@ import {
   DASHBOARD_SIDEBAR_V_INSET,
 } from '@/components/layout/dashboardLayoutTokens'
 import { getRoleDisplayName } from '@/utils/roleHelpers'
-
-/** Sidebar AI strip + progress card (matches design reference) */
-const COL_AI_FROM = '#6737BE'
-const COL_AI_TO = '#E055FA'
-// const COL_CARD_FROM = '#44A9C4'
-// const COL_CARD_MID = '#48DAC9'
-// const COL_CARD_TO = '#E055FA'
-// const COL_PROGRESS_FILL = '#48DAC9'
-
-const ZEALTH_AI_HREF = '/zealth-ai' as const
 
 interface NavItem {
   title: string
@@ -56,21 +48,15 @@ const navItems: NavItem[] = [
     allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
   },
   {
-    title: 'Users',
-    href: '/users',
-    icon: Users,
-    allowedRoles: [UserRole.SUPER_ADMIN],
-  },
-  {
     title: 'Clinics',
     href: '/clinic-management',
     icon: Building2,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
-    title: 'Revenue & Billing',
-    href: '/subscription-invoice',
-    icon: Receipt,
+    title: 'Users',
+    href: '/users',
+    icon: Users,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
@@ -80,9 +66,27 @@ const navItems: NavItem[] = [
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
-    title: 'Admin Manage',
-    href: '/admin-manage',
-    icon: UserCog,
+    title: 'Revenue & Billing',
+    href: '/subscription-invoice',
+    icon: Receipt,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Sales & Affiliates',
+    href: '/sales-affiliates',
+    icon: HeartHandshake,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'AI Management',
+    href: '/ai-management',
+    icon: BrainCircuit,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Compliance & Audit',
+    href: '/compliance-audit',
+    icon: ShieldCheck,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
@@ -92,10 +96,10 @@ const navItems: NavItem[] = [
     allowedRoles: [...DASHBOARD_ALLOWED_ROLES],
   },
   {
-    title: 'Zealth AI',
-    href: ZEALTH_AI_HREF,
-    icon: Sparkles,
-    allowedRoles: [UserRole.SUPER_ADMIN, UserRole.ADMIN],
+    title: 'Reports & Analytics',
+    href: '/reports-analytics',
+    icon: BarChart3,
+    allowedRoles: [UserRole.SUPER_ADMIN],
   },
 ]
 
@@ -125,13 +129,8 @@ export function Sidebar() {
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
-  const mainNavItems = navItems.filter((item) => item.href !== ZEALTH_AI_HREF)
-  const zealthAiItem = navItems.find((item) => item.href === ZEALTH_AI_HREF)
-
-  const filteredMain = filterNavByRole(mainNavItems, user)
+  const filteredMain = filterNavByRole(navItems, user)
   const settingsItem = filterNavByRole([settingsNavItem], user)[0]
-  const filteredZealth = zealthAiItem ? filterNavByRole([zealthAiItem], user) : []
-  const showZealth = filteredZealth.length > 0
 
   const belowHeaderGap = `calc(${DASHBOARD_HEADER_H} + ${DASHBOARD_HEADER_SIDEBAR_GAP})`
   const sidebarTop = `calc(${belowHeaderGap} + ${DASHBOARD_SIDEBAR_V_INSET})`
@@ -153,18 +152,6 @@ export function Sidebar() {
 
   return (
     <>
-      <svg
-        aria-hidden
-        className="pointer-events-none absolute h-0 w-0 overflow-hidden"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <linearGradient id="sidebar-ai-nav-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor={COL_AI_FROM} />
-            <stop offset="100%" stopColor={COL_AI_TO} />
-          </linearGradient>
-        </defs>
-      </svg>
       <div
         className={cn(
           'fixed inset-x-0 bottom-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity',
@@ -193,45 +180,6 @@ export function Sidebar() {
           {settingsItem && (
             <SidebarNavItem key={settingsItem.href} item={settingsItem} collapsed={sidebarCollapsed} />
           )}
-
-          {(filteredMain.length > 0 || settingsItem) && showZealth && <SidebarDivider />}
-
-          {showZealth &&
-            filteredZealth.map((item) => (
-              <SidebarNavItem
-                key={item.href}
-                item={item}
-                collapsed={sidebarCollapsed}
-                variant="ai"
-              />
-            ))}
-
-          {/* {!sidebarCollapsed && (
-            <div className="mt-3 px-1">
-              <div
-                className="relative overflow-hidden rounded-2xl p-4 text-white shadow-md"
-                style={{
-                  background: `linear-gradient(to right, ${COL_CARD_FROM}, ${COL_CARD_MID}, ${COL_CARD_TO})`,
-                }}
-              >
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_0%,rgba(255,255,255,0.2),transparent_50%)]" />
-                <div className="relative flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
-                    <Crown className="h-5 w-5 text-white" strokeWidth={1.75} />
-                  </div>
-                  <span className="text-sm font-semibold tracking-tight text-white">
-                    50% Completed
-                  </span>
-                </div>
-                <div className="relative mt-3 h-2.5 w-full overflow-hidden rounded-full bg-white">
-                  <div
-                    className="h-full rounded-full shadow-sm transition-all duration-500"
-                    style={{ width: '50%', backgroundColor: COL_PROGRESS_FILL }}
-                  />
-                </div>
-              </div>
-            </div>
-          )} */}
         </nav>
 
         <div className="mt-auto space-y-3 border-t border-border px-3 py-1">

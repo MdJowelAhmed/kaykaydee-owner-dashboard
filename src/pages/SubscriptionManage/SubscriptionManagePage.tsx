@@ -11,6 +11,9 @@ import { PackageCard } from './components/PackageCard'
 import { AddEditPackageModal, type SaveManagePackageInput } from './components/AddEditPackageModal'
 import { EditFeaturesModal } from './components/EditFeaturesModal'
 import { CouponsSection } from './components/CouponsSection'
+import { TierManagementSection } from './components/TierManagementSection'
+import { AutomatedBillingSection } from './components/AutomatedBillingSection'
+import { WhiteLabelSection } from './components/WhiteLabelSection'
 import { createId } from '@/utils/id'
 
 type TabKey = 'monthly' | 'annual' | 'trial'
@@ -21,11 +24,14 @@ const TAB_LABELS: Record<TabKey, string> = {
   trial: 'Free Trial',
 }
 
-type SectionKey = 'packages' | 'coupons'
+type SectionKey = 'packages' | 'tiers' | 'coupons' | 'billing' | 'whitelabel'
 
 const SECTION_LABELS: Record<SectionKey, string> = {
   packages: 'Subscription Management',
+  tiers: 'Tier Management',
   coupons: 'Coupons & Promotions',
+  billing: 'Automated Billing',
+  whitelabel: 'White-Label Controls',
 }
 
 function newPackageBase(cycle: BillingCycle): SubscriptionManagePackage {
@@ -117,7 +123,7 @@ export default function SubscriptionManagePage() {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <div className="inline-flex w-fit items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+      <div className="flex w-full flex-wrap items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1 lg:w-fit lg:rounded-full">
         {(Object.keys(SECTION_LABELS) as SectionKey[]).map((key) => (
           <button
             key={key}
@@ -135,8 +141,14 @@ export default function SubscriptionManagePage() {
         ))}
       </div>
 
-      {section === 'coupons' ? (
+      {section === 'tiers' ? (
+        <TierManagementSection />
+      ) : section === 'coupons' ? (
         <CouponsSection packages={packages} />
+      ) : section === 'billing' ? (
+        <AutomatedBillingSection />
+      ) : section === 'whitelabel' ? (
+        <WhiteLabelSection />
       ) : (
         <>
       <div className="grid gap-4 lg:grid-cols-2">

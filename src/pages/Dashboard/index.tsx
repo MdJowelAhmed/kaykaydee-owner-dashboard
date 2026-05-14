@@ -1,8 +1,19 @@
 import { useState, useMemo } from 'react'
-import { Building2, Users, UserCog, CircleDollarSign } from 'lucide-react'
+import {
+  Building2,
+  Users,
+  Stethoscope,
+  Layers,
+  CircleDollarSign,
+  Wallet,
+} from 'lucide-react'
 import { OverviewKpiCard } from './OverviewKpiCard'
 import { RevenueTrendChart } from './RevenueTrendChart'
 import { SubscriptionDistributionCharts } from './SubscriptionDistributionCharts'
+import { LiveActivityFeed } from './LiveActivityFeed'
+import { FinancialSnapshotWidget } from './FinancialSnapshotWidget'
+import { AIUsageOverviewWidget } from './AIUsageOverviewWidget'
+import { SystemHealthWidget } from './SystemHealthWidget'
 import { overviewByYear, overviewYears } from './dashboardData'
 import { formatNumber } from '@/utils/formatters'
 
@@ -23,35 +34,51 @@ export default function Dashboard() {
   const kpis = useMemo(
     () => [
       {
-        title: 'Total Revenue',
-        value: formatUsd0(35000),
-        change: 8,
-        changeLabel: 'from last month',
-        icon: CircleDollarSign,
-        featured: true as const,
-      },
-      {
-        title: 'Active Clinics',
+        title: 'Total Clinics',
         value: formatNumber(12),
-        change: 2,
+        change: 6,
         changeLabel: 'from last month',
         icon: Building2,
         featured: false as const,
       },
       {
+        title: 'Total Practitioners',
+        value: formatNumber(348),
+        change: 4,
+        changeLabel: 'from last month',
+        icon: Stethoscope,
+        featured: false as const,
+      },
+      {
         title: 'Total Patients',
-        value: formatNumber(12536),
+        value: formatNumber(12_536),
         change: 2,
         changeLabel: 'from last month',
         icon: Users,
         featured: false as const,
       },
       {
-        title: 'Platform Users',
-        value: formatNumber(620),
-        change: 2,
+        title: 'Active Subscriptions',
+        value: formatNumber(592),
+        change: 5,
         changeLabel: 'from last month',
-        icon: UserCog,
+        icon: Layers,
+        featured: false as const,
+      },
+      {
+        title: 'MRR',
+        value: formatUsd0(52_400),
+        change: 7.4,
+        changeLabel: 'from last month',
+        icon: CircleDollarSign,
+        featured: true as const,
+      },
+      {
+        title: 'ARR',
+        value: formatUsd0(628_800),
+        change: 12.1,
+        changeLabel: 'YoY',
+        icon: Wallet,
         featured: false as const,
       },
     ],
@@ -60,23 +87,39 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div>
+        <h1 className="text-2xl font-bold text-card-foreground">Platform Overview</h1>
+        <p className="text-sm text-muted-foreground">
+          Clinics, subscribers, revenue, AI usage, and system health at a glance
+        </p>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {kpis.map((stat, index) => (
           <OverviewKpiCard key={stat.title} {...stat} index={index} />
         ))}
       </div>
 
-      <RevenueTrendChart
-        data={overviewRows}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
-      />
+      <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
+        <RevenueTrendChart
+          data={overviewRows}
+          selectedYear={selectedYear}
+          onYearChange={setSelectedYear}
+        />
+        <LiveActivityFeed />
+      </div>
+
+      <FinancialSnapshotWidget />
+
+      <AIUsageOverviewWidget />
 
       <SubscriptionDistributionCharts
         monthlyData={overviewRows}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
       />
+
+      <SystemHealthWidget />
     </div>
   )
 }

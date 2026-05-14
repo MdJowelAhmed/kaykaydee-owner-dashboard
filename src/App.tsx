@@ -27,6 +27,8 @@ import ChangePassword from '@/pages/Settings/ChangePassword/ChangePassword'
 import TermsSettings from '@/pages/Settings/Terms/TermsSettings'
 import PrivacySettings from '@/pages/Settings/Privacy/PrivacySettings'
 import AboutUsSettings from '@/pages/Settings/AboutUs/AboutUsSettings'
+import GlobalSettingsPage from '@/pages/Settings/GlobalSettings/GlobalSettingsPage'
+import MobileAppPage from '@/pages/Settings/MobileApp/MobileAppPage'
 import Calender from './pages/calender/Calender'
 import TransactionsHistory from './pages/transictions-history/TransactionsHistory'
 import Subscription from './pages/Subscription/Subscription'
@@ -35,6 +37,10 @@ import SubscriptionPackagePage from './pages/SubscriptionPackage/SubscriptionPac
 import SubscriptionInvoicePage from './pages/SubscriptionInvoice/SubscriptionInvoicePage'
 import SubscriptionManagePage from './pages/SubscriptionManage/SubscriptionManagePage'
 import AdminManagePage from './pages/AdminManage/AdminManagePage'
+import ReportsAnalyticsPage from './pages/ReportsAnalytics/ReportsAnalyticsPage'
+import ComplianceAuditPage from './pages/ComplianceAudit/ComplianceAuditPage'
+import AIManagementPage from './pages/AIManagement/AIManagementPage'
+import SalesAffiliatesPage from './pages/SalesAffiliates/SalesAffiliatesPage'
 import ZealthAIPage from './pages/ZealthAI/ZealthAIPage'
 import Support from './pages/Support/Support'
 import SupportCentrePage from './pages/SupportCentre/SupportCentrePage'
@@ -186,6 +192,42 @@ function App() {
           />
 
           <Route
+            path="reports-analytics"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <ReportsAnalyticsPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="compliance-audit"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <ComplianceAuditPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="ai-management"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <AIManagementPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
+            path="sales-affiliates"
+            element={
+              <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                <SalesAffiliatesPage />
+              </RoleBasedRoute>
+            }
+          />
+
+          <Route
             path="zealth-ai"
             element={
               <RoleBasedRoute allowedRoles={[...DASHBOARD_ALLOWED_ROLES]}>
@@ -267,6 +309,22 @@ function App() {
             <Route index element={<Navigate to="profile" replace />} />
             <Route path="profile" element={<ProfileSettings />} />
             <Route path="password" element={<ChangePassword />} />
+            <Route
+              path="global"
+              element={
+                <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                  <GlobalSettingsPage />
+                </RoleBasedRoute>
+              }
+            />
+            <Route
+              path="mobile"
+              element={
+                <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
+                  <MobileAppPage />
+                </RoleBasedRoute>
+              }
+            />
             <Route path="terms" element={<TermsSettings />} />
             <Route path="privacy" element={<PrivacySettings />} />
             <Route path="about-us" element={<AboutUsSettings />} />
