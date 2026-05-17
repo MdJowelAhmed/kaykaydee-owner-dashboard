@@ -1,4 +1,5 @@
 import { useMemo, useEffect, useState, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -11,7 +12,6 @@ import {
 import { SearchInput } from '@/components/common/SearchInput'
 import { Pagination } from '@/components/common/Pagination'
 import { UserManagementTable } from './components/UserManagementTable'
-import { UserDetailsModal } from './components/UserDetailsModal'
 import { DeleteUserModal } from './components/DeleteUserModal'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
 import { setFilters, setPage, setLimit, deleteUser } from '@/redux/slices/userSlice'
@@ -21,6 +21,7 @@ import type { User, UserType } from '@/types'
 
 export default function UserList() {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const { filteredList, pagination } = useAppSelector((state) => state.users)
 
   const { getParam, getNumberParam, setParam, setParams } = useUrlParams()
@@ -32,16 +33,8 @@ export default function UserList() {
   const limit = getNumberParam('limit', 15)
 
   const { list } = useAppSelector((state) => state.users)
-  const [detailsUserId, setDetailsUserId] = useState<string | null>(null)
-  const [detailsOpen, setDetailsOpen] = useState(false)
   const [deleteUserId, setDeleteUserId] = useState<string | null>(null)
   const [deleteOpen, setDeleteOpen] = useState(false)
-
-  // Read the live record so permission/security edits reflect instantly.
-  const detailsUser = useMemo(
-    () => list.find((u) => u.id === detailsUserId) ?? null,
-    [list, detailsUserId]
-  )
 
   const userToDelete = useMemo(
     () => list.find((u) => u.id === deleteUserId) ?? null,
@@ -95,10 +88,12 @@ export default function UserList() {
     setParams({ limit: newLimit, page: 1 })
   }
 
-  const handleOpenDetails = useCallback((user: User) => {
-    setDetailsUserId(user.id)
-    setDetailsOpen(true)
-  }, [])
+  const handleOpenDetails = useCallback(
+    (user: User) => {
+      navigate(`/users/${user.id}`)
+    },
+    [navigate]
+  )
 
   const handleOpenDelete = useCallback((user: User) => {
     setDeleteUserId(user.id)
@@ -188,15 +183,6 @@ export default function UserList() {
           </div>
         </CardContent>
       </Card>
-
-      <UserDetailsModal
-        user={detailsUser}
-        open={detailsOpen}
-        onOpenChange={(open) => {
-          setDetailsOpen(open)
-          if (!open) setDetailsUserId(null)
-        }}
-      />
 
       <DeleteUserModal
         user={userToDelete}

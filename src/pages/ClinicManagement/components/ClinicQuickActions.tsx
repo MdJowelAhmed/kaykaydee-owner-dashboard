@@ -7,6 +7,7 @@ import {
   ArrowLeftRight,
   UserCog,
   Zap,
+  FolderOpen,
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,7 @@ import { CLINIC_FEATURE_FLAGS } from '@/utils/constants'
 import type { Clinic, ClinicFeatureKey, ClinicPackagePlan } from '@/types'
 import { UpgradeSubscriptionModal } from './UpgradeSubscriptionModal'
 import { SendAnnouncementModal } from './SendAnnouncementModal'
+import { GlobalDocumentsModal } from './GlobalDocumentsModal'
 
 type DialogKind = 'suspend' | 'reset' | 'impersonate' | null
 
@@ -38,6 +40,7 @@ export function ClinicQuickActions({ clinic }: ClinicQuickActionsProps) {
   const [dialog, setDialog] = useState<DialogKind>(null)
   const [upgradeOpen, setUpgradeOpen] = useState(false)
   const [announceOpen, setAnnounceOpen] = useState(false)
+  const [documentsOpen, setDocumentsOpen] = useState(false)
 
   const isSuspended = clinic.status === 'suspended'
 
@@ -170,6 +173,16 @@ export function ClinicQuickActions({ clinic }: ClinicQuickActionsProps) {
             <Megaphone className="h-4 w-4" />
             Send announcement
           </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="gap-2 rounded-full"
+            onClick={() => setDocumentsOpen(true)}
+          >
+            <FolderOpen className="h-4 w-4" />
+            Global documents
+          </Button>
         </div>
 
         {/* Feature switches */}
@@ -247,6 +260,12 @@ export function ClinicQuickActions({ clinic }: ClinicQuickActionsProps) {
         onClose={() => setAnnounceOpen(false)}
         clinicName={clinic.name}
         onSend={handleSendAnnouncement}
+      />
+
+      <GlobalDocumentsModal
+        open={documentsOpen}
+        onClose={() => setDocumentsOpen(false)}
+        clinicName={clinic.name}
       />
     </Card>
   )

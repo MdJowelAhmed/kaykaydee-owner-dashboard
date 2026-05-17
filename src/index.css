@@ -42,14 +42,14 @@
     --card-foreground: #f1f5f9;
     --popover: #1a1e24;
     --popover-foreground: #f1f5f9;
-    --primary: #0c0e10;
-    --primary-foreground: #1a1033;
+    --primary: #9b7fdf;
+    --primary-foreground: #fafafa;
     --secondary: #1e293b;
     --secondary-foreground: #e2e8f0;
     --muted: #1e293b;
     --muted-foreground: #94a3b8;
-    --accent: ffffffcc;
-    --accent-foreground: #ffffffcc;
+    --accent: #cbd5e1cc;
+    --accent-foreground: #f8fafc;
     --destructive: #f87171;
     --destructive-foreground: #1f2937;
     --border: #2d3748;

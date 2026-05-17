@@ -35,7 +35,7 @@ export function ClinicTable({ clinics, onOpenClinic }: ClinicTableProps) {
       <table className="w-full min-w-[1000px]">
         <thead>
           <tr>
-            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>S. No</th>
+            <th className={cn(headerCell, headerBg, 'text-left rounded-l-full')}>Clinic ID</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Clinic name</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Country / State</th>
             <th className={cn(headerCell, headerBg, 'text-left')}>Subscription tier</th>

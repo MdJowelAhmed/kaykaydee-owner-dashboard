@@ -141,8 +141,16 @@ export interface ClinicSupportTicket {
   ref: string
   subject: string
   status: 'open' | 'in_progress' | 'resolved' | 'closed'
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  category: 'Billing' | 'Technical' | 'Account' | 'Feature Request' | 'General'
+  /** Short description preview shown on the clinic profile. */
+  description: string
+  /** Name of the support agent currently handling the ticket. */
+  assignee: string
   /** ISO timestamp. */
   createdAt: string
+  /** ISO timestamp of the most recent activity. */
+  updatedAt: string
 }
 
 /** Audit entry — every quick action against a clinic is securely logged. */

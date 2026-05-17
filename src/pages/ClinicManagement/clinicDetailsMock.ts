@@ -15,12 +15,12 @@ function seedFromId(id: string): number {
 
 export function mockInvoicesForClinic(clinicId: string): ClinicInvoiceRow[] {
   const s = seedFromId(clinicId)
-  const count = 3 + (s % 4)
-  const statuses: ClinicInvoiceStatus[] = ['Paid', 'Paid', 'Pending', 'Failed']
+  const count = 8 + (s % 5) // 8–12 invoices so filters are meaningful
+  const statuses: ClinicInvoiceStatus[] = ['Paid', 'Paid', 'Paid', 'Pending', 'Failed']
   return Array.from({ length: count }, (_, i) => ({
     id: `INV-${clinicId.slice(-4)}-${200 + i}`,
-    issuedAt: format(subMonths(new Date(), i + (s % 4)), 'yyyy-MM-dd'),
-    amount: [99, 149, 299, 499][(s + i) % 4],
+    issuedAt: format(subMonths(new Date(), i), 'yyyy-MM-dd'),
+    amount: [99, 149, 299, 499, 199, 349][(s + i) % 6],
     status: statuses[(s + i) % statuses.length],
   }))
 }

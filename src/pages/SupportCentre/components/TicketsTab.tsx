@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { SearchInput } from '@/components/common/SearchInput'
 import { FilterDropdown } from '@/components/common/FilterDropdown'
 import { Pagination } from '@/components/common/Pagination'
 import { useUrlParams } from '@/hooks/useUrlState'
+import { useAppSelector } from '@/redux/hooks'
 import { toast } from '@/utils/toast'
 import { createId } from '@/utils/id'
 import { mockSupportTickets } from '../mockData'
+import { buildClinicSupportTickets } from '../clinicTicketAdapter'
 import {
   PRIORITY_FILTER_OPTIONS,
   STATUS_FILTER_OPTIONS,
@@ -30,11 +32,37 @@ export function TicketsTab() {
   const search = getParam('search', '')
   const status = getParam('status', 'all')
   const priority = getParam('priority', 'all')
+  const ticketRefParam = getParam('ticket', '')
   const page = getNumberParam('page', 1)
   const limit = getNumberParam('limit', 10)
 
-  const [tickets, setTickets] = useState<SupportTicket[]>(mockSupportTickets)
+  const clinics = useAppSelector((state) => state.clinics.list)
+
+  const [tickets, setTickets] = useState<SupportTicket[]>(() => [
+    ...buildClinicSupportTickets(clinics),
+    ...mockSupportTickets,
+  ])
   const [activeId, setActiveId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!ticketRefParam) return
+    const match = tickets.find((t) => t.ref === ticketRefParam)
+    if (match) {
+      setActiveId(match.id)
+    } else {
+      toast({
+        variant: 'info',
+        title: 'Ticket not found',
+        description: `No ticket matches ${ticketRefParam} in Support Centre.`,
+      })
+      setParams({ ticket: null })
+    }
+  }, [ticketRefParam, tickets, setParams])
+
+  const closeDrawer = () => {
+    setActiveId(null)
+    if (ticketRefParam) setParams({ ticket: null })
+  }
 
   const stats = useMemo(
     () => ({
@@ -153,7 +181,10 @@ export function TicketsTab() {
       </div>
 
       <div className="rounded-2xl bg-card p-4 shadow-sm">
-        <SupportTicketTable rows={paginated} onView={(t) => setActiveId(t.id)} />
+        <SupportTicketTable
+          rows={paginated}
+          onView={(t) => setParams({ ticket: t.ref })}
+        />
 
         <div className="border-t border-border px-2 pt-2 sm:px-4">
           <Pagination
@@ -170,7 +201,7 @@ export function TicketsTab() {
 
       <TicketDetailDrawer
         open={!!activeTicket}
-        onClose={() => setActiveId(null)}
+        onClose={closeDrawer}
         ticket={activeTicket}
         onReply={handleReply}
         onStatusChange={handleStatusChange}

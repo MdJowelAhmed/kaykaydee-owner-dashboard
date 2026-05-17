@@ -49,19 +49,68 @@ const REFERRAL_SOURCES = [
   'Existing Customer',
   'Social Media',
 ]
-const TICKET_SUBJECTS = [
-  'Billing discrepancy on latest invoice',
-  'Cannot add new staff member',
-  'AI summary not generating',
-  'White-label logo upload issue',
-  'Patient portal login error',
-  'Request: bulk patient export',
+interface TicketSeed {
+  subject: string
+  category: ClinicSupportTicket['category']
+  description: string
+}
+
+const TICKET_SEEDS: TicketSeed[] = [
+  {
+    subject: 'Billing discrepancy on latest invoice',
+    category: 'Billing',
+    description:
+      'Invoice total does not match the agreed monthly rate after the recent plan change.',
+  },
+  {
+    subject: 'Cannot add new staff member',
+    category: 'Account',
+    description:
+      'Adding a new clinician returns a “seat limit reached” error even though seats are available.',
+  },
+  {
+    subject: 'AI summary not generating',
+    category: 'Technical',
+    description:
+      'Clinical notes finish saving but the AI summary never appears in the patient timeline.',
+  },
+  {
+    subject: 'White-label logo upload issue',
+    category: 'Technical',
+    description:
+      'Logo upload fails with a 500 error on PNG files larger than 1 MB, blocking onboarding.',
+  },
+  {
+    subject: 'Patient portal login error',
+    category: 'Technical',
+    description:
+      'Multiple patients report being signed out immediately after entering the OTP code.',
+  },
+  {
+    subject: 'Request: bulk patient export',
+    category: 'Feature Request',
+    description:
+      'Clinic admin would like a CSV export of all patient records for an external audit.',
+  },
 ]
 const TICKET_STATUSES: ClinicSupportTicket['status'][] = [
   'open',
   'in_progress',
   'resolved',
   'closed',
+]
+const TICKET_PRIORITIES: ClinicSupportTicket['priority'][] = [
+  'low',
+  'medium',
+  'high',
+  'urgent',
+]
+const TICKET_ASSIGNEES = [
+  'Mia Roberts',
+  'Liam Carter',
+  'Noah Patel',
+  'Ella Nguyen',
+  'Owen Reyes',
 ]
 const REVENUE_TIERS = [4200, 18500, 32000, 67000, 112000, 240000]
 
@@ -72,14 +121,24 @@ function planQuota(plan: ClinicPackagePlan): number | null {
 }
 
 function buildSupportTickets(i: number): ClinicSupportTicket[] {
-  const count = i % 4 // 0–3 tickets
-  return Array.from({ length: count }, (_, k) => ({
-    id: createId(),
-    ref: `TKT-${2400 + i * 4 + k}`,
-    subject: TICKET_SUBJECTS[(i + k) % TICKET_SUBJECTS.length],
-    status: TICKET_STATUSES[(i + k) % TICKET_STATUSES.length],
-    createdAt: new Date(Date.now() - (k + 1) * 36 * 3600 * 1000).toISOString(),
-  }))
+  const count = (i % 3) + 1 // 1–3 tickets so every clinic has activity
+  return Array.from({ length: count }, (_, k) => {
+    const seed = TICKET_SEEDS[(i + k) % TICKET_SEEDS.length]
+    const createdAt = new Date(Date.now() - (k + 1) * 36 * 3600 * 1000)
+    const updatedAt = new Date(createdAt.getTime() + (k + 1) * 4 * 3600 * 1000)
+    return {
+      id: createId(),
+      ref: `TKT-${2400 + i * 4 + k}`,
+      subject: seed.subject,
+      category: seed.category,
+      description: seed.description,
+      status: TICKET_STATUSES[(i + k) % TICKET_STATUSES.length],
+      priority: TICKET_PRIORITIES[(i + k * 2) % TICKET_PRIORITIES.length],
+      assignee: TICKET_ASSIGNEES[(i + k) % TICKET_ASSIGNEES.length],
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString(),
+    }
+  })
 }
 
 function buildMockClinics(): Clinic[] {
