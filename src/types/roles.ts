@@ -43,6 +43,7 @@ export const ROUTE_PERMISSIONS: Record<string, UserRole[]> = {
   '/subscription-invoice': [UserRole.SUPER_ADMIN],
   '/subscription-manage': [UserRole.SUPER_ADMIN],
   '/admin-management': [UserRole.SUPER_ADMIN],
+  '/admin-management/new': [UserRole.SUPER_ADMIN],
   '/support-centre': ALL_DASHBOARD_ROLES,
   '/agency-management': [UserRole.SUPER_ADMIN],
   '/transactions-history': [UserRole.SUPER_ADMIN],

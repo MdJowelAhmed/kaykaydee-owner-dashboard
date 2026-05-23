@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -14,16 +15,10 @@ import { Pagination } from '@/components/common/Pagination'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useUrlParams } from '@/hooks/useUrlState'
 import { toast } from '@/utils/toast'
-import { mockAdmins } from './adminData'
 import { AdminTable } from './components/AdminTable'
-import { AddEditAdminModal } from './components/AddEditAdminModal'
 import { AdminDetailsDrawer } from './components/AdminDetailsDrawer'
-import {
-  type AdminPermissionEntry,
-  type AdminRole,
-  type AdminRow,
-  type AdminStatus,
-} from './types'
+import { removeAdmin, useAdmins } from './adminStore'
+import { type AdminRow } from './types'
 
 const STATUS_FILTERS = [
   { value: 'all', label: 'All Status' },
@@ -40,7 +35,9 @@ const ROLE_FILTERS = [
 ] as const
 
 export default function AdminManagementPage() {
+  const navigate = useNavigate()
   const { getParam, getNumberParam, setParam, setParams } = useUrlParams()
+  const rows = useAdmins()
 
   const search = getParam('search', '')
   const status = getParam('status', 'all')
@@ -48,11 +45,7 @@ export default function AdminManagementPage() {
   const page = getNumberParam('page', 1)
   const limit = getNumberParam('limit', 15)
 
-  const [rows, setRows] = useState<AdminRow[]>(mockAdmins)
   const [detailRow, setDetailRow] = useState<AdminRow | null>(null)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalMode, setModalMode] = useState<'create' | 'edit'>('create')
-  const [editing, setEditing] = useState<AdminRow | null>(null)
   const [pendingDelete, setPendingDelete] = useState<AdminRow | null>(null)
 
   const filtered = useMemo(() => {
@@ -79,65 +72,9 @@ export default function AdminManagementPage() {
     return filtered.slice(start, start + limit)
   }, [filtered, page, limit, totalPages])
 
-  const openCreate = () => {
-    setModalMode('create')
-    setEditing(null)
-    setModalOpen(true)
-  }
-
-  const openEdit = (row: AdminRow) => {
-    setModalMode('edit')
-    setEditing(row)
-    setModalOpen(true)
-  }
-
-  const handleSave = (payload: {
-    name: string
-    clinicName: string
-    email: string
-    phone: string
-    role: AdminRole
-    status: AdminStatus
-    permissions: AdminPermissionEntry[]
-  }) => {
-    if (modalMode === 'create') {
-      const newRow: AdminRow = {
-        id: String(10000 + Math.floor(Math.random() * 90000)),
-        name: payload.name,
-        clinicName: payload.clinicName,
-        joinDate: new Date().toISOString(),
-        lastLogin: new Date().toISOString(),
-        role: payload.role,
-        status: payload.status,
-        email: payload.email,
-        phone: payload.phone,
-        permissions: payload.permissions,
-      }
-      setRows((prev) => [newRow, ...prev])
-      setParams({ page: 1 })
-    } else if (editing) {
-      setRows((prev) =>
-        prev.map((r) =>
-          r.id === editing.id
-            ? {
-                ...r,
-                name: payload.name,
-                clinicName: payload.clinicName,
-                email: payload.email,
-                phone: payload.phone,
-                role: payload.role,
-                status: payload.status,
-                permissions: payload.permissions,
-              }
-            : r
-        )
-      )
-    }
-  }
-
   const confirmDelete = () => {
     if (!pendingDelete) return
-    setRows((prev) => prev.filter((r) => r.id !== pendingDelete.id))
+    removeAdmin(pendingDelete.id)
     toast({ variant: 'success', title: 'Admin removed', description: pendingDelete.name })
     setPendingDelete(null)
   }
@@ -164,7 +101,7 @@ export default function AdminManagementPage() {
           </div>
           <Button
             type="button"
-            onClick={openCreate}
+            onClick={() => navigate('/admin-management/new')}
             className="h-11 shrink-0 rounded-full bg-secondary px-5 text-secondary-foreground hover:bg-secondary/90"
           >
             <Plus className="mr-2 h-4 w-4" />
@@ -213,7 +150,7 @@ export default function AdminManagementPage() {
         <AdminTable
           rows={paginated}
           onInfo={setDetailRow}
-          onEdit={openEdit}
+          onEdit={(row) => navigate(`/admin-management/${row.id}/edit`)}
           onDelete={setPendingDelete}
         />
       </div>
@@ -227,17 +164,6 @@ export default function AdminManagementPage() {
         showItemsPerPage={false}
         variant="minimal"
         className="px-1"
-      />
-
-      <AddEditAdminModal
-        open={modalOpen}
-        onClose={() => {
-          setModalOpen(false)
-          setEditing(null)
-        }}
-        mode={modalMode}
-        admin={editing}
-        onSave={handleSave}
       />
 
       <AdminDetailsDrawer
