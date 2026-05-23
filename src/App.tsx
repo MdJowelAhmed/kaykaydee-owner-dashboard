@@ -36,7 +36,7 @@ import NotificationPage from './pages/Notification/NotificationPage'
 import SubscriptionPackagePage from './pages/SubscriptionPackage/SubscriptionPackagePage'
 import SubscriptionInvoicePage from './pages/SubscriptionInvoice/SubscriptionInvoicePage'
 import SubscriptionManagePage from './pages/SubscriptionManage/SubscriptionManagePage'
-import AdminManagePage from './pages/AdminManage/AdminManagePage'
+import AdminManagementPage from './pages/AdminManagement/AdminManagementPage'
 import ReportsAnalyticsPage from './pages/ReportsAnalytics/ReportsAnalyticsPage'
 import ComplianceAuditPage from './pages/ComplianceAudit/ComplianceAuditPage'
 import AIManagementPage from './pages/AIManagement/AIManagementPage'
@@ -183,10 +183,10 @@ function App() {
           />
 
           <Route
-            path="admin-manage"
+            path="admin-management"
             element={
               <RoleBasedRoute allowedRoles={[UserRole.SUPER_ADMIN]}>
-                <AdminManagePage />
+                <AdminManagementPage />
               </RoleBasedRoute>
             }
           />

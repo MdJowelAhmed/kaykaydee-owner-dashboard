@@ -1,15 +1,18 @@
-export type AdminRole = 'head-admin' | 'admin'
+export type AdminRole = 'super-admin' | 'admin' | 'manager'
 
-export type AdminStatus = 'active' | 'inactive'
+export type AdminStatus = 'active' | 'inactive' | 'suspended'
 
 export type AdminPermissionKey =
   | 'dashboard'
   | 'user-management'
   | 'clinic-management'
-  | 'subscription-invoice'
   | 'subscription-manage'
-  | 'admin-manage'
-  | 'zealth-ai'
+  | 'subscription-invoice'
+  | 'sales-affiliates'
+  | 'ai-management'
+  | 'compliance-audit'
+  | 'support-centre'
+  | 'reports-analytics'
   | 'settings'
 
 export type PermissionScope =
@@ -31,10 +34,13 @@ export const PERMISSION_OPTIONS: PermissionOption[] = [
   { value: 'dashboard', label: 'Dashboard' },
   { value: 'user-management', label: 'User Management', scopeable: true },
   { value: 'clinic-management', label: 'Clinic Management', scopeable: true },
-  { value: 'subscription-invoice', label: 'Subscription Invoice', scopeable: true },
   { value: 'subscription-manage', label: 'Subscription Manage', scopeable: true },
-  { value: 'admin-manage', label: 'Admin Manage', scopeable: true },
-  { value: 'zealth-ai', label: 'Zealth AI' },
+  { value: 'subscription-invoice', label: 'Subscription Invoice', scopeable: true },
+  { value: 'sales-affiliates', label: 'Sales & Affiliates' },
+  { value: 'ai-management', label: 'AI Management' },
+  { value: 'compliance-audit', label: 'Compliance & Audit' },
+  { value: 'support-centre', label: 'Support Centre' },
+  { value: 'reports-analytics', label: 'Reports & Analytics' },
   { value: 'settings', label: 'Settings' },
 ]
 
@@ -66,6 +72,12 @@ export const SCOPE_ITEMS: Partial<Record<AdminPermissionKey, ScopeItem[]>> = {
     { id: 'user-7', label: 'Emily Brown' },
     { id: 'user-8', label: 'Omar Khan' },
   ],
+  'subscription-manage': [
+    { id: 'plan-basic', label: 'Basic Plan' },
+    { id: 'plan-standard', label: 'Standard Plan' },
+    { id: 'plan-pro', label: 'Pro Plan' },
+    { id: 'plan-enterprise', label: 'Enterprise Plan' },
+  ],
   'subscription-invoice': [
     { id: 'inv-1001', label: 'INV-1001' },
     { id: 'inv-1002', label: 'INV-1002' },
@@ -74,28 +86,29 @@ export const SCOPE_ITEMS: Partial<Record<AdminPermissionKey, ScopeItem[]>> = {
     { id: 'inv-1005', label: 'INV-1005' },
     { id: 'inv-1006', label: 'INV-1006' },
   ],
-  'subscription-manage': [
-    { id: 'plan-basic', label: 'Basic Plan' },
-    { id: 'plan-standard', label: 'Standard Plan' },
-    { id: 'plan-pro', label: 'Pro Plan' },
-    { id: 'plan-enterprise', label: 'Enterprise Plan' },
-  ],
-  'admin-manage': [
-    { id: 'adm-1', label: 'Admin · Alex Sadman' },
-    { id: 'adm-2', label: 'Admin · Zoya Clinic' },
-    { id: 'adm-3', label: 'Admin · Bright Smile' },
-    { id: 'adm-4', label: 'Admin · Harbor Wellness' },
-    { id: 'adm-5', label: 'Admin · Northside' },
-  ],
 }
 
 export interface AdminRow {
   id: string
-  clinicName: string
-  joinDate: string
-  role: AdminRole
-  status: AdminStatus
+  name: string
   email: string
   phone: string
+  clinicName: string
+  joinDate: string
+  lastLogin: string
+  role: AdminRole
+  status: AdminStatus
   permissions: AdminPermissionEntry[]
+}
+
+export const ADMIN_ROLE_LABELS: Record<AdminRole, string> = {
+  'super-admin': 'Super Admin',
+  admin: 'Admin',
+  manager: 'Manager',
+}
+
+export const ADMIN_STATUS_LABELS: Record<AdminStatus, string> = {
+  active: 'Active',
+  inactive: 'Inactive',
+  suspended: 'Suspended',
 }

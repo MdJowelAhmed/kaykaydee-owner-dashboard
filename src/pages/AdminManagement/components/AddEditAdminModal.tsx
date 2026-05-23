@@ -23,13 +23,15 @@ import {
 import type { SelectOption } from '@/types'
 
 const ROLE_OPTIONS: SelectOption[] = [
-  { value: 'head-admin', label: 'Head Admin' },
+  { value: 'super-admin', label: 'Super Admin' },
   { value: 'admin', label: 'Admin' },
+  { value: 'manager', label: 'Manager' },
 ]
 
 const STATUS_OPTIONS: SelectOption[] = [
   { value: 'active', label: 'Active' },
   { value: 'inactive', label: 'Inactive' },
+  { value: 'suspended', label: 'Suspended' },
 ]
 
 const PERMISSION_KEYS = PERMISSION_OPTIONS.map((p) => p.value) as [
@@ -39,15 +41,19 @@ const PERMISSION_KEYS = PERMISSION_OPTIONS.map((p) => p.value) as [
 
 const scopeSchema: z.ZodType<PermissionScope> = z.union([
   z.object({ type: z.literal('all') }),
-  z.object({ type: z.literal('selected'), ids: z.array(z.string()).min(1, 'Select at least one item') }),
+  z.object({
+    type: z.literal('selected'),
+    ids: z.array(z.string()).min(1, 'Select at least one item'),
+  }),
 ])
 
 const schema = z.object({
+  name: z.string().min(1, 'Name is required'),
   clinicName: z.string().min(1, 'Clinic name is required'),
   email: z.string().email('Enter a valid email'),
   phone: z.string().min(1, 'Phone is required'),
-  role: z.enum(['head-admin', 'admin']),
-  status: z.enum(['active', 'inactive']),
+  role: z.enum(['super-admin', 'admin', 'manager']),
+  status: z.enum(['active', 'inactive', 'suspended']),
   permissions: z
     .array(
       z.object({
@@ -66,6 +72,7 @@ interface AddEditAdminModalProps {
   mode: 'create' | 'edit'
   admin: AdminRow | null
   onSave: (payload: {
+    name: string
     clinicName: string
     email: string
     phone: string
@@ -75,7 +82,13 @@ interface AddEditAdminModalProps {
   }) => void
 }
 
-export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEditAdminModalProps) {
+export function AddEditAdminModal({
+  open,
+  onClose,
+  mode,
+  admin,
+  onSave,
+}: AddEditAdminModalProps) {
   const {
     register,
     handleSubmit,
@@ -87,6 +100,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
+      name: '',
       clinicName: '',
       email: '',
       phone: '',
@@ -100,6 +114,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
     if (!open) return
     if (mode === 'edit' && admin) {
       reset({
+        name: admin.name,
         clinicName: admin.clinicName,
         email: admin.email,
         phone: admin.phone,
@@ -109,6 +124,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
       })
     } else {
       reset({
+        name: '',
         clinicName: '',
         email: '',
         phone: '',
@@ -147,7 +163,9 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
 
   const toggleAll = (checked: boolean) => {
     if (checked) {
-      updatePermissions(PERMISSION_OPTIONS.map((opt) => ({ key: opt.value, scope: { type: 'all' } })))
+      updatePermissions(
+        PERMISSION_OPTIONS.map((opt) => ({ key: opt.value, scope: { type: 'all' } }))
+      )
     } else {
       updatePermissions([])
     }
@@ -155,6 +173,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
 
   const onSubmit = (data: FormValues) => {
     onSave({
+      name: data.name.trim(),
       clinicName: data.clinicName.trim(),
       email: data.email.trim(),
       phone: data.phone.trim(),
@@ -162,7 +181,10 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
       status: data.status,
       permissions: data.permissions,
     })
-    toast({ variant: 'success', title: mode === 'create' ? 'Admin added' : 'Admin updated' })
+    toast({
+      variant: 'success',
+      title: mode === 'create' ? 'Admin added' : 'Admin updated',
+    })
     onClose()
   }
 
@@ -184,7 +206,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
           </Button>
           <Button
             type="submit"
-            form="admin-form"
+            form="admin-management-form"
             className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
           >
             {mode === 'create' ? 'Add' : 'Save'}
@@ -192,15 +214,38 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
         </>
       }
     >
-      <form id="admin-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        id="admin-management-form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
+        <FormInput
+          label="Full name"
+          required
+          {...register('name')}
+          error={errors.name?.message}
+        />
         <FormInput
           label="Clinic name"
           required
           {...register('clinicName')}
           error={errors.clinicName?.message}
         />
-        <FormInput label="Email" type="email" required {...register('email')} error={errors.email?.message} />
-        <FormInput label="Phone" required {...register('phone')} error={errors.phone?.message} />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormInput
+            label="Email"
+            type="email"
+            required
+            {...register('email')}
+            error={errors.email?.message}
+          />
+          <FormInput
+            label="Phone"
+            required
+            {...register('phone')}
+            error={errors.phone?.message}
+          />
+        </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Controller
@@ -236,7 +281,7 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label className={errors.permissions ? 'text-destructive' : undefined}>
-              Page Permissions
+              Page permissions
               <span className="text-destructive ml-1">*</span>
             </Label>
             <button
@@ -297,7 +342,6 @@ export function AddEditAdminModal({ open, onClose, mode, admin, onSave }: AddEdi
             </p>
           )}
         </div>
-
       </form>
     </DrawerWrapper>
   )
@@ -316,9 +360,7 @@ function ScopePicker({ label, items, scope, onChange }: ScopePickerProps) {
   const isAll = scope.type === 'all'
   const selectedIds = scope.type === 'selected' ? scope.ids : []
 
-  const summary = isAll
-    ? `All ${items.length}`
-    : `${selectedIds.length} of ${items.length}`
+  const summary = isAll ? `All ${items.length}` : `${selectedIds.length} of ${items.length}`
 
   const filteredItems = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -345,7 +387,7 @@ function ScopePicker({ label, items, scope, onChange }: ScopePickerProps) {
         <button
           type="button"
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium text-foreground hover:bg-muted',
+            'inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2.5 py-1 text-xs font-medium hover:bg-muted',
             isAll ? 'text-primary' : 'text-foreground'
           )}
         >
@@ -361,7 +403,11 @@ function ScopePicker({ label, items, scope, onChange }: ScopePickerProps) {
               All
             </button>
             <span className="text-border">·</span>
-            <button type="button" onClick={clearAll} className="text-muted-foreground hover:underline">
+            <button
+              type="button"
+              onClick={clearAll}
+              className="text-muted-foreground hover:underline"
+            >
               Clear
             </button>
           </div>

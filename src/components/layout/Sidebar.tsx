@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   BrainCircuit,
   HeartHandshake,
+  UserCog,
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useAppDispatch, useAppSelector } from '@/redux/hooks'
@@ -57,6 +58,12 @@ const navItems: NavItem[] = [
     title: 'Users',
     href: '/users',
     icon: Users,
+    allowedRoles: [UserRole.SUPER_ADMIN],
+  },
+  {
+    title: 'Admin Management',
+    href: '/admin-management',
+    icon: UserCog,
     allowedRoles: [UserRole.SUPER_ADMIN],
   },
   {
