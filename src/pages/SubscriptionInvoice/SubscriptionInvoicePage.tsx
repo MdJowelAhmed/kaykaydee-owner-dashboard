@@ -3,6 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { RevenueMetricsSection } from '../ReportsAnalytics/RevenueMetricsSection'
 import { CustomerMetricsSection } from '../ReportsAnalytics/CustomerMetricsSection'
 import { BillingReportsSection } from '../ReportsAnalytics/BillingReportsSection'
+import { SubscriptionInvoiceSection } from './SubscriptionInvoiceSection'
 
 export default function SubscriptionInvoicePage() {
   return (
@@ -30,6 +31,9 @@ export default function SubscriptionInvoicePage() {
           <TabsTrigger value="billing" className="px-4 py-2 text-sm">
             Billing Reports
           </TabsTrigger>
+          <TabsTrigger value="invoices" className="px-4 py-2 text-sm">
+            Subscription Invoice
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="revenue" className="mt-4">
@@ -40,6 +44,9 @@ export default function SubscriptionInvoicePage() {
         </TabsContent>
         <TabsContent value="billing" className="mt-4">
           <BillingReportsSection />
+        </TabsContent>
+        <TabsContent value="invoices" className="mt-4">
+          <SubscriptionInvoiceSection />
         </TabsContent>
       </Tabs>
     </motion.div>
